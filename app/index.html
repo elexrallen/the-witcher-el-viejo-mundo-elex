@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>The Witcher — El Viejo Mundo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header__brand">
+        <span class="header__sigil" aria-hidden="true">⚔</span>
+        <div>
+          <h1>El Viejo Mundo</h1>
+          <p>Asistente de partida</p>
+        </div>
+      </div>
+      <div class="header__actions">
+        <nav class="mode-nav" aria-label="Modos de juego">
+          <a class="mode-nav__link mode-nav__link--active" href="index.html" aria-current="page">Partida</a>
+          <a class="mode-nav__link" href="exploracion.html">Exploración</a>
+          <a class="mode-nav__link" href="eventos.html">Eventos</a>
+          <a class="mode-nav__link" href="automa/">Automa</a>
+        </nav>
+        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración">⚙</button>
+      </div>
+    </header>
+
+    <aside class="panel panel--settings" id="panel-settings" hidden>
+      <h2>Configuración</h2>
+      <section>
+        <h3>Jugadores en mesa</h3>
+        <div class="player-setup">
+          <label class="player-setup__field">
+            <span>Número de jugadores</span>
+            <select id="player-count">
+              <option value="1">1 — Solitario</option>
+              <option value="2">2 jugadores</option>
+              <option value="3">3 jugadores</option>
+              <option value="4">4 jugadores</option>
+            </select>
+          </label>
+          <label class="player-setup__field">
+            <span>Jugador activo</span>
+            <select id="active-player"></select>
+          </label>
+        </div>
+        <p class="muted player-setup__hint" id="drawer-hint"></p>
+      </section>
+      <section>
+        <h3>Expansiones activas</h3>
+        <div id="expansion-list" class="chip-list"></div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <section class="panel panel--hub" id="screen-hub">
+        <div class="turn-header">
+          <div>
+            <p class="turn-header__label">Turno <span id="turn-number">1</span></p>
+            <h2 id="active-player-label">Jugador activo</h2>
+          </div>
+          <button type="button" class="btn btn--secondary" id="btn-end-turn">Fin de turno</button>
+        </div>
+
+        <div class="phase-track" id="phase-track" aria-label="Fases del turno"></div>
+
+        <div class="phase-panel" id="phase-panel">
+          <p class="phase-panel__summary" id="phase-summary"></p>
+
+          <div class="phase-content" id="phase-content-I">
+            <ol class="rules-list">
+              <li>Movimiento a una localización conectada.</li>
+              <li>Acción de localización <em>(opcional)</em>.</li>
+              <li>Repite movimiento o pasa a la <strong>Fase II</strong>.</li>
+            </ol>
+            <button type="button" class="btn btn--primary phase-advance" data-phase="II">Ir a Fase II</button>
+          </div>
+
+          <div class="phase-content" id="phase-content-II" hidden>
+            <p class="lead">Elige una sola acción para la Fase II.</p>
+            <div class="action-grid" id="action-grid"></div>
+          </div>
+
+          <div class="phase-content" id="phase-content-III" hidden>
+            <ol class="rules-list">
+              <li>Descarta opcionalmente cartas de tu mano.</li>
+              <li>Roba hasta 3 cartas de tu mazo de acción.</li>
+              <li>Obtén 1 carta nueva del tablero.</li>
+            </ol>
+            <button type="button" class="btn btn--primary" id="btn-finish-turn">Completar turno</button>
+          </div>
+        </div>
+
+        <section class="mission-panel" id="mission-panel">
+          <h3>Misión resuelta → Evento</h3>
+          <p class="muted">Tras resolver una misión, el jugador a tu derecha roba la carta numerada del mazo de eventos <em>(sin barajar)</em>.</p>
+          <form class="mission-form" id="mission-form">
+            <label class="mission-form__label" for="mission-event-number">Número de evento</label>
+            <div class="mission-form__controls">
+              <input
+                class="event-jump__input"
+                id="mission-event-number"
+                type="number"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                placeholder="Ej. 14"
+                required
+              >
+              <button type="submit" class="btn btn--primary">Revelar evento</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="solo-banner" id="solo-banner" hidden>
+          <p class="solo-banner__text">
+            Modo solitario: usa el <strong>Automa</strong> para el oponente virtual, combate y reglas del modo solo.
+          </p>
+          <a class="btn btn--primary" href="automa/">Abrir Automa</a>
+        </section>
+
+        <section class="quick-links">
+          <a class="quick-link quick-link--featured" href="automa/">
+            <span class="quick-link__icon">🤖</span>
+            <span class="quick-link__title">Automa</span>
+            <span class="quick-link__desc">Modo solitario V1.4</span>
+          </a>
+          <a class="quick-link" href="exploracion.html">
+            <span class="quick-link__icon">🗺</span>
+            <span class="quick-link__title">Exploración</span>
+            <span class="quick-link__desc">Ciudad y Tierras Salvajes</span>
+          </a>
+          <a class="quick-link" href="eventos.html">
+            <span class="quick-link__icon">📜</span>
+            <span class="quick-link__title">Eventos</span>
+            <span class="quick-link__desc">Mazo numerado 1–56+</span>
+          </a>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/partida-hub.js" type="module"></script>
+</body>
+</html>

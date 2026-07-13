@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>The Witcher — Eventos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="play-mode">
+  <div class="app">
+    <header class="header">
+      <div class="header__brand">
+        <span class="header__sigil" aria-hidden="true">⚔</span>
+        <div>
+          <h1>El Viejo Mundo</h1>
+          <p>Mazo de eventos</p>
+        </div>
+      </div>
+      <div class="header__actions">
+        <nav class="mode-nav" aria-label="Modos de juego">
+          <a class="mode-nav__link" href="index.html">Partida</a>
+          <a class="mode-nav__link" href="exploracion.html">Exploración</a>
+          <a class="mode-nav__link mode-nav__link--active" href="eventos.html" aria-current="page">Eventos</a>
+          <a class="mode-nav__link" href="automa/">Automa</a>
+        </nav>
+        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración">⚙</button>
+      </div>
+    </header>
+
+    <aside class="panel panel--settings" id="panel-settings" hidden>
+      <h2>Configuración</h2>
+      <section>
+        <h3>Expansiones activas</h3>
+        <div id="expansion-list" class="chip-list"></div>
+      </section>
+      <section>
+        <h3>Mazo actual</h3>
+        <p class="muted" id="deck-status">—</p>
+        <button type="button" class="btn btn--secondary" id="btn-reset-deck">Reiniciar mazo</button>
+        <button type="button" class="btn btn--secondary" id="btn-reset-all">Reiniciar todos los mazos</button>
+      </section>
+      <section id="campaign-decks-section" hidden>
+        <h3>Eventos de campaña</h3>
+        <p class="muted">Mazos opcionales para Skellige y Cacería Salvaje.</p>
+        <div id="campaign-deck-list" class="campaign-deck-list"></div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <section class="panel panel--card" id="screen-card">
+        <div class="role-banner" id="role-banner" hidden></div>
+
+        <div class="card-meta">
+          <span class="badge" id="card-deck"></span>
+          <span class="badge badge--gold" id="card-number"></span>
+          <span class="badge badge--muted" id="card-expansion"></span>
+          <span class="badge badge--muted" id="card-remaining"></span>
+        </div>
+
+        <article class="explore-card explore-card--eventos">
+          <div class="explore-card__guide instruction-wrap">
+            <button type="button" class="instruction-toggle" id="btn-toggle-instruction" aria-expanded="true">
+              Ocultar guía
+            </button>
+            <div class="instruction" id="instruction"></div>
+          </div>
+
+          <form class="event-jump explore-card__controls" id="event-jump">
+            <label class="event-jump__label" for="jump-number">Número de evento</label>
+            <div class="event-jump__controls">
+              <button type="button" class="btn btn--secondary btn--icon" id="btn-prev" aria-label="Evento anterior">‹</button>
+              <input
+                class="event-jump__input"
+                id="jump-number"
+                type="number"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                required
+              >
+              <button type="button" class="btn btn--secondary btn--icon" id="btn-next-number" aria-label="Evento siguiente">›</button>
+              <button type="submit" class="btn btn--primary event-jump__submit">Ver</button>
+            </div>
+            <p class="event-jump__hint muted" id="jump-hint"></p>
+          </form>
+
+          <div class="card-placeholder explore-card__card-area" id="card-placeholder">
+            <p class="card-placeholder__title">Evento oculto</p>
+            <p class="card-placeholder__text">Introduce el número y pulsa <strong>Ver</strong> para revelar la carta.</p>
+          </div>
+
+          <figure class="card-figure explore-card__card-area" id="card-figure" hidden>
+            <div class="card-reveal" id="card-reveal" hidden>
+              <div class="card-reveal__shell">
+                <div class="card-reveal__viewport">
+                  <img id="card-image" class="card-reveal__img" alt="Carta de evento">
+                  <div class="card-reveal__shade" id="card-shade" aria-hidden="true"></div>
+                  <div class="card-reveal__line" id="card-reveal-line" aria-hidden="true" hidden></div>
+                  <p class="card-reveal__hint" id="card-reveal-hint">
+                    Desliza hacia abajo en la barra lateral para ir revelando la carta mientras lees.
+                  </p>
+                </div>
+                <div class="card-reveal__rail" aria-label="Control de revelado">
+                  <label class="visually-hidden" for="card-reveal-slider">Revelar carta</label>
+                  <div class="card-reveal__slider-wrap">
+                    <input
+                      type="range"
+                      id="card-reveal-slider"
+                      class="card-reveal__slider"
+                      min="0"
+                      max="100"
+                      value="0"
+                      step="1"
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="card-reveal__reset"
+                    id="btn-reveal-reset"
+                    aria-label="Ocultar carta"
+                    title="Ocultar"
+                  >↺</button>
+                </div>
+              </div>
+            </div>
+            <figcaption class="card-figure__caption muted" id="card-caption"></figcaption>
+          </figure>
+        </article>
+
+        <p class="rule-reminder rule-reminder--desktop muted">Pulsa <strong>Ver</strong> para revelar · <kbd>↑</kbd> <kbd>↓</kbd> deslizar lectura · <kbd>←</kbd> <kbd>→</kbd> cambiar número</p>
+        <p class="rule-reminder rule-reminder--mobile muted">Desliza la barra sobre la carta para leer · Toca <strong>Ver</strong> para revelar</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="play-bar play-bar--visible" id="play-bar">
+    <button type="button" class="btn btn--secondary" id="btn-hub">Partida</button>
+    <button type="button" class="btn btn--secondary" id="btn-zoom">Ampliar</button>
+    <button type="button" class="btn btn--primary" id="btn-next">Siguiente (#<span id="btn-next-label">2</span>)</button>
+  </footer>
+
+  <dialog class="zoom-dialog" id="zoom-dialog">
+    <button type="button" class="zoom-dialog__close" id="btn-close-zoom" aria-label="Cerrar">✕</button>
+    <div class="zoom-dialog__viewport">
+      <img id="zoom-image" class="zoom-dialog__img" alt="Carta ampliada">
+    </div>
+  </dialog>
+
+  <script src="js/eventos.js" type="module"></script>
+</body>
+</html>

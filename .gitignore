@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Node / Automa
+automa/node_modules/
+automa/dist/
+
+# Build / publicación local
+_site/
+app/data/images/
+
+# IDE / sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Datos temporales de extracción (mantener data/source si lo usas en local)
+# Las imágenes en data/images SÍ deben subirse para GitHub Pages.

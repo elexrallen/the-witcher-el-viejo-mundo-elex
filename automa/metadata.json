@@ -1,0 +1,6 @@
+{
+  "name": "The Witcher Old World Automa",
+  "description": "Compañero y simulador digital avanzado del Modo Solitario No Oficial (Automa V1.4) para el juego de mesa The Witcher: El Viejo Mundo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

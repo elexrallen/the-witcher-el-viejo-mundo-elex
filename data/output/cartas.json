@@ -1,0 +1,3921 @@
+{
+  "game": "The Witcher: El Viejo Mundo",
+  "source": "Tabletop Simulator mod 3135706374",
+  "language": "es",
+  "deck_count": 11,
+  "unique_cards": 333,
+  "decks": [
+    {
+      "id": "eventos-cacer-a-salvaje",
+      "name": "Eventos Cacería Salvaje",
+      "type": "event",
+      "card_count": 35,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740500,
+          "index": 0,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740500.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740501,
+          "index": 1,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740501.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740502,
+          "index": 2,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740502.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740503,
+          "index": 3,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740503.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740504,
+          "index": 4,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740504.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740505,
+          "index": 5,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740505.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740506,
+          "index": 6,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740506.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740507,
+          "index": 7,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740507.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740508,
+          "index": 8,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740508.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740509,
+          "index": 9,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740509.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740510,
+          "index": 10,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740510.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740511,
+          "index": 11,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740511.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740512,
+          "index": 12,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740512.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740513,
+          "index": 13,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740513.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740514,
+          "index": 14,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740514.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740515,
+          "index": 15,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740515.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740516,
+          "index": 16,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740516.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740517,
+          "index": 17,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740517.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740518,
+          "index": 18,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740518.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740519,
+          "index": 19,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740519.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 740600,
+          "index": 0,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740600.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 740601,
+          "index": 1,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740601.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 740602,
+          "index": 2,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740602.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 740603,
+          "index": 3,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740603.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 740604,
+          "index": 4,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740604.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 740605,
+          "index": 5,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740605.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 740606,
+          "index": 6,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740606.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 740607,
+          "index": 7,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740607.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 740608,
+          "index": 8,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740608.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 740609,
+          "index": 9,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740609.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 740610,
+          "index": 10,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740610.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 740611,
+          "index": 11,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740611.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 740612,
+          "index": 12,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740612.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 740613,
+          "index": 13,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740613.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 740614,
+          "index": 14,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740614.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "exploraci-n-fase-ii-cacer-a-salvaje",
+      "name": "Exploración Fase II Cacería Salvaje",
+      "type": "exploration",
+      "card_count": 15,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740800,
+          "index": 0,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740800.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740801,
+          "index": 1,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740801.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740802,
+          "index": 2,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740802.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740803,
+          "index": 3,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740803.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740804,
+          "index": 4,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740804.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740805,
+          "index": 5,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740805.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740806,
+          "index": 6,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740806.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740807,
+          "index": 7,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740807.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740808,
+          "index": 8,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740808.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740809,
+          "index": 9,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740809.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740810,
+          "index": 10,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740810.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740811,
+          "index": 11,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740811.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740812,
+          "index": 12,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740812.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740813,
+          "index": 13,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740813.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740814,
+          "index": 14,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740814.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "exploraci-n-fase-i-cacer-a-salvaje",
+      "name": "Exploración Fase I Cacería Salvaje",
+      "type": "exploration",
+      "card_count": 20,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740700,
+          "index": 0,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740700.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740701,
+          "index": 1,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740701.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740702,
+          "index": 2,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740702.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740703,
+          "index": 3,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740703.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740704,
+          "index": 4,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740704.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740705,
+          "index": 5,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740705.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740706,
+          "index": 6,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740706.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740707,
+          "index": 7,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740707.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740708,
+          "index": 8,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740708.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740709,
+          "index": 9,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740709.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740710,
+          "index": 10,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740710.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740711,
+          "index": 11,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740711.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740712,
+          "index": 12,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740712.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740713,
+          "index": 13,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740713.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740714,
+          "index": 14,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740714.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740715,
+          "index": 15,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740715.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740716,
+          "index": 16,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740716.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740717,
+          "index": 17,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740717.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740718,
+          "index": 18,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740718.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740719,
+          "index": 19,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740719.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "ciudad-del-conjunto-de-aventuras",
+      "name": "Ciudad del Conjunto de Aventuras",
+      "type": "exploration",
+      "card_count": 59,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740800,
+          "index": 0,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740800.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740801,
+          "index": 1,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740801.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740802,
+          "index": 2,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740802.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740803,
+          "index": 3,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740803.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740804,
+          "index": 4,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740804.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740805,
+          "index": 5,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740805.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740806,
+          "index": 6,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740806.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740807,
+          "index": 7,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740807.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740808,
+          "index": 8,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740808.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740809,
+          "index": 9,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740809.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740810,
+          "index": 10,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740810.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740811,
+          "index": 11,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740811.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740812,
+          "index": 12,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740812.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740813,
+          "index": 13,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740813.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740814,
+          "index": 14,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740814.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740815,
+          "index": 15,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740815.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740816,
+          "index": 16,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740816.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740817,
+          "index": 17,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740817.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740818,
+          "index": 18,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740818.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740819,
+          "index": 19,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740819.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 740820,
+          "index": 20,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740820.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 740821,
+          "index": 21,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740821.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 740822,
+          "index": 22,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740822.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 740823,
+          "index": 23,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740823.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 740824,
+          "index": 24,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740824.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 740900,
+          "index": 0,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740900.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 740901,
+          "index": 1,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740901.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 740902,
+          "index": 2,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740902.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 740903,
+          "index": 3,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740903.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 740904,
+          "index": 4,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740904.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 740905,
+          "index": 5,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740905.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 740906,
+          "index": 6,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740906.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 740907,
+          "index": 7,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740907.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 740908,
+          "index": 8,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740908.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 740909,
+          "index": 9,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740909.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 740910,
+          "index": 10,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740910.jpg",
+          "text": ""
+        },
+        {
+          "position": 37,
+          "card_id": 740911,
+          "index": 11,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740911.jpg",
+          "text": ""
+        },
+        {
+          "position": 38,
+          "card_id": 740912,
+          "index": 12,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740912.jpg",
+          "text": ""
+        },
+        {
+          "position": 39,
+          "card_id": 740913,
+          "index": 13,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740913.jpg",
+          "text": ""
+        },
+        {
+          "position": 40,
+          "card_id": 740914,
+          "index": 14,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740914.jpg",
+          "text": ""
+        },
+        {
+          "position": 41,
+          "card_id": 740915,
+          "index": 15,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740915.jpg",
+          "text": ""
+        },
+        {
+          "position": 42,
+          "card_id": 740916,
+          "index": 16,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740916.jpg",
+          "text": ""
+        },
+        {
+          "position": 43,
+          "card_id": 740917,
+          "index": 17,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740917.jpg",
+          "text": ""
+        },
+        {
+          "position": 44,
+          "card_id": 740918,
+          "index": 18,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740918.jpg",
+          "text": ""
+        },
+        {
+          "position": 45,
+          "card_id": 740919,
+          "index": 19,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740919.jpg",
+          "text": ""
+        },
+        {
+          "position": 46,
+          "card_id": 740920,
+          "index": 20,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740920.jpg",
+          "text": ""
+        },
+        {
+          "position": 47,
+          "card_id": 740921,
+          "index": 21,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740921.jpg",
+          "text": ""
+        },
+        {
+          "position": 48,
+          "card_id": 740922,
+          "index": 22,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740922.jpg",
+          "text": ""
+        },
+        {
+          "position": 49,
+          "card_id": 740923,
+          "index": 23,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740923.jpg",
+          "text": ""
+        },
+        {
+          "position": 50,
+          "card_id": 740924,
+          "index": 24,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740924.jpg",
+          "text": ""
+        },
+        {
+          "position": 51,
+          "card_id": 741000,
+          "index": 0,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741000.jpg",
+          "text": ""
+        },
+        {
+          "position": 52,
+          "card_id": 741001,
+          "index": 1,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741001.jpg",
+          "text": ""
+        },
+        {
+          "position": 53,
+          "card_id": 741002,
+          "index": 2,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741002.jpg",
+          "text": ""
+        },
+        {
+          "position": 54,
+          "card_id": 741003,
+          "index": 3,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741003.jpg",
+          "text": ""
+        },
+        {
+          "position": 55,
+          "card_id": 741004,
+          "index": 4,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741004.jpg",
+          "text": ""
+        },
+        {
+          "position": 56,
+          "card_id": 741005,
+          "index": 5,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741005.jpg",
+          "text": ""
+        },
+        {
+          "position": 57,
+          "card_id": 741006,
+          "index": 6,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741006.jpg",
+          "text": ""
+        },
+        {
+          "position": 58,
+          "card_id": 741007,
+          "index": 7,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741007.jpg",
+          "text": ""
+        },
+        {
+          "position": 59,
+          "card_id": 741008,
+          "index": 8,
+          "deck_key": "7410",
+          "image": "data/images/cards/exploration/741008.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "naturaleza-del-conjunto-de-aventuras",
+      "name": "Naturaleza del Conjunto de Aventuras",
+      "type": "exploration",
+      "card_count": 60,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 741100,
+          "index": 0,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741100.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 741101,
+          "index": 1,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741101.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 741102,
+          "index": 2,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741102.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 741103,
+          "index": 3,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741103.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 741104,
+          "index": 4,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741104.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 741105,
+          "index": 5,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741105.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 741106,
+          "index": 6,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741106.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 741107,
+          "index": 7,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741107.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 741108,
+          "index": 8,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741108.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 741109,
+          "index": 9,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741109.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 741110,
+          "index": 10,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741110.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 741111,
+          "index": 11,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741111.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 741112,
+          "index": 12,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741112.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 741113,
+          "index": 13,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741113.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 741114,
+          "index": 14,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741114.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 741115,
+          "index": 15,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741115.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 741116,
+          "index": 16,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741116.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 741117,
+          "index": 17,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741117.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 741118,
+          "index": 18,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741118.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 741119,
+          "index": 19,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741119.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 741120,
+          "index": 20,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741120.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 741121,
+          "index": 21,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741121.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 741122,
+          "index": 22,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741122.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 741123,
+          "index": 23,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741123.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 741124,
+          "index": 24,
+          "deck_key": "7411",
+          "image": "data/images/cards/exploration/741124.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 741200,
+          "index": 0,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741200.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 741201,
+          "index": 1,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741201.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 741202,
+          "index": 2,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741202.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 741203,
+          "index": 3,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741203.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 741204,
+          "index": 4,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741204.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 741205,
+          "index": 5,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741205.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 741206,
+          "index": 6,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741206.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 741207,
+          "index": 7,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741207.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 741208,
+          "index": 8,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741208.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 741209,
+          "index": 9,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741209.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 741210,
+          "index": 10,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741210.jpg",
+          "text": ""
+        },
+        {
+          "position": 37,
+          "card_id": 741211,
+          "index": 11,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741211.jpg",
+          "text": ""
+        },
+        {
+          "position": 38,
+          "card_id": 741212,
+          "index": 12,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741212.jpg",
+          "text": ""
+        },
+        {
+          "position": 39,
+          "card_id": 741213,
+          "index": 13,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741213.jpg",
+          "text": ""
+        },
+        {
+          "position": 40,
+          "card_id": 741214,
+          "index": 14,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741214.jpg",
+          "text": ""
+        },
+        {
+          "position": 41,
+          "card_id": 741215,
+          "index": 15,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741215.jpg",
+          "text": ""
+        },
+        {
+          "position": 42,
+          "card_id": 741216,
+          "index": 16,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741216.jpg",
+          "text": ""
+        },
+        {
+          "position": 43,
+          "card_id": 741217,
+          "index": 17,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741217.jpg",
+          "text": ""
+        },
+        {
+          "position": 44,
+          "card_id": 741218,
+          "index": 18,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741218.jpg",
+          "text": ""
+        },
+        {
+          "position": 45,
+          "card_id": 741219,
+          "index": 19,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741219.jpg",
+          "text": ""
+        },
+        {
+          "position": 46,
+          "card_id": 741220,
+          "index": 20,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741220.jpg",
+          "text": ""
+        },
+        {
+          "position": 47,
+          "card_id": 741221,
+          "index": 21,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741221.jpg",
+          "text": ""
+        },
+        {
+          "position": 48,
+          "card_id": 741222,
+          "index": 22,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741222.jpg",
+          "text": ""
+        },
+        {
+          "position": 49,
+          "card_id": 741223,
+          "index": 23,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741223.jpg",
+          "text": ""
+        },
+        {
+          "position": 50,
+          "card_id": 741224,
+          "index": 24,
+          "deck_key": "7412",
+          "image": "data/images/cards/exploration/741224.jpg",
+          "text": ""
+        },
+        {
+          "position": 51,
+          "card_id": 741300,
+          "index": 0,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741300.jpg",
+          "text": ""
+        },
+        {
+          "position": 52,
+          "card_id": 741301,
+          "index": 1,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741301.jpg",
+          "text": ""
+        },
+        {
+          "position": 53,
+          "card_id": 741302,
+          "index": 2,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741302.jpg",
+          "text": ""
+        },
+        {
+          "position": 54,
+          "card_id": 741303,
+          "index": 3,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741303.jpg",
+          "text": ""
+        },
+        {
+          "position": 55,
+          "card_id": 741304,
+          "index": 4,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741304.jpg",
+          "text": ""
+        },
+        {
+          "position": 56,
+          "card_id": 741305,
+          "index": 5,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741305.jpg",
+          "text": ""
+        },
+        {
+          "position": 57,
+          "card_id": 741306,
+          "index": 6,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741306.jpg",
+          "text": ""
+        },
+        {
+          "position": 58,
+          "card_id": 741307,
+          "index": 7,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741307.jpg",
+          "text": ""
+        },
+        {
+          "position": 59,
+          "card_id": 741308,
+          "index": 8,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741308.jpg",
+          "text": ""
+        },
+        {
+          "position": 60,
+          "card_id": 741309,
+          "index": 9,
+          "deck_key": "7413",
+          "image": "data/images/cards/exploration/741309.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "eventos-del-conjunto-de-aventuras",
+      "name": "Eventos del Conjunto de Aventuras",
+      "type": "event",
+      "card_count": 81,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740500,
+          "index": 0,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740500.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740501,
+          "index": 1,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740501.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740502,
+          "index": 2,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740502.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740503,
+          "index": 3,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740503.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740504,
+          "index": 4,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740504.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740505,
+          "index": 5,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740505.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740506,
+          "index": 6,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740506.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740507,
+          "index": 7,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740507.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740508,
+          "index": 8,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740508.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740509,
+          "index": 9,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740509.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740510,
+          "index": 10,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740510.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740511,
+          "index": 11,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740511.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740512,
+          "index": 12,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740512.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740513,
+          "index": 13,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740513.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740514,
+          "index": 14,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740514.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740515,
+          "index": 15,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740515.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740516,
+          "index": 16,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740516.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740517,
+          "index": 17,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740517.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740518,
+          "index": 18,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740518.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740519,
+          "index": 19,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740519.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 740520,
+          "index": 20,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740520.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 740521,
+          "index": 21,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740521.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 740522,
+          "index": 22,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740522.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 740523,
+          "index": 23,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740523.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 740524,
+          "index": 24,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740524.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 740525,
+          "index": 25,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740525.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 740526,
+          "index": 26,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740526.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 740527,
+          "index": 27,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740527.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 740528,
+          "index": 28,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740528.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 740529,
+          "index": 29,
+          "deck_key": "7405",
+          "image": "data/images/cards/event/740529.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 740600,
+          "index": 0,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740600.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 740601,
+          "index": 1,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740601.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 740602,
+          "index": 2,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740602.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 740603,
+          "index": 3,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740603.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 740604,
+          "index": 4,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740604.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 740605,
+          "index": 5,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740605.jpg",
+          "text": ""
+        },
+        {
+          "position": 37,
+          "card_id": 740606,
+          "index": 6,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740606.jpg",
+          "text": ""
+        },
+        {
+          "position": 38,
+          "card_id": 740607,
+          "index": 7,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740607.jpg",
+          "text": ""
+        },
+        {
+          "position": 39,
+          "card_id": 740608,
+          "index": 8,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740608.jpg",
+          "text": ""
+        },
+        {
+          "position": 40,
+          "card_id": 740609,
+          "index": 9,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740609.jpg",
+          "text": ""
+        },
+        {
+          "position": 41,
+          "card_id": 740610,
+          "index": 10,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740610.jpg",
+          "text": ""
+        },
+        {
+          "position": 42,
+          "card_id": 740611,
+          "index": 11,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740611.jpg",
+          "text": ""
+        },
+        {
+          "position": 43,
+          "card_id": 740612,
+          "index": 12,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740612.jpg",
+          "text": ""
+        },
+        {
+          "position": 44,
+          "card_id": 740613,
+          "index": 13,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740613.jpg",
+          "text": ""
+        },
+        {
+          "position": 45,
+          "card_id": 740614,
+          "index": 14,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740614.jpg",
+          "text": ""
+        },
+        {
+          "position": 46,
+          "card_id": 740615,
+          "index": 15,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740615.jpg",
+          "text": ""
+        },
+        {
+          "position": 47,
+          "card_id": 740616,
+          "index": 16,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740616.jpg",
+          "text": ""
+        },
+        {
+          "position": 48,
+          "card_id": 740617,
+          "index": 17,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740617.jpg",
+          "text": ""
+        },
+        {
+          "position": 49,
+          "card_id": 740618,
+          "index": 18,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740618.jpg",
+          "text": ""
+        },
+        {
+          "position": 50,
+          "card_id": 740619,
+          "index": 19,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740619.jpg",
+          "text": ""
+        },
+        {
+          "position": 51,
+          "card_id": 740620,
+          "index": 20,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740620.jpg",
+          "text": ""
+        },
+        {
+          "position": 52,
+          "card_id": 740621,
+          "index": 21,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740621.jpg",
+          "text": ""
+        },
+        {
+          "position": 53,
+          "card_id": 740622,
+          "index": 22,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740622.jpg",
+          "text": ""
+        },
+        {
+          "position": 54,
+          "card_id": 740623,
+          "index": 23,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740623.jpg",
+          "text": ""
+        },
+        {
+          "position": 55,
+          "card_id": 740624,
+          "index": 24,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740624.jpg",
+          "text": ""
+        },
+        {
+          "position": 56,
+          "card_id": 740625,
+          "index": 25,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740625.jpg",
+          "text": ""
+        },
+        {
+          "position": 57,
+          "card_id": 740626,
+          "index": 26,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740626.jpg",
+          "text": ""
+        },
+        {
+          "position": 58,
+          "card_id": 740627,
+          "index": 27,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740627.jpg",
+          "text": ""
+        },
+        {
+          "position": 59,
+          "card_id": 740628,
+          "index": 28,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740628.jpg",
+          "text": ""
+        },
+        {
+          "position": 60,
+          "card_id": 740629,
+          "index": 29,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740629.jpg",
+          "text": ""
+        },
+        {
+          "position": 61,
+          "card_id": 740700,
+          "index": 0,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740700.jpg",
+          "text": ""
+        },
+        {
+          "position": 62,
+          "card_id": 740701,
+          "index": 1,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740701.jpg",
+          "text": ""
+        },
+        {
+          "position": 63,
+          "card_id": 740702,
+          "index": 2,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740702.jpg",
+          "text": ""
+        },
+        {
+          "position": 64,
+          "card_id": 740703,
+          "index": 3,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740703.jpg",
+          "text": ""
+        },
+        {
+          "position": 65,
+          "card_id": 740704,
+          "index": 4,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740704.jpg",
+          "text": ""
+        },
+        {
+          "position": 66,
+          "card_id": 740705,
+          "index": 5,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740705.jpg",
+          "text": ""
+        },
+        {
+          "position": 67,
+          "card_id": 740706,
+          "index": 6,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740706.jpg",
+          "text": ""
+        },
+        {
+          "position": 68,
+          "card_id": 740707,
+          "index": 7,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740707.jpg",
+          "text": ""
+        },
+        {
+          "position": 69,
+          "card_id": 740708,
+          "index": 8,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740708.jpg",
+          "text": ""
+        },
+        {
+          "position": 70,
+          "card_id": 740709,
+          "index": 9,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740709.jpg",
+          "text": ""
+        },
+        {
+          "position": 71,
+          "card_id": 740710,
+          "index": 10,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740710.jpg",
+          "text": ""
+        },
+        {
+          "position": 72,
+          "card_id": 740711,
+          "index": 11,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740711.jpg",
+          "text": ""
+        },
+        {
+          "position": 73,
+          "card_id": 740712,
+          "index": 12,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740712.jpg",
+          "text": ""
+        },
+        {
+          "position": 74,
+          "card_id": 740713,
+          "index": 13,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740713.jpg",
+          "text": ""
+        },
+        {
+          "position": 75,
+          "card_id": 740714,
+          "index": 14,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740714.jpg",
+          "text": ""
+        },
+        {
+          "position": 76,
+          "card_id": 740715,
+          "index": 15,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740715.jpg",
+          "text": ""
+        },
+        {
+          "position": 77,
+          "card_id": 740716,
+          "index": 16,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740716.jpg",
+          "text": ""
+        },
+        {
+          "position": 78,
+          "card_id": 740717,
+          "index": 17,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740717.jpg",
+          "text": ""
+        },
+        {
+          "position": 79,
+          "card_id": 740718,
+          "index": 18,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740718.jpg",
+          "text": ""
+        },
+        {
+          "position": 80,
+          "card_id": 740719,
+          "index": 19,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740719.jpg",
+          "text": ""
+        },
+        {
+          "position": 81,
+          "card_id": 740720,
+          "index": 20,
+          "deck_key": "7407",
+          "image": "data/images/cards/event/740720.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "eventos-skellige",
+      "name": "Eventos Skellige",
+      "type": "event",
+      "card_count": 30,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740900,
+          "index": 0,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740900.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740901,
+          "index": 1,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740901.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740902,
+          "index": 2,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740902.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740903,
+          "index": 3,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740903.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740904,
+          "index": 4,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740904.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740905,
+          "index": 5,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740905.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740906,
+          "index": 6,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740906.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740907,
+          "index": 7,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740907.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740908,
+          "index": 8,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740908.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740909,
+          "index": 9,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740909.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740910,
+          "index": 10,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740910.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740911,
+          "index": 11,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740911.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740912,
+          "index": 12,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740912.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740913,
+          "index": 13,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740913.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740914,
+          "index": 14,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740914.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740915,
+          "index": 15,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740915.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740916,
+          "index": 16,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740916.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740917,
+          "index": 17,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740917.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740918,
+          "index": 18,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740918.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740919,
+          "index": 19,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740919.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 740920,
+          "index": 20,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740920.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 740921,
+          "index": 21,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740921.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 740922,
+          "index": 22,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740922.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 740923,
+          "index": 23,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740923.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 740924,
+          "index": 24,
+          "deck_key": "7409",
+          "image": "data/images/cards/exploration/740924.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 740925,
+          "index": 25,
+          "deck_key": "7409",
+          "image": "data/images/cards/event/740925.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 740926,
+          "index": 26,
+          "deck_key": "7409",
+          "image": "data/images/cards/event/740926.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 740927,
+          "index": 27,
+          "deck_key": "7409",
+          "image": "data/images/cards/event/740927.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 740928,
+          "index": 28,
+          "deck_key": "7409",
+          "image": "data/images/cards/event/740928.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 740929,
+          "index": 29,
+          "deck_key": "7409",
+          "image": "data/images/cards/event/740929.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "exploraci-n-skellige",
+      "name": "Exploración Skellige",
+      "type": "exploration",
+      "card_count": 50,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 740600,
+          "index": 0,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740600.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 740601,
+          "index": 1,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740601.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 740602,
+          "index": 2,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740602.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 740603,
+          "index": 3,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740603.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 740604,
+          "index": 4,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740604.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 740605,
+          "index": 5,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740605.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 740606,
+          "index": 6,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740606.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 740607,
+          "index": 7,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740607.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 740608,
+          "index": 8,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740608.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 740609,
+          "index": 9,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740609.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 740610,
+          "index": 10,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740610.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 740611,
+          "index": 11,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740611.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 740612,
+          "index": 12,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740612.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 740613,
+          "index": 13,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740613.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 740614,
+          "index": 14,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740614.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 740615,
+          "index": 15,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740615.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 740616,
+          "index": 16,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740616.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 740617,
+          "index": 17,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740617.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 740618,
+          "index": 18,
+          "deck_key": "7406",
+          "image": "data/images/cards/event/740618.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 740700,
+          "index": 0,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740700.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 740701,
+          "index": 1,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740701.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 740702,
+          "index": 2,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740702.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 740703,
+          "index": 3,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740703.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 740704,
+          "index": 4,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740704.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 740705,
+          "index": 5,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740705.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 740706,
+          "index": 6,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740706.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 740707,
+          "index": 7,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740707.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 740708,
+          "index": 8,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740708.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 740709,
+          "index": 9,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740709.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 740710,
+          "index": 10,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740710.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 740711,
+          "index": 11,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740711.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 740712,
+          "index": 12,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740712.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 740713,
+          "index": 13,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740713.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 740714,
+          "index": 14,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740714.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 740715,
+          "index": 15,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740715.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 740716,
+          "index": 16,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740716.jpg",
+          "text": ""
+        },
+        {
+          "position": 37,
+          "card_id": 740717,
+          "index": 17,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740717.jpg",
+          "text": ""
+        },
+        {
+          "position": 38,
+          "card_id": 740718,
+          "index": 18,
+          "deck_key": "7407",
+          "image": "data/images/cards/exploration/740718.jpg",
+          "text": ""
+        },
+        {
+          "position": 39,
+          "card_id": 740800,
+          "index": 0,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740800.jpg",
+          "text": ""
+        },
+        {
+          "position": 40,
+          "card_id": 740801,
+          "index": 1,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740801.jpg",
+          "text": ""
+        },
+        {
+          "position": 41,
+          "card_id": 740802,
+          "index": 2,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740802.jpg",
+          "text": ""
+        },
+        {
+          "position": 42,
+          "card_id": 740803,
+          "index": 3,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740803.jpg",
+          "text": ""
+        },
+        {
+          "position": 43,
+          "card_id": 740804,
+          "index": 4,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740804.jpg",
+          "text": ""
+        },
+        {
+          "position": 44,
+          "card_id": 740805,
+          "index": 5,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740805.jpg",
+          "text": ""
+        },
+        {
+          "position": 45,
+          "card_id": 740806,
+          "index": 6,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740806.jpg",
+          "text": ""
+        },
+        {
+          "position": 46,
+          "card_id": 740807,
+          "index": 7,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740807.jpg",
+          "text": ""
+        },
+        {
+          "position": 47,
+          "card_id": 740808,
+          "index": 8,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740808.jpg",
+          "text": ""
+        },
+        {
+          "position": 48,
+          "card_id": 740809,
+          "index": 9,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740809.jpg",
+          "text": ""
+        },
+        {
+          "position": 49,
+          "card_id": 740810,
+          "index": 10,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740810.jpg",
+          "text": ""
+        },
+        {
+          "position": 50,
+          "card_id": 740811,
+          "index": 11,
+          "deck_key": "7408",
+          "image": "data/images/cards/exploration/740811.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "exploraci-n-ciudad",
+      "name": "Exploración ciudad",
+      "type": "exploration",
+      "card_count": 36,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 738300,
+          "index": 0,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738300.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 738301,
+          "index": 1,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738301.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 738302,
+          "index": 2,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738302.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 738303,
+          "index": 3,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738303.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 738304,
+          "index": 4,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738304.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 738305,
+          "index": 5,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738305.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 738306,
+          "index": 6,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738306.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 738307,
+          "index": 7,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738307.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 738308,
+          "index": 8,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738308.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 738309,
+          "index": 9,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738309.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 738310,
+          "index": 10,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738310.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 738311,
+          "index": 11,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738311.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 738312,
+          "index": 12,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738312.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 738313,
+          "index": 13,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738313.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 738314,
+          "index": 14,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738314.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 738315,
+          "index": 15,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738315.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 738316,
+          "index": 16,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738316.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 738317,
+          "index": 17,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738317.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 738318,
+          "index": 18,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738318.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 738319,
+          "index": 19,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738319.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 738320,
+          "index": 20,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738320.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 738321,
+          "index": 21,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738321.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 738322,
+          "index": 22,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738322.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 738323,
+          "index": 23,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738323.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 738324,
+          "index": 24,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738324.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 738325,
+          "index": 25,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738325.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 738326,
+          "index": 26,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738326.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 738327,
+          "index": 27,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738327.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 738328,
+          "index": 28,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738328.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 738329,
+          "index": 29,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738329.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 738330,
+          "index": 30,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738330.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 738331,
+          "index": 31,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738331.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 738332,
+          "index": 32,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738332.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 738333,
+          "index": 33,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738333.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 738334,
+          "index": 34,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738334.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 738335,
+          "index": 35,
+          "deck_key": "7383",
+          "image": "data/images/cards/exploration/738335.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "exploraci-n-naturaleza",
+      "name": "Exploración naturaleza",
+      "type": "exploration",
+      "card_count": 36,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 738200,
+          "index": 0,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738200.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 738201,
+          "index": 1,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738201.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 738202,
+          "index": 2,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738202.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 738203,
+          "index": 3,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738203.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 738204,
+          "index": 4,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738204.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 738205,
+          "index": 5,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738205.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 738206,
+          "index": 6,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738206.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 738207,
+          "index": 7,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738207.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 738208,
+          "index": 8,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738208.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 738209,
+          "index": 9,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738209.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 738210,
+          "index": 10,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738210.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 738211,
+          "index": 11,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738211.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 738212,
+          "index": 12,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738212.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 738213,
+          "index": 13,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738213.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 738214,
+          "index": 14,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738214.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 738215,
+          "index": 15,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738215.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 738216,
+          "index": 16,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738216.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 738217,
+          "index": 17,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738217.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 738218,
+          "index": 18,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738218.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 738219,
+          "index": 19,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738219.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 738220,
+          "index": 20,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738220.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 738221,
+          "index": 21,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738221.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 738222,
+          "index": 22,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738222.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 738223,
+          "index": 23,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738223.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 738224,
+          "index": 24,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738224.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 738225,
+          "index": 25,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738225.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 738226,
+          "index": 26,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738226.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 738227,
+          "index": 27,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738227.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 738228,
+          "index": 28,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738228.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 738229,
+          "index": 29,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738229.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 738230,
+          "index": 30,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738230.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 738231,
+          "index": 31,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738231.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 738232,
+          "index": 32,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738232.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 738233,
+          "index": 33,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738233.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 738234,
+          "index": 34,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738234.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 738235,
+          "index": 35,
+          "deck_key": "7382",
+          "image": "data/images/cards/exploration/738235.jpg",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "id": "eventos",
+      "name": "Eventos",
+      "type": "event",
+      "card_count": 56,
+      "cards": [
+        {
+          "position": 1,
+          "card_id": 742400,
+          "index": 0,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742400.jpg",
+          "text": ""
+        },
+        {
+          "position": 2,
+          "card_id": 742401,
+          "index": 1,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742401.jpg",
+          "text": ""
+        },
+        {
+          "position": 3,
+          "card_id": 742402,
+          "index": 2,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742402.jpg",
+          "text": ""
+        },
+        {
+          "position": 4,
+          "card_id": 742403,
+          "index": 3,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742403.jpg",
+          "text": ""
+        },
+        {
+          "position": 5,
+          "card_id": 742404,
+          "index": 4,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742404.jpg",
+          "text": ""
+        },
+        {
+          "position": 6,
+          "card_id": 742405,
+          "index": 5,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742405.jpg",
+          "text": ""
+        },
+        {
+          "position": 7,
+          "card_id": 742406,
+          "index": 6,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742406.jpg",
+          "text": ""
+        },
+        {
+          "position": 8,
+          "card_id": 742407,
+          "index": 7,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742407.jpg",
+          "text": ""
+        },
+        {
+          "position": 9,
+          "card_id": 742408,
+          "index": 8,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742408.jpg",
+          "text": ""
+        },
+        {
+          "position": 10,
+          "card_id": 742409,
+          "index": 9,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742409.jpg",
+          "text": ""
+        },
+        {
+          "position": 11,
+          "card_id": 742410,
+          "index": 10,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742410.jpg",
+          "text": ""
+        },
+        {
+          "position": 12,
+          "card_id": 742411,
+          "index": 11,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742411.jpg",
+          "text": ""
+        },
+        {
+          "position": 13,
+          "card_id": 742412,
+          "index": 12,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742412.jpg",
+          "text": ""
+        },
+        {
+          "position": 14,
+          "card_id": 742413,
+          "index": 13,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742413.jpg",
+          "text": ""
+        },
+        {
+          "position": 15,
+          "card_id": 742414,
+          "index": 14,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742414.jpg",
+          "text": ""
+        },
+        {
+          "position": 16,
+          "card_id": 742415,
+          "index": 15,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742415.jpg",
+          "text": ""
+        },
+        {
+          "position": 17,
+          "card_id": 742416,
+          "index": 16,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742416.jpg",
+          "text": ""
+        },
+        {
+          "position": 18,
+          "card_id": 742417,
+          "index": 17,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742417.jpg",
+          "text": ""
+        },
+        {
+          "position": 19,
+          "card_id": 742418,
+          "index": 18,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742418.jpg",
+          "text": ""
+        },
+        {
+          "position": 20,
+          "card_id": 742419,
+          "index": 19,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742419.jpg",
+          "text": ""
+        },
+        {
+          "position": 21,
+          "card_id": 742420,
+          "index": 20,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742420.jpg",
+          "text": ""
+        },
+        {
+          "position": 22,
+          "card_id": 742421,
+          "index": 21,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742421.jpg",
+          "text": ""
+        },
+        {
+          "position": 23,
+          "card_id": 742422,
+          "index": 22,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742422.jpg",
+          "text": ""
+        },
+        {
+          "position": 24,
+          "card_id": 742423,
+          "index": 23,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742423.jpg",
+          "text": ""
+        },
+        {
+          "position": 25,
+          "card_id": 742424,
+          "index": 24,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742424.jpg",
+          "text": ""
+        },
+        {
+          "position": 26,
+          "card_id": 742425,
+          "index": 25,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742425.jpg",
+          "text": ""
+        },
+        {
+          "position": 27,
+          "card_id": 742426,
+          "index": 26,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742426.jpg",
+          "text": ""
+        },
+        {
+          "position": 28,
+          "card_id": 742427,
+          "index": 27,
+          "deck_key": "7424",
+          "image": "data/images/cards/event/742427.jpg",
+          "text": ""
+        },
+        {
+          "position": 29,
+          "card_id": 742500,
+          "index": 0,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742500.jpg",
+          "text": ""
+        },
+        {
+          "position": 30,
+          "card_id": 742501,
+          "index": 1,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742501.jpg",
+          "text": ""
+        },
+        {
+          "position": 31,
+          "card_id": 742502,
+          "index": 2,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742502.jpg",
+          "text": ""
+        },
+        {
+          "position": 32,
+          "card_id": 742503,
+          "index": 3,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742503.jpg",
+          "text": ""
+        },
+        {
+          "position": 33,
+          "card_id": 742504,
+          "index": 4,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742504.jpg",
+          "text": ""
+        },
+        {
+          "position": 34,
+          "card_id": 742505,
+          "index": 5,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742505.jpg",
+          "text": ""
+        },
+        {
+          "position": 35,
+          "card_id": 742506,
+          "index": 6,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742506.jpg",
+          "text": ""
+        },
+        {
+          "position": 36,
+          "card_id": 742507,
+          "index": 7,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742507.jpg",
+          "text": ""
+        },
+        {
+          "position": 37,
+          "card_id": 742508,
+          "index": 8,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742508.jpg",
+          "text": ""
+        },
+        {
+          "position": 38,
+          "card_id": 742509,
+          "index": 9,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742509.jpg",
+          "text": ""
+        },
+        {
+          "position": 39,
+          "card_id": 742510,
+          "index": 10,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742510.jpg",
+          "text": ""
+        },
+        {
+          "position": 40,
+          "card_id": 742511,
+          "index": 11,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742511.jpg",
+          "text": ""
+        },
+        {
+          "position": 41,
+          "card_id": 742512,
+          "index": 12,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742512.jpg",
+          "text": ""
+        },
+        {
+          "position": 42,
+          "card_id": 742513,
+          "index": 13,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742513.jpg",
+          "text": ""
+        },
+        {
+          "position": 43,
+          "card_id": 742514,
+          "index": 14,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742514.jpg",
+          "text": ""
+        },
+        {
+          "position": 44,
+          "card_id": 742515,
+          "index": 15,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742515.jpg",
+          "text": ""
+        },
+        {
+          "position": 45,
+          "card_id": 742516,
+          "index": 16,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742516.jpg",
+          "text": ""
+        },
+        {
+          "position": 46,
+          "card_id": 742517,
+          "index": 17,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742517.jpg",
+          "text": ""
+        },
+        {
+          "position": 47,
+          "card_id": 742518,
+          "index": 18,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742518.jpg",
+          "text": ""
+        },
+        {
+          "position": 48,
+          "card_id": 742519,
+          "index": 19,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742519.jpg",
+          "text": ""
+        },
+        {
+          "position": 49,
+          "card_id": 742520,
+          "index": 20,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742520.jpg",
+          "text": ""
+        },
+        {
+          "position": 50,
+          "card_id": 742521,
+          "index": 21,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742521.jpg",
+          "text": ""
+        },
+        {
+          "position": 51,
+          "card_id": 742522,
+          "index": 22,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742522.jpg",
+          "text": ""
+        },
+        {
+          "position": 52,
+          "card_id": 742523,
+          "index": 23,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742523.jpg",
+          "text": ""
+        },
+        {
+          "position": 53,
+          "card_id": 742524,
+          "index": 24,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742524.jpg",
+          "text": ""
+        },
+        {
+          "position": 54,
+          "card_id": 742525,
+          "index": 25,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742525.jpg",
+          "text": ""
+        },
+        {
+          "position": 55,
+          "card_id": 742526,
+          "index": 26,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742526.jpg",
+          "text": ""
+        },
+        {
+          "position": 56,
+          "card_id": 742527,
+          "index": 27,
+          "deck_key": "7425",
+          "image": "data/images/cards/event/742527.jpg",
+          "text": ""
+        }
+      ]
+    }
+  ]
+}

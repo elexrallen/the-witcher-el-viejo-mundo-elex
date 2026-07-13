@@ -1,0 +1,554 @@
+==== Cartas de Exploraci @ 13820 ====
+Cartas de Exploración y Cartas de Evento
+10 Cartas de Ayuda y 1 Carta de Ayuda 
+para Partidas en Solitario
+turno de jugador en solitario
+fase i: Movimiento y Acciones
+1. Movimiento a una Localización Conectada 
+(a través de carta correspondiente / 2 cartas 
+cualesquiera / 1 carta cualquiera y 1 de Oro).
+2. Acción de Localización (opcional).
+3. Volver al paso 1 Movimiento 
+o proceder a la Fase II.
+fase ii:  Combatir / Meditar / Explorar
+Debes elegir una de estas opciones:
+1. Combatir contra un Monstruo.
+2. Meditar y ganar un Trofeo de Atributo.
+3. Explorar la Ciudad o las Tierras Salvajes.
+fase iii: Cartas de Acción
+Descarta (de forma opcional) cualquier 
+número de cartas restantes en tu mano, 
+roba hasta 3 cartas y obtén 1 carta nueva.
+embestida mordisco
+ turno de combate del jugador 
+1. Usar Pociones, Especialidades y Efectos.
+2. Jugar un Combo.
+3. Resolver un Combo.
+4. Robar cartas.
+Nivel de Ataque +/- modiﬁcadores de cartas en el 
+Combo (ej. , ), Pociones usadas u otros efectos.
+Límite de Mano: 7.
+ turno de combate del monstru0 
+1. Elegir el Tipo de Ataque:
+embestida  
+mordisco
+2. Revelar la Carta de Combate de Monstruo y 
+aplicar el resultado.
+Devuelve la 
+carta jugada a 
+la mano.
+Roba la carta 
+superior de la 
+pila de descartes.
+Inﬂige 1 Daño.
+Sube 1 en tu nivel de 
+Escudo.
+Roba más o menos 
+cartas (en el Paso 4 
+del Turno de Combate).
+  efectos de combo  
+  brujo -vs- brujo  1. De forma opcional, los Jugadores que no combaten pueden hacer una Apuesta
+.2. Ambos Jugadores
+
+==== Cartas de Exploraci @ 38594 ====
+Cartas de Exploración. Independiente-
+mente de todo esto, puedes mirar tu mazo siempre 
+que no seas el Jugador Activo ni estés en un Comba-
+te. Siempre que termines de mirar tu mazo, debes 
+barajarlo y volverlo a colocar bocabajo.
+Reglas para cada pila de descartes de Jugador:
+  Mantenla siempre bocarriba a la izquierda de tu mazo.
+  Si un efecto te fuerza a descartar una carta, coló-
+cala bocarriba sobre tu pila de descartes.
+Reglas para Destruir una carta:
+  Si un efecto te fuerza a Destruir una carta, devuél-
+vela a la caja. La carta destruida no podrá volver 
+a ser usada de nuevo durante esta partida.
+Atributos y Nivel de Brujo
+Tienes 4 Atributos en tu Tablero de Jugador. Los 3 que 
+se encuentran más a la izquierda son los Atributos que 
+tienen en común todos los Tableros de Jugador:
+El Ataque te ayudará a robar más cartas du-
+rante un Combate.
+La Defensa te ayudará a bloquear más Daño 
+durante un Combate.
+Siempre que subas tu nivel de Defensa, sube 
+(inmediatamente) 1 en tu nivel de Escudo, 
+desplazando el indicador un espacio más 
+arriba en el marcador de Escudo.
+La Alquimia te ayudará a consumir más Po-
+ciones mágicas durante un Combate.
+Siempre que subas tu nivel de Alquimia, ob-
+tienes inmediatamente 1 Poción de la parte 
+superior del Mazo de Pociones.
+El Atributo más a la derecha, Especialidad, es único y 
+depende de la Escuela de Brujos que elegiste durante 
+la preparación:
+La Especialidad es distinta para cada Brujo y 
+todas ellas se explican más adelante en es
+
+==== Explorar la Ciudad @ 14373 ====
+Explorar la Ciudad o las Tierras Salvajes.
+fase iii: Cartas de Acción
+Descarta (de forma opcional) cualquier 
+número de cartas restantes en tu mano, 
+roba hasta 3 cartas y obtén 1 carta nueva.
+embestida mordisco
+ turno de combate del jugador 
+1. Usar Pociones, Especialidades y Efectos.
+2. Jugar un Combo.
+3. Resolver un Combo.
+4. Robar cartas.
+Nivel de Ataque +/- modiﬁcadores de cartas en el 
+Combo (ej. , ), Pociones usadas u otros efectos.
+Límite de Mano: 7.
+ turno de combate del monstru0 
+1. Elegir el Tipo de Ataque:
+embestida  
+mordisco
+2. Revelar la Carta de Combate de Monstruo y 
+aplicar el resultado.
+Devuelve la 
+carta jugada a 
+la mano.
+Roba la carta 
+superior de la 
+pila de descartes.
+Inﬂige 1 Daño.
+Sube 1 en tu nivel de 
+Escudo.
+Roba más o menos 
+cartas (en el Paso 4 
+del Turno de Combate).
+  efectos de combo  
+  brujo -vs- brujo  1. De forma opcional, los Jugadores que no combaten pueden hacer una Apuesta
+.2. Ambos Jugadores combatientes combinan y 
+barajan todas sus cartas de Acción descartadas 
+con sus mazos de Acción 
+(manteniendo las cartas que tengan en sus manos). 
+3. El Jugador Activo toma el primer turno.
+  brujo -vs- monstruo  1. El Jugador que controla al Monstruo lee la 
+Habilidad Especial del Monstruo.
+2. El Jugador que controla al Monstruo crea la 
+Reserva de Vida del Monstruo. 
+3. El Jugador Activo combina y baraja
+ todas sus cartas de Acción descartadas con su 
+mazo de Acción (manteniendo las cartas que tengan en su mano). 
+4. Si el Jugador Activo tien
+
+==== roba, del @ 60222 ====
+roba, del 
+Mazo de Eventos, la carta numerada que indique la 
+Misión resuelta.
+2. El resultado de cada Carta de Evento puede ser dis-
+tinto, según su tipo:
+a. Introducción con Opciones.
+b. Introducción con una Prueba.
+c. Introducción con un Combate corto.  
+Con estas cartas, se lee la Introducción (y po -
+siblemente las 2 Opciones) y el Jugador Activo 
+elige una Opción, realiza una Prueba o completa 
+un Combate corto.
+d. Equipo o Compañero.
+El Jugador Activo mantiene estas cartas cerca de 
+su Tablero de Jugador para el resto de la partida 
+(a menos que la carta especiﬁque lo contrario).
+Después de resolver una Misión con una Ficha de Loca-
+lización, devuelve la ﬁcha a la reserva y retira la Carta de 
+Exploración del juego.
+como esa».
+Tira un dado:
+1-3: Bajas 3 en tu nivel de Escudo.
+4-6: Bajas 2 en tu nivel de Escudo.
+Independientemente de tu tirada, recibes:
+ Misión: 6. Novigrad
+Entrada:  33.
+ «Bueno, que me asp… ¡un brujo! Necesitas pro -
+ductos especiales, ¿no es así? Bien, pregunta por 
+Landrag, el arbolista de Vengerberg. No encontra-
+rás una mejor ballesta que la de Landrag».
+ Misión: 8. Vengerberg
+Entrada: Pierde 2 de Oro para comprar una 
+Ballesta;  14.
+
+18
+FASE III: Robar y Obtener Cartas
+La última fase de tu turno representa el descanso y el 
+entrenamiento. Después de viajar, de encontrarte con 
+nuevos lugares, personas y peligros, es hora de calmar 
+la mente y prepararte para el camino que tienes por 
+delante. Sin embargo, todo Brujo necesita practicar 
+también sus
+
+==== Carta de Evento puede @ 60325 ====
+Carta de Evento puede ser dis-
+tinto, según su tipo:
+a. Introducción con Opciones.
+b. Introducción con una Prueba.
+c. Introducción con un Combate corto.  
+Con estas cartas, se lee la Introducción (y po -
+siblemente las 2 Opciones) y el Jugador Activo 
+elige una Opción, realiza una Prueba o completa 
+un Combate corto.
+d. Equipo o Compañero.
+El Jugador Activo mantiene estas cartas cerca de 
+su Tablero de Jugador para el resto de la partida 
+(a menos que la carta especiﬁque lo contrario).
+Después de resolver una Misión con una Ficha de Loca-
+lización, devuelve la ﬁcha a la reserva y retira la Carta de 
+Exploración del juego.
+como esa».
+Tira un dado:
+1-3: Bajas 3 en tu nivel de Escudo.
+4-6: Bajas 2 en tu nivel de Escudo.
+Independientemente de tu tirada, recibes:
+ Misión: 6. Novigrad
+Entrada:  33.
+ «Bueno, que me asp… ¡un brujo! Necesitas pro -
+ductos especiales, ¿no es así? Bien, pregunta por 
+Landrag, el arbolista de Vengerberg. No encontra-
+rás una mejor ballesta que la de Landrag».
+ Misión: 8. Vengerberg
+Entrada: Pierde 2 de Oro para comprar una 
+Ballesta;  14.
+
+18
+FASE III: Robar y Obtener Cartas
+La última fase de tu turno representa el descanso y el 
+entrenamiento. Después de viajar, de encontrarte con 
+nuevos lugares, personas y peligros, es hora de calmar 
+la mente y prepararte para el camino que tienes por 
+delante. Sin embargo, todo Brujo necesita practicar 
+también sus nuevas habilidades mágicas y de lucha.
+En esta Fase, el Jugador completa los 3 pasos siguientes 
+en or
+
+==== Carta de Evento puede @ 62653 ====
+Carta de Evento puede proporcionar 
+un efecto Permanente.
+  Todos los efectos en las Cartas de Evento, 
+ya sean positivos o negativos, se reﬁeren 
+y afectan al Jugador Activo.
+13
+ballesta
+Una vez por Combate: 
+equipo
+Deja esta carta frente a ti.
+[…] Le dije que sus temerarias decisiones nos habían 
+metido en este aprieto. Viajar es instructivo, contestó 
+con insolencia.
+Crónicas de Benno Kobart, extracto del capítulo XIII, 
+Peligros en el Camino.
+Coste de Cartas de Acción
+El número mostrado en la esquina inferior de-
+recha de la carta es el coste que debe pagarse 
+para obtener la carta.
+El coste es el número de cartas de tu mano que 
+debes descartar.
+golpe incapacitante
+Nota: Cuando bajas tu Defensa como re -
+sultado de una Carta de Exploración o de 
+Evento, recuerda bajar tu Escudo si es 
+necesario.
+!
+19
+Dependiendo de la posición de la carta (en la ﬁla de 
+cartas sobre el Tablero), su coste puede cambiar:
+  Si la carta se encuentra en el espacio más a la dere-
+cha, puedes obtener dicha carta descartando 1 car-
+ta menos de lo que pide su coste normal (el coste 
+puede reducirse a 0, pero nunca puede bajar más).
+  Si la carta se encuentra en uno de los dos espacios 
+más a la izquierda, debes descartar 1 carta adicio-
+nal para obtenerla. 
+Cuando tomas una carta nueva en este paso, esta va di-
+rectamente a tu mano (no tu pila de descartes). Después, 
+desliza cartas hacia la derecha para llenar el espacio 
+vacío. Por último, roba 1 nueva carta y colócala en el 
+espacio vacío m
+
+==== turno de jugador @ 13927 ====
+turno de jugador en solitario
+fase i: Movimiento y Acciones
+1. Movimiento a una Localización Conectada 
+(a través de carta correspondiente / 2 cartas 
+cualesquiera / 1 carta cualquiera y 1 de Oro).
+2. Acción de Localización (opcional).
+3. Volver al paso 1 Movimiento 
+o proceder a la Fase II.
+fase ii:  Combatir / Meditar / Explorar
+Debes elegir una de estas opciones:
+1. Combatir contra un Monstruo.
+2. Meditar y ganar un Trofeo de Atributo.
+3. Explorar la Ciudad o las Tierras Salvajes.
+fase iii: Cartas de Acción
+Descarta (de forma opcional) cualquier 
+número de cartas restantes en tu mano, 
+roba hasta 3 cartas y obtén 1 carta nueva.
+embestida mordisco
+ turno de combate del jugador 
+1. Usar Pociones, Especialidades y Efectos.
+2. Jugar un Combo.
+3. Resolver un Combo.
+4. Robar cartas.
+Nivel de Ataque +/- modiﬁcadores de cartas en el 
+Combo (ej. , ), Pociones usadas u otros efectos.
+Límite de Mano: 7.
+ turno de combate del monstru0 
+1. Elegir el Tipo de Ataque:
+embestida  
+mordisco
+2. Revelar la Carta de Combate de Monstruo y 
+aplicar el resultado.
+Devuelve la 
+carta jugada a 
+la mano.
+Roba la carta 
+superior de la 
+pila de descartes.
+Inﬂige 1 Daño.
+Sube 1 en tu nivel de 
+Escudo.
+Roba más o menos 
+cartas (en el Paso 4 
+del Turno de Combate).
+  efectos de combo  
+  brujo -vs- brujo  1. De forma opcional, los Jugadores que no combaten pueden hacer una Apuesta
+.2. Ambos Jugadores combatientes combinan y 
+barajan todas sus cartas de Acción descartadas 
+con sus mazos de Acción 
+(manteni
+
+==== Opciones. @ 55742 ====
+Opciones.
+2. Resultado de la Opción A (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+3.  Resultado de la Opción B (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+Unos guardias te detienen en medio de la calle. 
+«Se os ha visto haciendo uso de hechicería. ¿No 
+sabéis que necesitáis una licencia de El Capítulo 
+para eso?».
+No mucho después, te encuentras en una maz -
+morra, donde pasas varias horas en una celda 
+sucia. Cuando un guardia te trae tu comida, es -
+tás seguro de que no hay nadie más alrededor 
+aparte de vosotros dos.
+ Ataca al guardia e intenta escapar.
+ Pide un vaso de agua. Nunca se sabe lo que 
+podría ocurrir mientras te lo traen.
+ Antes de caer de bruces sobre un cuenco de 
+cereales, el guardia parece sorprenderse por un 
+momento. Encuentras tus espadas, pero no pue-
+des ver tu bolsa por ninguna parte.
+Pierdes 2 de Oro y subes 1 en tu nivel de Ataque.
+ Al poco tiempo, un funcionario de alto rango 
+entra en la prisión. Te mira con desprecio y te in-
+forma de que, para él, un brujo y una hechicera 
+pertenecen al mismo tipo de perversidad. Sin 
+embargo, acto seguido admite que los cargos 
+eran falsos y te paga una compensación.
+Ganas 2 de Oro.
+Introducción 
+con 2 Opciones
+Resultado de la 
+Opción A
+Resultado de la 
+Opción B
+Aclaraciones de las Cartas de Exploración
+  Todos los efectos en las Cartas de Explo -
+ración, ya sean positivos o negativos, se 
+reﬁeren y afectan al Jugador Activo.
+  Algunas Cartas d
+
+==== Opciones. @ 60398 ====
+Opciones.
+b. Introducción con una Prueba.
+c. Introducción con un Combate corto.  
+Con estas cartas, se lee la Introducción (y po -
+siblemente las 2 Opciones) y el Jugador Activo 
+elige una Opción, realiza una Prueba o completa 
+un Combate corto.
+d. Equipo o Compañero.
+El Jugador Activo mantiene estas cartas cerca de 
+su Tablero de Jugador para el resto de la partida 
+(a menos que la carta especiﬁque lo contrario).
+Después de resolver una Misión con una Ficha de Loca-
+lización, devuelve la ﬁcha a la reserva y retira la Carta de 
+Exploración del juego.
+como esa».
+Tira un dado:
+1-3: Bajas 3 en tu nivel de Escudo.
+4-6: Bajas 2 en tu nivel de Escudo.
+Independientemente de tu tirada, recibes:
+ Misión: 6. Novigrad
+Entrada:  33.
+ «Bueno, que me asp… ¡un brujo! Necesitas pro -
+ductos especiales, ¿no es así? Bien, pregunta por 
+Landrag, el arbolista de Vengerberg. No encontra-
+rás una mejor ballesta que la de Landrag».
+ Misión: 8. Vengerberg
+Entrada: Pierde 2 de Oro para comprar una 
+Ballesta;  14.
+
+18
+FASE III: Robar y Obtener Cartas
+La última fase de tu turno representa el descanso y el 
+entrenamiento. Después de viajar, de encontrarte con 
+nuevos lugares, personas y peligros, es hora de calmar 
+la mente y prepararte para el camino que tienes por 
+delante. Sin embargo, todo Brujo necesita practicar 
+también sus nuevas habilidades mágicas y de lucha.
+En esta Fase, el Jugador completa los 3 pasos siguientes 
+en orden:
+1. Puedes elegir y descartar cualquier número de car-
+tas de tu mano
+
+==== Introducci @ 55330 ====
+Introducción y las Opciones al Jugador Activo. 
+¡No leas ni hables sobre los resultados en este punto!
+3. El Jugador Activo elige una de las opciones en la 
+carta y, luego, el Jugador que robó la carta lee en 
+voz alta el Resultado de esa elección. 
+¡No leas ni hables sobre los resultados de 
+la otra elección!
+Cartas de Exploración
+Las Cartas de Exploración se dividen en 3 secciones:
+1. La Introducción con 2 Opciones.
+2. Resultado de la Opción A (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+3.  Resultado de la Opción B (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+Unos guardias te detienen en medio de la calle. 
+«Se os ha visto haciendo uso de hechicería. ¿No 
+sabéis que necesitáis una licencia de El Capítulo 
+para eso?».
+No mucho después, te encuentras en una maz -
+morra, donde pasas varias horas en una celda 
+sucia. Cuando un guardia te trae tu comida, es -
+tás seguro de que no hay nadie más alrededor 
+aparte de vosotros dos.
+ Ataca al guardia e intenta escapar.
+ Pide un vaso de agua. Nunca se sabe lo que 
+podría ocurrir mientras te lo traen.
+ Antes de caer de bruces sobre un cuenco de 
+cereales, el guardia parece sorprenderse por un 
+momento. Encuentras tus espadas, pero no pue-
+des ver tu bolsa por ninguna parte.
+Pierdes 2 de Oro y subes 1 en tu nivel de Ataque.
+ Al poco tiempo, un funcionario de alto rango 
+entra en la prisión. Te mira con desprecio y te in-
+forma de que, para él, un brujo y una hechicera 
+per
+
+==== Introducci @ 55723 ====
+Introducción con 2 Opciones.
+2. Resultado de la Opción A (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+3.  Resultado de la Opción B (contiene la historia, el 
+coste y/o el resultado de realizar esa elección).
+Unos guardias te detienen en medio de la calle. 
+«Se os ha visto haciendo uso de hechicería. ¿No 
+sabéis que necesitáis una licencia de El Capítulo 
+para eso?».
+No mucho después, te encuentras en una maz -
+morra, donde pasas varias horas en una celda 
+sucia. Cuando un guardia te trae tu comida, es -
+tás seguro de que no hay nadie más alrededor 
+aparte de vosotros dos.
+ Ataca al guardia e intenta escapar.
+ Pide un vaso de agua. Nunca se sabe lo que 
+podría ocurrir mientras te lo traen.
+ Antes de caer de bruces sobre un cuenco de 
+cereales, el guardia parece sorprenderse por un 
+momento. Encuentras tus espadas, pero no pue-
+des ver tu bolsa por ninguna parte.
+Pierdes 2 de Oro y subes 1 en tu nivel de Ataque.
+ Al poco tiempo, un funcionario de alto rango 
+entra en la prisión. Te mira con desprecio y te in-
+forma de que, para él, un brujo y una hechicera 
+pertenecen al mismo tipo de perversidad. Sin 
+embargo, acto seguido admite que los cargos 
+eran falsos y te paga una compensación.
+Ganas 2 de Oro.
+Introducción 
+con 2 Opciones
+Resultado de la 
+Opción A
+Resultado de la 
+Opción B
+Aclaraciones de las Cartas de Exploración
+  Todos los efectos en las Cartas de Explo -
+ración, ya sean positivos o negativos, se 
+reﬁeren y afectan al Jugador Activo.
+
+
+==== Mazos de Exploraci @ 28989 ====
+Mazos de Exploración y Eventos
+¡No barajes el Mazo de Eventos! Mantenlo en orden 
+numérico, tal y como se muestra en los números de 
+los reversos de las cartas. Coloca el mazo sin barajar 
+en su espacio correspondiente del Tablero de Juego 
+(con el reverso numerado a la vista).
+Baraja los dos Mazos de Exploración por separado, y 
+luego colócalos en sus espacios correspondientes del 
+Tablero de Juego.
+Oro y Dados de Póquer
+Coloca todas las Fichas de Oro y los dos sets de Dados 
+de Póquer al lado del Tablero de Juego.
+Fichas de Localización
+Organiza todas las Fichas de Localización en 3 pilas 
+(según sus tipos de Terreno: Bosque, Montaña y Agua). 
+Baraja cada pila por separado y colócalas en montones 
+separados (bocabajo) al lado del Tablero de Juego.
+Roba 1 ﬁcha de cada pila y colócalas bocarriba en los 
+espacios correspondientes del Tablero de Juego.
+Monstruos
+1. Organiza todas las Cartas de Monstruo en 3 pilas sepa-
+radas, según su nivel (I, II o III). Coloca las pilas al 
+lado del Tablero (bocarriba), mostrando la ilustración 
+del Monstruo, su Reserva de Vida y su Habilidad 
+Especial.
+2. Organiza todas las Fichas de Monstruo en 3 pilas sepa-
+radas, según su nivel. Baraja cada pila por separado 
+y colócalas al lado del Tablero (bocarriba).
+3. Roba 3 Fichas de la Pila de Fichas de Monstruo de Nivel 
+I, y luego colócalas aleatoriamente sobre el Tablero 
+de Juego, de forma que cada 1 quede al lado de las 
+Fichas de Localización bocarriba.
+Partida de 2 jugadores: Roba 2 Fichas d
+
+==== Mazos de Exploraci @ 29283 ====
+Mazos de Exploración por separado, y 
+luego colócalos en sus espacios correspondientes del 
+Tablero de Juego.
+Oro y Dados de Póquer
+Coloca todas las Fichas de Oro y los dos sets de Dados 
+de Póquer al lado del Tablero de Juego.
+Fichas de Localización
+Organiza todas las Fichas de Localización en 3 pilas 
+(según sus tipos de Terreno: Bosque, Montaña y Agua). 
+Baraja cada pila por separado y colócalas en montones 
+separados (bocabajo) al lado del Tablero de Juego.
+Roba 1 ﬁcha de cada pila y colócalas bocarriba en los 
+espacios correspondientes del Tablero de Juego.
+Monstruos
+1. Organiza todas las Cartas de Monstruo en 3 pilas sepa-
+radas, según su nivel (I, II o III). Coloca las pilas al 
+lado del Tablero (bocarriba), mostrando la ilustración 
+del Monstruo, su Reserva de Vida y su Habilidad 
+Especial.
+2. Organiza todas las Fichas de Monstruo en 3 pilas sepa-
+radas, según su nivel. Baraja cada pila por separado 
+y colócalas al lado del Tablero (bocarriba).
+3. Roba 3 Fichas de la Pila de Fichas de Monstruo de Nivel 
+I, y luego colócalas aleatoriamente sobre el Tablero 
+de Juego, de forma que cada 1 quede al lado de las 
+Fichas de Localización bocarriba.
+Partida de 2 jugadores: Roba 2 Fichas de la Pila 
+de Fichas de Monstruo de Nivel I y 1 de la Pila de 
+Nivel II. El Jugador Inicial elige el tipo de Terreno 
+para el Monstruo de Nivel II.
+4. Voltea las Fichas de Monstruo para dejarlas bocarriba.
+5. Mueve la Ficha de Monstruo a la Localización que 
+muestra la Ficha de Localización. C
