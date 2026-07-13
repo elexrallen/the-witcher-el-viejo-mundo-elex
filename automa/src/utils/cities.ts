@@ -1,0 +1,31 @@
+export const DEFAULT_CITIES = [
+  "Vizima (Temeria)",
+  "Novigrad (Redania)",
+  "Kaer Morhen (Lobo)",
+  "Cintra",
+  "Oxenfurt (Universidad)",
+  "Maribor",
+  "Ban Ard",
+  "Kaer Seren (Grifo)",
+  "Gorthur Gvaed (Víbora)",
+  "Wyizima",
+  "Ellander",
+  "Loc Muinne",
+  "Tretogor",
+  "Ard Carraigh",
+  "Anspress (Skellige)",
+  "Spikeroog (Skellige)",
+  "Undvik (Skellige)",
+];
+
+export const COMMON_OPPONENTS = [
+  "Grifo",
+  "Estrige",
+  "Arpía",
+  "Nido de Nekkers",
+  "Bruja del agua",
+  "Hombre lobo",
+  "Wyverno",
+  "Brujo rival",
+  "Monstruo legendario",
+];
