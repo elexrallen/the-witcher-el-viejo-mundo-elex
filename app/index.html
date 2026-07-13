@@ -38,7 +38,27 @@
 
     <main class="main">
       <section class="panel panel--hub" id="screen-home">
-        <h2>Herramientas de automatización</h2>
+        <div class="active-game-banner" id="active-game-banner" hidden>
+          <span data-icon="layers" data-icon-size="18" aria-hidden="true"></span>
+          <span>Jugando: <strong id="active-game-name"></strong></span>
+        </div>
+
+        <div class="migrate-banner panel panel--inline" id="migrate-banner" hidden>
+          <p>¿Importar tu progreso actual como partida guardada?</p>
+          <button type="button" class="btn btn--secondary" id="btn-migrate">Importar como «Partida 1»</button>
+        </div>
+
+        <section class="saved-games-section">
+          <div class="saved-games-section__header">
+            <h2>Partidas guardadas</h2>
+            <button type="button" class="btn btn--primary btn--small" id="btn-new-game">Nueva partida</button>
+          </div>
+          <p class="saved-games-section__lead muted">Crea partidas con nombre para separar campañas. El progreso se guarda automáticamente.</p>
+          <p class="saved-games-empty muted" id="saved-games-empty">Aún no hay partidas. Crea una para empezar.</p>
+          <div class="saved-games-list" id="saved-games-list"></div>
+        </section>
+
+        <h2 class="hub-tools-title">Herramientas de automatización</h2>
         <p class="lead">Cartas barajadas, eventos numerados y modo solitario. El resto de la partida se resuelve en la mesa.</p>
 
         <section class="quick-links">
@@ -61,6 +81,20 @@
       </section>
     </main>
   </div>
+
+  <dialog class="game-dialog" id="game-dialog">
+    <form class="game-dialog__form" id="game-dialog-form">
+      <h2 class="game-dialog__title" id="game-dialog-title">Nueva partida</h2>
+      <label class="game-dialog__field">
+        <span>Nombre</span>
+        <input type="text" id="game-name-input" required maxlength="64" autocomplete="off">
+      </label>
+      <div class="game-dialog__actions">
+        <button type="button" class="btn btn--secondary" id="btn-cancel-game-dialog">Cancelar</button>
+        <button type="submit" class="btn btn--primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="js/home.js" type="module"></script>
 </body>

@@ -217,6 +217,10 @@ function persistState() {
       currentDeckId: state.currentDeck?.id || MAIN_DECK_ID,
     }),
   );
+  import("./saved-games.js").then(({ syncActiveGame, setLastMode }) => {
+    setLastMode("eventos");
+    syncActiveGame();
+  });
 }
 
 function getMainDeck() {

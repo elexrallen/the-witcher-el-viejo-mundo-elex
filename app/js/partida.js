@@ -29,6 +29,7 @@ export function savePartidaSession(session) {
     activePlayer: clampActivePlayer(session.activePlayer, session.playerCount),
   };
   localStorage.setItem(PARTIDA_STORAGE_KEY, JSON.stringify(normalized));
+  import("./saved-games.js").then(({ syncActiveGame }) => syncActiveGame());
   return normalized;
 }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GENERIC_ACTION_CARDS,
   LEVEL_1_ACTION_CARDS,
@@ -24,63 +24,97 @@ import SetupWizard from "./components/SetupWizard";
 import GameBoard, { GameTab } from "./components/GameBoard";
 import CombatView from "./components/CombatView";
 import BottomNav from "./components/BottomNav";
+import {
+  buildAutomaSnapshot,
+  loadAutomaSnapshot,
+  saveAutomaSnapshot,
+  type AutomaSnapshot,
+} from "./gameSnapshot";
+
+const initialSnapshot = loadAutomaSnapshot();
 
 export default function App() {
-  const [setupMode, setSetupMode] = useState(true);
-  const [selectedSchoolId, setSelectedSchoolId] = useState<WitcherSchoolId>("wolf");
-  const [difficulty, setDifficulty] = useState<"easy" | "intermediate" | "difficult">("intermediate");
-  const [useDicePoker, setUseDicePoker] = useState(true);
-  const [useMutagens, setUseMutagens] = useState(false);
-  const [useSkellige, setUseSkellige] = useState(false);
-  const [useLegendaryHunt, setUseLegendaryHunt] = useState(false);
+  const [setupMode, setSetupMode] = useState(initialSnapshot.setupMode);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<WitcherSchoolId>(initialSnapshot.selectedSchoolId);
+  const [difficulty, setDifficulty] = useState<"easy" | "intermediate" | "difficult">(initialSnapshot.difficulty);
+  const [useDicePoker, setUseDicePoker] = useState(initialSnapshot.useDicePoker);
+  const [useMutagens, setUseMutagens] = useState(initialSnapshot.useMutagens);
+  const [useSkellige, setUseSkellige] = useState(initialSnapshot.useSkellige);
+  const [useLegendaryHunt, setUseLegendaryHunt] = useState(initialSnapshot.useLegendaryHunt);
 
-  const [automa, setAutoma] = useState<AutomaState>({
-    schoolId: "wolf",
-    difficulty: "intermediate",
-    attributes: { attack: 1, defense: 1, alchemy: 1, special: 1 },
-    trophies: 0,
-    potions: 1,
-    bombs: 1,
-    trails: { red: 0, blue: 0, green: 0, yellow: 0 },
-    location: "Vizima (Temeria)",
-    mutagens: [],
-    weaknesses: 0,
-    destructionTokens: 0,
-    dagonTrack: 0,
-  });
+  const [automa, setAutoma] = useState<AutomaState>(initialSnapshot.automa);
 
-  const [lockedAttributes, setLockedAttributes] = useState<Record<string, boolean>>({
-    attack: false,
-    defense: false,
-    alchemy: false,
-    special: false,
-  });
+  const [lockedAttributes, setLockedAttributes] = useState<Record<string, boolean>>(initialSnapshot.lockedAttributes);
 
-  const [turnCount, setTurnCount] = useState(1);
-  const [currentTab, setCurrentTab] = useState<GameTab>("turn");
-  const [actionDeck, setActionDeck] = useState<ActionCard[]>([]);
-  const [actionDiscard, setActionDiscard] = useState<ActionCard[]>([]);
-  const [activeActionCard, setActiveActionCard] = useState<ActionCard | null>(null);
-  const [challengeDeck, setChallengeDeck] = useState<ChallengeCard[]>([]);
-  const [challengeDiscard, setChallengeDiscard] = useState<ChallengeCard[]>([]);
-  const [level3ChallengeReserve, setLevel3ChallengeReserve] = useState<ChallengeCard[]>([]);
-  const [turnPhase, setTurnPhase] = useState<1 | 2 | 3>(1);
-  const [bonusApplied, setBonusApplied] = useState(false);
-  const [combat, setCombat] = useState<CombatState>({
-    isActive: false,
-    opponentType: "monster",
-    opponentName: "Monstruo",
-    combatDeck: [],
-    combatDiscard: [],
-    revealedCard: null,
-    damageInflictedThisTurn: 0,
-    shieldsActiveThisTurn: 0,
-    potionsConsumedThisTurn: 0,
-    bombsConsumedThisTurn: 0,
-    lastReactionTriggered: null,
-    fightLog: [],
-  });
-  const [logs, setLogs] = useState<string[]>(["El Brujo Automa ha desenvainado sus espadas."]);
+  const [turnCount, setTurnCount] = useState(initialSnapshot.turnCount);
+  const [currentTab, setCurrentTab] = useState<GameTab>(initialSnapshot.currentTab);
+  const [actionDeck, setActionDeck] = useState<ActionCard[]>(initialSnapshot.actionDeck);
+  const [actionDiscard, setActionDiscard] = useState<ActionCard[]>(initialSnapshot.actionDiscard);
+  const [activeActionCard, setActiveActionCard] = useState<ActionCard | null>(initialSnapshot.activeActionCard);
+  const [challengeDeck, setChallengeDeck] = useState<ChallengeCard[]>(initialSnapshot.challengeDeck);
+  const [challengeDiscard, setChallengeDiscard] = useState<ChallengeCard[]>(initialSnapshot.challengeDiscard);
+  const [level3ChallengeReserve, setLevel3ChallengeReserve] = useState<ChallengeCard[]>(initialSnapshot.level3ChallengeReserve);
+  const [turnPhase, setTurnPhase] = useState<1 | 2 | 3>(initialSnapshot.turnPhase);
+  const [bonusApplied, setBonusApplied] = useState(initialSnapshot.bonusApplied);
+  const [combat, setCombat] = useState<CombatState>(initialSnapshot.combat);
+  const [logs, setLogs] = useState<string[]>(initialSnapshot.logs);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const snapshot: AutomaSnapshot = buildAutomaSnapshot({
+        setupMode,
+        selectedSchoolId,
+        difficulty,
+        useDicePoker,
+        useMutagens,
+        useSkellige,
+        useLegendaryHunt,
+        automa,
+        lockedAttributes,
+        turnCount,
+        currentTab,
+        actionDeck,
+        actionDiscard,
+        activeActionCard,
+        challengeDeck,
+        challengeDiscard,
+        level3ChallengeReserve,
+        turnPhase,
+        bonusApplied,
+        combat,
+        logs,
+      });
+      saveAutomaSnapshot(snapshot);
+      import("@app/saved-games.js").then(({ setLastMode, syncActiveGame }) => {
+        setLastMode("automa");
+        syncActiveGame();
+      });
+    }, 400);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    setupMode,
+    selectedSchoolId,
+    difficulty,
+    useDicePoker,
+    useMutagens,
+    useSkellige,
+    useLegendaryHunt,
+    automa,
+    lockedAttributes,
+    turnCount,
+    currentTab,
+    actionDeck,
+    actionDiscard,
+    activeActionCard,
+    challengeDeck,
+    challengeDiscard,
+    level3ChallengeReserve,
+    turnPhase,
+    bonusApplied,
+    combat,
+    logs,
+  ]);
 
   const activeSchoolObj = WITCHER_SCHOOLS.find((s) => s.id === automa.schoolId) || WITCHER_SCHOOLS[0];
   const selectedSchoolObj = WITCHER_SCHOOLS.find((s) => s.id === selectedSchoolId) || WITCHER_SCHOOLS[0];

@@ -29,6 +29,7 @@ function readStash() {
 
 function writeStash(stash) {
   localStorage.setItem(STASH_KEY, JSON.stringify(stash));
+  import("./saved-games.js").then(({ syncActiveGame }) => syncActiveGame());
 }
 
 export function makeCardId(deckKey, cardId) {

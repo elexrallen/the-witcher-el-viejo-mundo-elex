@@ -20,6 +20,7 @@ export function saveActiveExpansions(activeExpansions) {
   const expansions = new Set(activeExpansions);
   expansions.add("base");
   localStorage.setItem(EXPANSIONS_STORAGE_KEY, JSON.stringify([...expansions]));
+  import("./saved-games.js").then(({ syncActiveGame }) => syncActiveGame());
 }
 
 export function migrateLegacyExpansions(legacyStorageKey) {

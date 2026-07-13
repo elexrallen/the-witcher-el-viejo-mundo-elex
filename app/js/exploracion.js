@@ -189,6 +189,10 @@ function persistState() {
       lastLocationId: state.lastLocationId,
     }),
   );
+  import("./saved-games.js").then(({ syncActiveGame, setLastMode }) => {
+    setLastMode("exploracion");
+    syncActiveGame();
+  });
 }
 
 function bindEvents() {

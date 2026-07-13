@@ -1,6 +1,7 @@
 import { enhanceIconElements, icon } from "./icons.js";
 import { initTooltips } from "./tooltip.js";
 import { initPwa } from "./pwa.js";
+import { getActiveGame } from "./saved-games.js";
 
 const NAV_ITEMS = [
   { id: "home", href: "index.html", label: "Inicio", icon: "home" },
@@ -14,9 +15,66 @@ export function initAppChrome({ page }) {
   initTooltips();
   initPwa();
   upgradeSettingsButton();
+  injectActiveGameChip(page);
+  injectNoGameBanner(page);
   injectBottomNav(page);
   initCollapsibleSections();
   markSecondaryHints();
+}
+
+function getHomeHref(page) {
+  if (page === "home") {
+    return "index.html";
+  }
+  if (page === "automa") {
+    return "../index.html";
+  }
+  return "index.html";
+}
+
+function injectActiveGameChip(page) {
+  const headerActions = document.querySelector(".header__actions");
+  if (!headerActions || document.getElementById("active-game-chip")) {
+    return;
+  }
+
+  const active = getActiveGame();
+  if (!active) {
+    return;
+  }
+
+  const homeHref = getHomeHref(page);
+  const link = document.createElement("a");
+  link.id = "active-game-chip";
+  link.className = "btn btn--ghost btn--icon-label active-game-chip";
+  link.href = homeHref;
+  link.title = "Ir a partidas guardadas";
+  link.innerHTML = `
+    <span data-icon="layers" data-icon-size="18" aria-hidden="true"></span>
+    <span class="active-game-chip__label">${active.name}</span>
+  `;
+  headerActions.prepend(link);
+  enhanceIconElements(link);
+}
+
+function injectNoGameBanner(page) {
+  if (page === "home" || getActiveGame()) {
+    return;
+  }
+
+  const main = document.querySelector(".main");
+  if (!main || document.getElementById("no-game-banner")) {
+    return;
+  }
+
+  const homeHref = getHomeHref(page);
+  const banner = document.createElement("div");
+  banner.id = "no-game-banner";
+  banner.className = "no-game-banner panel panel--inline";
+  banner.innerHTML = `
+    <p>No hay partida activa. <a href="${homeHref}">Crea o carga una partida</a> en Inicio para guardar tu progreso.</p>
+  `;
+  main.prepend(banner);
 }
 
 function upgradeSettingsButton() {
