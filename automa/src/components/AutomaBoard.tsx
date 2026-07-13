@@ -30,6 +30,46 @@ export default function AutomaBoard({
     { key: "special" as const, label: "Especial", color: "bg-purple-500" },
   ];
 
+  const CounterControl = ({
+    value,
+    onDecrement,
+    onIncrement,
+    min = 0,
+    max,
+    label,
+  }: {
+    value: number;
+    onDecrement: () => void;
+    onIncrement: () => void;
+    min?: number;
+    max?: number;
+    label: string;
+  }) => (
+    <div className="automa-counter" role="group" aria-label={label}>
+      <button
+        type="button"
+        onClick={onDecrement}
+        disabled={value <= min}
+        className="automa-counter-btn"
+        aria-label={`Restar ${label}`}
+      >
+        <WitcherIcon name="minus" size={12} />
+      </button>
+      <span className="automa-counter__value" aria-live="polite">
+        {value}
+      </span>
+      <button
+        type="button"
+        onClick={onIncrement}
+        disabled={max !== undefined && value >= max}
+        className="automa-counter-btn"
+        aria-label={`Sumar ${label}`}
+      >
+        <WitcherIcon name="plus" size={12} />
+      </button>
+    </div>
+  );
+
   const Section = ({ title, id, children }: { title: string; id: string; children: React.ReactNode }) => {
     if (!collapsible) {
       return (
@@ -159,22 +199,14 @@ export default function AutomaBoard({
                 <WitcherIcon name={item.icon} size={18} className={`mx-auto ${item.color}`} />
                 <span className="text-[10px] text-zinc-500 font-display font-bold uppercase block">{item.label}</span>
                 <span className="text-base font-black font-mono text-zinc-200 block">{count}</span>
-                <div className="flex justify-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.max(0, p[item.key] - 1) }))}
-                    className="automa-touch-btn px-3 py-1.5 bg-zinc-900 rounded-lg border border-zinc-800 text-xs font-black text-zinc-400"
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.min(4, p[item.key] + 1) }))}
-                    className="automa-touch-btn px-3 py-1.5 bg-zinc-900 rounded-lg border border-zinc-800 text-xs font-black text-zinc-400"
-                  >
-                    +
-                  </button>
-                </div>
+                <CounterControl
+                  label={item.label}
+                  value={count}
+                  min={0}
+                  max={4}
+                  onDecrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.max(0, p[item.key] - 1) }))}
+                  onIncrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.min(4, p[item.key] + 1) }))}
+                />
               </div>
             );
           })}
@@ -199,44 +231,34 @@ export default function AutomaBoard({
             ))}
           </select>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="automa-trails">
           {[
-            { key: "red" as const, label: "Rojo", color: "border-red-950 text-red-400 bg-red-950/25" },
-            { key: "blue" as const, label: "Azul", color: "border-blue-950 text-blue-400 bg-blue-950/25" },
-            { key: "green" as const, label: "Verde", color: "border-emerald-950 text-emerald-400 bg-emerald-950/25" },
-            { key: "yellow" as const, label: "Amarillo", color: "border-amber-950 text-amber-500 bg-amber-950/15" },
+            { key: "red" as const, label: "Rojo", color: "automa-trail-card--red" },
+            { key: "blue" as const, label: "Azul", color: "automa-trail-card--blue" },
+            { key: "green" as const, label: "Verde", color: "automa-trail-card--green" },
+            { key: "yellow" as const, label: "Amarillo", color: "automa-trail-card--yellow" },
           ].map((trail) => {
             const count = automa.trails[trail.key];
             return (
-              <div key={trail.key} className={`border p-2 rounded-xl text-center space-y-1 ${trail.color}`}>
-                <span className="text-[9px] uppercase font-mono font-bold">{trail.label}</span>
-                <div className="text-sm font-black font-mono">{count}</div>
-                <div className="flex justify-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onAutomaChange((p) => ({
-                        ...p,
-                        trails: { ...p.trails, [trail.key]: Math.max(0, count - 1) },
-                      }))
-                    }
-                    className="automa-touch-btn px-2 py-1 bg-zinc-900/60 border border-zinc-800 rounded-md text-[10px] font-black"
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onAutomaChange((p) => ({
-                        ...p,
-                        trails: { ...p.trails, [trail.key]: count + 1 },
-                      }))
-                    }
-                    className="automa-touch-btn px-2 py-1 bg-zinc-900/60 border border-zinc-800 rounded-md text-[10px] font-black"
-                  >
-                    +
-                  </button>
-                </div>
+              <div key={trail.key} className={`automa-trail-card ${trail.color}`}>
+                <span className="automa-trail-card__label">{trail.label}</span>
+                <CounterControl
+                  label={`rastro ${trail.label}`}
+                  value={count}
+                  min={0}
+                  onDecrement={() =>
+                    onAutomaChange((p) => ({
+                      ...p,
+                      trails: { ...p.trails, [trail.key]: Math.max(0, count - 1) },
+                    }))
+                  }
+                  onIncrement={() =>
+                    onAutomaChange((p) => ({
+                      ...p,
+                      trails: { ...p.trails, [trail.key]: count + 1 },
+                    }))
+                  }
+                />
               </div>
             );
           })}

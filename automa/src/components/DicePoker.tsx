@@ -154,8 +154,10 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
     const currentDots = dots[val] || [];
 
     return (
-      <div
+      <button
         key={index}
+        type="button"
+        disabled={pokerStep !== 'card_drawn'}
         onClick={() => {
           if (pokerStep === 'card_drawn') {
             const copy = [...keptIndices];
@@ -163,25 +165,22 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
             setKeptIndices(copy);
           }
         }}
-        className={`w-14 h-14 rounded-xl border-2 flex flex-col justify-between p-1.5 cursor-pointer relative transition-all duration-200 select-none ${
-          isKept
-            ? 'bg-amber-950 border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.3)] text-amber-300 transform scale-105'
-            : 'bg-neutral-900 border-neutral-750 hover:border-neutral-500 text-neutral-300'
-        }`}
+        className={`dice-poker__die ${isKept ? 'dice-poker__die--kept' : ''}`}
         id={`die-${index}`}
-        title={pokerStep === 'card_drawn' ? "Haz clic para cambiar si se conserva o se relanza" : ""}
+        title={pokerStep === 'card_drawn' ? 'Toca para conservar o relanzar este dado' : undefined}
+        aria-pressed={pokerStep === 'card_drawn' ? isKept : undefined}
       >
-        <svg viewBox="0 0 100 100" className="w-full h-full fill-current">
+        <svg viewBox="0 0 100 100" className="dice-poker__die-face" aria-hidden>
           {currentDots.map(([cx, cy], dotIdx) => (
             <circle key={dotIdx} cx={cx} cy={cy} r="8" />
           ))}
         </svg>
         {isKept && (
-          <div className="absolute -top-1.5 -right-1.5 bg-amber-500 text-neutral-950 rounded-full p-0.5" style={{ fontSize: '7px' }}>
-            <WitcherIcon name="check" size={12} className="text-neutral-950" />
-          </div>
+          <span className="dice-poker__die-check" aria-hidden>
+            <WitcherIcon name="check" size={10} className="text-neutral-950" />
+          </span>
         )}
-      </div>
+      </button>
     );
   };
 
@@ -227,36 +226,39 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
   const currentHand = evaluateHand(dice);
 
   return (
-    <div className="bg-[#15121a] border border-purple-900/20 rounded-2xl p-5 text-neutral-200 shadow-2xl relative overflow-hidden" id="dice-poker-container">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-indigo-500"></div>
-      <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-3">
-        <h3 className="font-display text-base font-bold text-purple-400 flex items-center gap-2">
-          <span>Póker de Dados de Taberna (Automa)</span>
+    <div className="dice-poker" id="dice-poker-container">
+      <div className="dice-poker__accent" aria-hidden />
+
+      <div className="dice-poker__header">
+        <h3 className="dice-poker__title">
+          <span className="sm:hidden">Póker de Taberna</span>
+          <span className="hidden sm:inline">Póker de Dados de Taberna (Automa)</span>
         </h3>
-        <span className="text-[10px] font-mono text-purple-400 bg-purple-950/40 border border-purple-900/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Póker de Dados</span>
+        <span className="dice-poker__badge">Póker de Dados</span>
       </div>
 
-      <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-850 flex flex-col items-center justify-center min-h-[140px] relative">
-        <div className="flex gap-3 mb-4">
+      <div className="dice-poker__arena">
+        <div className="dice-poker__dice-grid">
           {dice.map((val, idx) => renderDiceFace(val, idx, keptIndices[idx]))}
         </div>
 
-        <div className="text-center font-sans">
-          <span className="text-xs text-zinc-500 font-semibold uppercase tracking-wider block">Puntuación actual del Automa:</span>
-          <div className="text-base font-display font-black text-purple-300 mt-1">{currentHand.name}</div>
+        <div className="dice-poker__score">
+          <span className="dice-poker__score-label">Puntuación actual del Automa</span>
+          <div className="dice-poker__score-value">{currentHand.name}</div>
         </div>
       </div>
 
-      <div className="mt-4 space-y-3">
+      <div className="dice-poker__actions">
         {pokerStep === 'idle' && (
           <button
             type="button"
             onClick={rollDice}
-            className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm font-display tracking-wide shadow-lg shadow-purple-900/20"
+            className="dice-poker__btn dice-poker__btn--primary"
             id="roll-first-btn"
           >
             <WitcherIcon name="play" size={16} />
-            Lanzar Primer Tiro (5 Dados)
+            <span className="sm:hidden">Primer tiro (5 dados)</span>
+            <span className="hidden sm:inline">Lanzar Primer Tiro (5 Dados)</span>
           </button>
         )}
 
@@ -264,49 +266,51 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
           <button
             type="button"
             onClick={handleDrawDecisionCard}
-            className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-neutral-950 font-bold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm font-display tracking-wide shadow-lg shadow-amber-900/20"
+            className="dice-poker__btn dice-poker__btn--amber"
             id="draw-poker-card-btn"
           >
             <WitcherIcon name="refresh" size={16} />
-            Robar Carta de Decisión para Relanzar
+            <span className="sm:hidden">Robar carta de decisión</span>
+            <span className="hidden sm:inline">Robar Carta de Decisión para Relanzar</span>
           </button>
         )}
 
         {pokerStep === 'card_drawn' && drawnCard && (
-          <div className="bg-purple-950/20 border border-purple-900/40 p-3.5 rounded-xl text-xs space-y-2">
-            <div className="flex items-center gap-1.5 text-purple-200 font-bold uppercase tracking-tight font-display text-xs">
-              <WitcherIcon name="info" size={16} className="text-purple-400" />
-              <span>Instrucción del Mazo: "{drawnCard.pokerPattern}"</span>
+          <div className="dice-poker__card-panel">
+            <div className="dice-poker__card-heading">
+              <WitcherIcon name="info" size={16} className="text-purple-400 shrink-0" />
+              <span>Instrucción: &ldquo;{drawnCard.pokerPattern}&rdquo;</span>
             </div>
-            <p className="text-zinc-300 leading-normal">{pokerPatternExplanation}</p>
-            <p className="text-zinc-500 text-[10px] leading-relaxed">
-              *Los dados marcados con el icono de check dorado se mantendrán. Puedes hacer clic en los dados para cambiar manualmente esta decisión si las reglas físicas del tablero indican otra preferencia.
+            <p className="dice-poker__card-text">{pokerPatternExplanation}</p>
+            <p className="dice-poker__card-hint">
+              Los dados marcados se mantienen. Tócalos para ajustar manualmente si hace falta.
             </p>
             <button
               type="button"
               onClick={handleSecondRoll}
-              className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg flex items-center justify-center gap-2 mt-2 transition-colors cursor-pointer text-sm font-display tracking-wide"
+              className="dice-poker__btn dice-poker__btn--primary"
               id="roll-second-btn"
             >
               <WitcherIcon name="refresh" size={16} className="witcher-icon--spin" />
-              Relanzar Dados Libres (Tirada Final)
+              <span className="sm:hidden">Tirada final</span>
+              <span className="hidden sm:inline">Relanzar Dados Libres (Tirada Final)</span>
             </button>
           </div>
         )}
 
         {pokerStep === 'rolled_second' && (
-          <div className="space-y-2">
-            <div className="bg-purple-950/20 border border-purple-900/40 p-3 rounded-xl text-center text-xs text-purple-200">
-              ¡Tirada Final completada! El Automa ha obtenido un <strong>{currentHand.name}</strong>. Compara este resultado con tu propia tirada para decidir quién gana la apuesta de oro.
+          <div className="dice-poker__result">
+            <div className="dice-poker__result-text">
+              Tirada final: <strong>{currentHand.name}</strong>. Compara con tu tirada para la apuesta de oro.
             </div>
             <button
               type="button"
               onClick={rollDice}
-              className="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-250 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-xs"
+              className="dice-poker__btn dice-poker__btn--ghost"
               id="reset-poker-btn"
             >
               <WitcherIcon name="refresh" size={14} />
-              Nueva Partida de Dados
+              Nueva partida de dados
             </button>
           </div>
         )}
