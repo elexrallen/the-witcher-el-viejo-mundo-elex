@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -11,6 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_DIR = ROOT / "app"
+AUTOMA_DIR = ROOT / "automa"
 SITE_DIR = ROOT / "_site"
 
 
@@ -49,15 +51,27 @@ def main() -> int:
             return code
 
     export_icons = ROOT / "scripts" / "export_app_icons.mjs"
-    if export_icons.is_file() and shutil.which("node"):
-        print("> node scripts/export_app_icons.mjs")
+    icons_out = APP_DIR / "js" / "icons.js"
+    in_ci = os.environ.get("CI", "").lower() in {"1", "true", "yes"}
+    if (
+        export_icons.is_file()
+        and shutil.which("node")
+        and (AUTOMA_DIR / "node_modules").is_dir()
+        and not in_ci
+    ):
+        print("> node scripts/export_app_icons.mjs", flush=True)
         icon_result = subprocess.run(
             ["node", str(export_icons)],
             cwd=ROOT,
             check=False,
+            timeout=120,
         )
         if icon_result.returncode != 0:
             print("Aviso: no se pudieron regenerar iconos de la app.", file=sys.stderr)
+    elif in_ci and icons_out.is_file():
+        print(f"CI: usando iconos existentes en {icons_out.relative_to(ROOT)}", flush=True)
+    elif in_ci:
+        print("Aviso: falta app/js/icons.js en CI.", file=sys.stderr)
 
     if not APP_DIR.is_dir():
         print(f"No existe la carpeta de la app: {APP_DIR}", file=sys.stderr)
@@ -70,10 +84,11 @@ def main() -> int:
         )
         return 1
 
+    print(f"Copiando {APP_DIR.relative_to(ROOT)}/ -> {SITE_DIR.name}/ ...", flush=True)
     copy_tree(APP_DIR, SITE_DIR)
 
     file_count = sum(1 for _ in SITE_DIR.rglob("*") if _.is_file())
-    print(f"Sitio listo en {SITE_DIR} ({file_count} archivos)")
+    print(f"Sitio listo en {SITE_DIR} ({file_count} archivos)", flush=True)
     return 0
 
 

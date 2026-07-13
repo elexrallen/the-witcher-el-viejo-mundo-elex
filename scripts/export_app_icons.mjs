@@ -106,3 +106,4 @@ export function locationIconId(locationId) {
 
 writeFileSync(OUT, file, "utf8");
 console.log(`Wrote ${OUT} (${Object.keys(registry).length} icons)`);
+process.exit(0);

@@ -35,7 +35,7 @@ jobs:
           npm run build
 
       - name: Prepare static site
-        run: python scripts/prepare_pages.py
+        run: python -u scripts/prepare_pages.py
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
