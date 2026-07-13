@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Book, Search, ChevronDown, ChevronUp, AlertCircle, HelpCircle } from 'lucide-react';
+import { WitcherIcon } from './WitcherIcon';
 
 interface RuleSection {
   title: string;
@@ -105,7 +105,7 @@ export default function RulesReference() {
     <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-5 text-neutral-200 shadow-xl" id="rules-container">
       <div className="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
         <div className="flex items-center gap-2">
-          <Book className="w-5 h-5 text-amber-500" />
+          <WitcherIcon name="book" size={20} className="text-amber-500" />
           <h2 className="font-sans text-lg font-medium text-amber-500 tracking-tight">Manual del Automa V1.4</h2>
         </div>
         <span className="text-xs font-mono text-neutral-500 uppercase">Referencia Completa</span>
@@ -113,7 +113,7 @@ export default function RulesReference() {
 
       <div className="relative mb-4">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500">
-          <Search className="w-4 h-4" />
+          <WitcherIcon name="search" size={16} className="text-neutral-500" />
         </span>
         <input
           id="rules-search-input"
@@ -145,9 +145,9 @@ export default function RulesReference() {
                     </span>
                   </div>
                   {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-neutral-400" />
+                    <WitcherIcon name="chevron-up" size={16} className="text-neutral-400" />
                   ) : (
-                    <ChevronDown className="w-4 h-4 text-neutral-400" />
+                    <WitcherIcon name="chevron-down" size={16} className="text-neutral-400" />
                   )}
                 </button>
 
@@ -160,7 +160,7 @@ export default function RulesReference() {
                     ))}
                     {section.tips && (
                       <div className="mt-3 p-3 bg-amber-950/20 border border-amber-900/30 rounded text-xs text-amber-300 flex gap-2 items-start">
-                        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <WitcherIcon name="alert" size={16} className="text-amber-400 shrink-0 mt-0.5" />
                         <span className="font-sans italic"><strong>Consejo de juego:</strong> {section.tips}</span>
                       </div>
                     )}
@@ -177,7 +177,7 @@ export default function RulesReference() {
       </div>
 
       <div className="mt-4 p-3 bg-neutral-950 rounded border border-neutral-850 text-xs text-neutral-400 flex items-center gap-2" id="rules-footer">
-        <HelpCircle className="w-4 h-4 text-amber-500" />
+        <WitcherIcon name="help" size={16} className="text-amber-500" />
         <span className="font-sans">Este simulador automatiza el mazo de juego del Automa. Usa las fases del turno para jugar paso a paso.</span>
       </div>
     </div>

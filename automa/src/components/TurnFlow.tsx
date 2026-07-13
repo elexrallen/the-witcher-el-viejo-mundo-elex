@@ -1,17 +1,10 @@
 import { useState } from "react";
-import {
-  Play,
-  CheckCircle,
-  Trash2,
-  ArrowRight,
-  Layers,
-  Award,
-} from "lucide-react";
-import { ActionCard, WitcherSchool } from "../types";
+import { WitcherIcon } from "./WitcherIcon";import { ActionCard, WitcherSchool } from "../types";
 import WitcherCard from "./WitcherCard";
 import PhaseStepper from "./PhaseStepper";
 import { canMeditate, getPhaseIIHint, inferPhaseIIAction, PhaseIIAction } from "../utils/phaseII";
 import { COMMON_OPPONENTS } from "../utils/cities";
+import { formatMovementGuide } from "../utils/actionCard";
 import { AutomaState } from "../types";
 
 type TurnFlowProps = {
@@ -67,7 +60,7 @@ export default function TurnFlow({
     <div className="turn-flow space-y-4" id="turn-tab-content">
       <div className="turn-flow__stats flex flex-wrap gap-2 text-[10px] font-mono uppercase font-bold text-zinc-500">
         <span className="bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg flex items-center gap-1">
-          <Award className="w-3.5 h-3.5 text-orange-400" /> Trofeos {automa.trophies}/4
+          <WitcherIcon name="trophy" size={14} className="text-orange-400" /> Trofeos {automa.trophies}/4
         </span>
         <span className="bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg">Turno #{turnCount}</span>
         <span className="bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-lg">Acción: {actionDeckLength}</span>
@@ -99,7 +92,7 @@ export default function TurnFlow({
                   className="py-3 px-6 min-h-[var(--touch-min)] bg-orange-600 hover:bg-orange-500 text-white font-black uppercase rounded-xl flex items-center justify-center gap-2 mx-auto font-display text-xs"
                   id="draw-action-btn"
                 >
-                  <Play className="w-4 h-4 fill-current" />
+                  <WitcherIcon name="play" size={18} />
                   Revelar Carta de Acción
                 </button>
               </>
@@ -107,8 +100,8 @@ export default function TurnFlow({
               <div className="space-y-4 text-left" id="phase-1-actions">
                 <h5 className="text-[10px] uppercase font-mono text-orange-400 font-bold">Fase I — Movimiento y acciones</h5>
                 <p className="text-xs text-zinc-300">
-                  Mueve <strong className="text-white">{activeActionCard.movement} espacios</strong> hacia{" "}
-                  <strong className="text-white">{activeActionCard.destination}</strong> (ruta más corta).
+                  Desplázate <strong className="text-white">{formatMovementGuide(activeActionCard.movement)}</strong> hacia{" "}
+                  <strong className="text-white">{activeActionCard.destination}</strong>.
                   Desempate: rastro → menor vida → flecha de dirección.
                 </p>
                 {!bonusApplied ? (
@@ -122,7 +115,7 @@ export default function TurnFlow({
                   </button>
                 ) : (
                   <div className="bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 p-3 rounded-xl text-xs flex items-center gap-2 font-bold">
-                    <CheckCircle className="w-4 h-4 shrink-0" />
+                    <WitcherIcon name="check" size={18} className="shrink-0" />
                     Acciones de Fase I aplicadas
                   </div>
                 )}
@@ -132,7 +125,7 @@ export default function TurnFlow({
                     onClick={onAdvanceToPhase2}
                     className="w-full py-3 min-h-[var(--touch-min)] btn btn--primary font-display uppercase text-xs"
                   >
-                    Continuar a Fase II <ArrowRight className="w-4 h-4 inline ml-1" />
+                    Continuar a Fase II <WitcherIcon name="arrow-right" size={16} className="inline ml-1" />
                   </button>
                 )}
               </div>
@@ -214,7 +207,7 @@ export default function TurnFlow({
         {turnPhase === 3 && activeActionCard && (
           <div className="space-y-4" id="phase-3-playmat">
             <h5 className="text-[10px] uppercase font-mono text-red-400 font-bold flex items-center gap-1.5">
-              <Trash2 className="w-4 h-4" /> Fase III — Mercado
+              <WitcherIcon name="trash" size={18} /> Fase III — Mercado
             </h5>
             <p className="text-xs text-zinc-300">Descarta las cartas del mercado en estas posiciones (izq. a der.):</p>
             <div className="flex gap-2 justify-center flex-wrap py-2">
@@ -234,14 +227,14 @@ export default function TurnFlow({
               className="w-full py-3.5 min-h-[var(--touch-min)] bg-zinc-900 hover:bg-zinc-800 text-orange-400 border border-orange-500/30 rounded-xl font-black font-display uppercase text-xs flex items-center justify-center gap-2"
               id="end-turn-btn"
             >
-              Terminar turno del Automa <ArrowRight className="w-4 h-4" />
+              Terminar turno del Automa <WitcherIcon name="arrow-right" size={16} />
             </button>
           </div>
         )}
 
         {turnPhase === 1 && !activeActionCard && (
           <div className="flex justify-center py-4 text-zinc-600">
-            <Layers className="w-10 h-10 stroke-[1.5]" />
+            <WitcherIcon name="cards" size={40} className="text-zinc-600" />
           </div>
         )}
       </div>

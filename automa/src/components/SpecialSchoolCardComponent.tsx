@@ -5,72 +5,101 @@
 
 import React from 'react';
 import { WitcherSchool } from '../types';
-import { Shield, Swords, Sparkles, AlertTriangle, Play, HelpCircle, ShieldAlert, Zap, Flame, Skull, Droplet, ArrowDown } from 'lucide-react';
+import { WitcherIcon, SchoolMedallion } from './WitcherIcon';
 
 interface SpecialSchoolCardComponentProps {
   school: WitcherSchool;
-  activeSpecialIndex?: 1 | 2 | 3 | null; // If combat reveals an Especial card, we highlight that row!
+  activeSpecialIndex?: 1 | 2 | 3 | null;
+}
+
+function CardDrawBadge({ className = 'text-orange-600' }: { className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title="Robar carta">
+      <WitcherIcon name="play" size={13} />
+      <WitcherIcon name="plus" size={9} className="-ml-0.5" />
+    </span>
+  );
+}
+
+function CardDiscardBadge({ count = 1, className = 'text-red-600' }: { count?: number; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title={`Descartar ${count}`}>
+      <WitcherIcon name="discard" size={13} />
+      {Array.from({ length: count }).map((_, i) => (
+        <WitcherIcon key={i} name="arrow-down" size={9} />
+      ))}
+    </span>
+  );
+}
+
+function PotionBonusBadge({
+  potions = 1,
+  bonus = '+',
+  className = 'text-cyan-600',
+}: {
+  potions?: number;
+  bonus?: '+' | '++';
+  className?: string;
+}) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title="Bono de poción">
+      {Array.from({ length: potions }).map((_, i) => (
+        <WitcherIcon key={i} name="potion" size={13} />
+      ))}
+      {bonus === '+' ? (
+        <WitcherIcon name="plus" size={9} />
+      ) : (
+        <>
+          <WitcherIcon name="plus" size={9} />
+          <WitcherIcon name="plus" size={9} className="-ml-1" />
+        </>
+      )}
+    </span>
+  );
+}
+
+function ShieldMaxBadge({ label = 'Máx', className = '' }: { label?: string; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-0.5 text-[9px] text-sky-700 font-black ${className}`.trim()}>
+      <WitcherIcon name="shield" size={14} className="text-sky-700 shrink-0" />
+      {label}
+    </span>
+  );
+}
+
+function MutagenLabel({ color, label }: { color: 'blue' | 'red' | 'green'; label: string }) {
+  const textClass = {
+    blue: 'text-blue-800',
+    red: 'text-red-800',
+    green: 'text-emerald-800',
+  }[color];
+  const iconClass = {
+    blue: 'text-blue-600',
+    red: 'text-red-600',
+    green: 'text-emerald-600',
+  }[color];
+
+  return (
+    <span className={`inline-flex items-center justify-center gap-1 text-[8px] font-mono font-bold uppercase leading-none ${textClass}`}>
+      <WitcherIcon name="potion" size={12} className={iconClass} />
+      {label}
+    </span>
+  );
 }
 
 export default function SpecialSchoolCardComponent({ school, activeSpecialIndex = null }: SpecialSchoolCardComponentProps) {
   const spec = school.specialCard;
   if (!spec) return null;
 
-  // Render school emblem
-  const renderMedallion = (schoolId: string, sizeClass: string = 'w-10 h-10') => {
-    switch (schoolId) {
-      case 'wolf':
-        return (
-          <div className="bg-amber-600/20 border border-amber-600 rounded-full p-1.5 shadow-[0_0_10px_rgba(217,119,6,0.3)] animate-pulse">
-            <ShieldAlert className={`${sizeClass} text-red-600`} />
-          </div>
-        );
-      case 'cat':
-        return (
-          <div className="bg-emerald-600/20 border border-emerald-600 rounded-full p-1.5 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-            <Zap className={`${sizeClass} text-emerald-600`} />
-          </div>
-        );
-      case 'griffin':
-        return (
-          <div className="bg-amber-500/20 border border-amber-500 rounded-full p-1.5 shadow-[0_0_10px_rgba(245,158,11,0.3)]">
-            <Flame className={`${sizeClass} text-amber-500`} />
-          </div>
-        );
-      case 'bear':
-        return (
-          <div className="bg-amber-700/20 border border-amber-700 rounded-full p-1.5 shadow-[0_0_10px_rgba(180,83,9,0.3)]">
-            <Shield className={`${sizeClass} text-amber-700`} />
-          </div>
-        );
-      case 'viper':
-        return (
-          <div className="bg-purple-600/20 border border-purple-600 rounded-full p-1.5 shadow-[0_0_10px_rgba(147,51,234,0.3)]">
-            <Skull className={`${sizeClass} text-purple-600`} />
-          </div>
-        );
-      case 'manticore':
-        return (
-          <div className="bg-cyan-600/20 border border-cyan-600 rounded-full p-1.5 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
-            <Droplet className={`${sizeClass} text-cyan-600`} />
-          </div>
-        );
-      default:
-        return <Sparkles className={`${sizeClass} text-amber-500`} />;
-    }
-  };
-
-  // Helper to render scratch damage swords
   const renderSwords = (count: number) => {
     return Array.from({ length: count }).map((_, i) => (
-      <Swords key={i} className="w-4 h-4 text-red-600 shrink-0 inline" />
+      <WitcherIcon key={i} name="sword" size={16} className="text-red-600 shrink-0 inline" />
     ));
   };
 
-  // Helper to render defense shields
   const renderShields = (count: number) => {
     return Array.from({ length: count }).map((_, i) => (
-      <Shield key={i} className="w-4 h-4 text-sky-600 shrink-0 inline" />
+      <WitcherIcon key={i} name="shield" size={16} className="text-sky-600 shrink-0 inline" />
     ));
   };
 
@@ -101,7 +130,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
           </p>
         </div>
         <div className="shrink-0 -mt-1 -mr-1">
-          {renderMedallion(school.id)}
+          <SchoolMedallion school={school.id} size={44} pulse={school.id === 'wolf'} />
         </div>
       </div>
 
@@ -137,8 +166,8 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(1)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <span className="mx-0.5 text-orange-600 font-bold">🎴+</span>
-                  <span className="mx-0.5 text-zinc-600 font-bold">🎴↓</span>
+                  <CardDrawBadge />
+                  <CardDiscardBadge count={1} className="text-zinc-600" />
                 </>
               )}
               {school.id === 'griffin' && (
@@ -146,20 +175,23 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <span className="mx-0.5 text-red-600 font-bold">🎴↓↓</span>
+                  <CardDiscardBadge count={2} />
                 </>
               )}
               {school.id === 'bear' && (
                 <>
                   {renderSwords(2)}
                   <span className="mx-1">/</span>
-                  <span className="text-[9px] text-sky-700 font-black">🛡️ Máx</span>
+                  <ShieldMaxBadge />
                 </>
               )}
               {school.id === 'viper' && (
                 <>
                   {renderSwords(2)}
-                  <span className="mx-0.5 text-red-600 font-bold">+ ⚔️⚔️</span>
+                  <span className="inline-flex items-center gap-px text-red-600">
+                    <WitcherIcon name="plus" size={9} />
+                    {renderSwords(2)}
+                  </span>
                 </>
               )}
               {school.id === 'manticore' && (
@@ -167,7 +199,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <span className="mx-0.5 text-cyan-600 font-bold">🧪+</span>
+                  <PotionBonusBadge />
                 </>
               )}
             </div>
@@ -207,14 +239,14 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <span className="mx-0.5 text-orange-600 font-bold">🎴+</span>
+                  <CardDrawBadge />
                 </>
               )}
               {school.id === 'griffin' && (
                 <>
                   {renderSwords(3)}
                   <span className="mx-0.5">/</span>
-                  <span className="text-red-600 font-bold">🎴↓↓</span>
+                  <CardDiscardBadge count={2} />
                 </>
               )}
               {school.id === 'bear' && (
@@ -228,7 +260,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                 <>
                   {renderSwords(3)}
                   <span className="mx-0.5">/</span>
-                  <span className="text-orange-600 font-bold">🎴+</span>
+                  <CardDrawBadge />
                 </>
               )}
               {school.id === 'manticore' && (
@@ -236,7 +268,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <span className="mx-0.5 text-cyan-600 font-bold">🧪🧪++</span>
+                  <PotionBonusBadge potions={2} bonus="++" />
                 </>
               )}
             </div>
@@ -270,7 +302,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   <span className="mx-1">/</span>
                   {renderShields(1)}
                   <span className="mx-1">/</span>
-                  <span className="text-zinc-600 font-bold">🎴↓</span>
+                  <CardDiscardBadge count={1} className="text-zinc-600" />
                 </>
               )}
               {school.id === 'cat' && (
@@ -278,18 +310,18 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(1)}
                   <span className="mx-0.5">/</span>
                   {renderShields(2)}
-                  <span className="mx-0.5 text-orange-600 font-bold">🎴+</span>
+                  <CardDrawBadge />
                 </>
               )}
               {school.id === 'griffin' && (
                 <>
                   {renderSwords(3)}
                   <span className="mx-1">/</span>
-                  <span className="text-red-600 font-bold">🎴↓↓↓</span>
+                  <CardDiscardBadge count={3} />
                 </>
               )}
               {school.id === 'bear' && (
-                <span className="text-[9px] text-red-700 font-black">🛡️ Bloquea Siguiente Turno</span>
+                <ShieldMaxBadge label="Bloquea Siguiente Turno" className="text-red-700" />
               )}
               {school.id === 'viper' && (
                 <>{renderSwords(5)}</>
@@ -298,7 +330,12 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                 <>
                   {renderShields(2)}
                   <span className="mx-0.5">/</span>
-                  <span className="text-cyan-700 font-black">🧪↓ ➔ 6 ⚔️</span>
+                  <span className="inline-flex items-center gap-0.5 text-cyan-700 font-black">
+                    <WitcherIcon name="potion" size={13} className="text-cyan-700" />
+                    <WitcherIcon name="arrow-down" size={9} />
+                    <WitcherIcon name="arrow-right" size={9} />
+                    {renderSwords(6)}
+                  </span>
                 </>
               )}
             </div>
@@ -317,9 +354,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
         <div className="grid grid-cols-3 gap-1.5">
           {/* Blue Mutagen */}
           <div className="bg-[#dfd1b8] border border-blue-800/20 rounded-lg p-1.5 text-center flex flex-col justify-between">
-            <span className="text-[8px] font-mono font-bold text-blue-800 uppercase block leading-none">
-              🔵 Azul
-            </span>
+            <MutagenLabel color="blue" label="Azul" />
             <span className="text-[9px] font-sans font-semibold text-zinc-800 leading-tight block mt-1">
               {spec.mutagenBonuses.blue}
             </span>
@@ -327,9 +362,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
 
           {/* Red Mutagen */}
           <div className="bg-[#dfd1b8] border border-red-800/20 rounded-lg p-1.5 text-center flex flex-col justify-between">
-            <span className="text-[8px] font-mono font-bold text-red-800 uppercase block leading-none">
-              🔴 Rojo
-            </span>
+            <MutagenLabel color="red" label="Rojo" />
             <span className="text-[9px] font-sans font-semibold text-zinc-800 leading-tight block mt-1">
               {spec.mutagenBonuses.red}
             </span>
@@ -337,9 +370,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
 
           {/* Green Mutagen */}
           <div className="bg-[#dfd1b8] border border-emerald-800/20 rounded-lg p-1.5 text-center flex flex-col justify-between">
-            <span className="text-[8px] font-mono font-bold text-emerald-800 uppercase block leading-none">
-              🟢 Verde
-            </span>
+            <MutagenLabel color="green" label="Verde" />
             <span className="text-[9px] font-sans font-semibold text-zinc-800 leading-tight block mt-1">
               {spec.mutagenBonuses.green}
             </span>

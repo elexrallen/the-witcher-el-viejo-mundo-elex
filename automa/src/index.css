@@ -501,6 +501,22 @@
   }
 }
 
+/* Iconos temáticos (react-icons / Game Icons) */
+.witcher-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.witcher-icon--spin {
+  animation: witcher-icon-spin 2s linear infinite;
+}
+
+@keyframes witcher-icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 640px) {
   .header__subtitle--hide-mobile {
     display: none;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Dice5, Layers, BookOpen } from "lucide-react";
+import { WitcherIcon, type WitcherIconName } from "./WitcherIcon";
 import { ActionCard, AutomaState, ChallengeCard, WitcherSchool } from "../types";
 import AutomaBoard from "./AutomaBoard";
 import BoardDrawer, { BoardFab } from "./BoardDrawer";
@@ -49,11 +49,11 @@ export default function GameBoard(props: GameBoardProps) {
   const isMobile = useIsMobile();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const tabs: { id: GameTab; label: string; short: string; icon: typeof Play; show: boolean }[] = [
-    { id: "turn", label: "Turno del Automa", short: "Turno", icon: Play, show: true },
-    { id: "poker", label: "Póker de Dados", short: "Póker", icon: Dice5, show: props.useDicePoker },
-    { id: "expansions", label: "Expansiones", short: "Exp.", icon: Layers, show: props.useMutagens || props.useSkellige || props.useLegendaryHunt },
-    { id: "rules", label: "Reglamento V1.4", short: "Reglas", icon: BookOpen, show: true },
+  const tabs: { id: GameTab; label: string; short: string; icon: WitcherIconName; show: boolean }[] = [
+    { id: "turn", label: "Turno del Automa", short: "Turno", icon: "play", show: true },
+    { id: "poker", label: "Póker de Dados", short: "Póker", icon: "dice", show: props.useDicePoker },
+    { id: "expansions", label: "Expansiones", short: "Exp.", icon: "layers", show: props.useMutagens || props.useSkellige || props.useLegendaryHunt },
+    { id: "rules", label: "Reglamento V1.4", short: "Reglas", icon: "book", show: true },
   ];
 
   const boardProps = {
@@ -75,7 +75,6 @@ export default function GameBoard(props: GameBoardProps) {
               {tabs
                 .filter((t) => t.show)
                 .map((tab) => {
-                  const Icon = tab.icon;
                   const isActive = props.currentTab === tab.id;
                   return (
                     <button
@@ -89,7 +88,7 @@ export default function GameBoard(props: GameBoardProps) {
                       }`}
                       id={`tab-btn-${tab.id}`}
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
+                      <WitcherIcon name={tab.icon} size={18} className="shrink-0" />
                       <span className="hidden sm:inline">{tab.label}</span>
                       <span className="sm:hidden">{tab.short}</span>
                     </button>

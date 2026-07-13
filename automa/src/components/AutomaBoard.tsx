@@ -1,4 +1,4 @@
-import { Plus, Minus, Droplet, Sparkles } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 import { AutomaState } from "../types";
 import { DEFAULT_CITIES } from "../utils/cities";
 
@@ -90,14 +90,14 @@ export default function AutomaBoard({
                       disabled={isLocked && currentVal <= 5}
                       className="automa-touch-btn p-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 disabled:opacity-30 rounded-lg text-zinc-400 cursor-pointer"
                     >
-                      <Minus className="w-4 h-4" />
+                            <WitcherIcon name="minus" size={18} />
                     </button>
                     <button
                       type="button"
                       onClick={() => onUpdateAttribute(attr.key, 1)}
                       className="automa-touch-btn p-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-lg text-zinc-400 cursor-pointer"
                     >
-                      <Plus className="w-4 h-4" />
+                            <WitcherIcon name="plus" size={18} />
                     </button>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ export default function AutomaBoard({
           </div>
           <div className="flex gap-1.5">
             <button type="button" onClick={onTrophyDecrease} className="automa-touch-btn p-2 bg-zinc-900 rounded-lg border border-zinc-800 text-zinc-300">
-              <Minus className="w-4 h-4" />
+                            <WitcherIcon name="minus" size={18} />
             </button>
             <button
               type="button"
@@ -144,20 +144,19 @@ export default function AutomaBoard({
               disabled={automa.trophies >= 4}
               className="automa-touch-btn p-2 bg-orange-600 disabled:bg-zinc-800 rounded-lg border border-orange-500 text-white font-bold flex items-center gap-1 text-xs"
             >
-              <Plus className="w-4 h-4" /> Trofeo
+                            <WitcherIcon name="plus" size={18} /> Trofeo
             </button>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { key: "potions" as const, label: "Pociones", icon: Droplet, color: "text-emerald-500" },
-            { key: "bombs" as const, label: "Bombas", icon: Sparkles, color: "text-purple-500" },
+            { key: "potions" as const, label: "Pociones", icon: "potion" as const, color: "text-emerald-500" },
+            { key: "bombs" as const, label: "Bombas", icon: "bomb" as const, color: "text-purple-500" },
           ].map((item) => {
-            const Icon = item.icon;
             const count = automa[item.key];
             return (
               <div key={item.key} className="bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 text-center space-y-2">
-                <Icon className={`w-4 h-4 mx-auto ${item.color}`} />
+                <WitcherIcon name={item.icon} size={18} className={`mx-auto ${item.color}`} />
                 <span className="text-[10px] text-zinc-500 font-display font-bold uppercase block">{item.label}</span>
                 <span className="text-base font-black font-mono text-zinc-200 block">{count}</span>
                 <div className="flex justify-center gap-1">

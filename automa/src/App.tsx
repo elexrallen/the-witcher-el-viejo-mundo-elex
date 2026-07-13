@@ -18,6 +18,7 @@ import {
   CombatState,
 } from "./types";
 import { shuffleArray, sampleCards } from "./utils/shuffle";
+import { formatMovementGuide, MOVEMENT_UNLIMITED } from "./utils/actionCard";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
 import GameBoard, { GameTab } from "./components/GameBoard";
@@ -124,12 +125,12 @@ export default function App() {
     let finalActions: ActionCard[] = [];
     let finalChallenges: ChallengeCard[] = [];
 
-    const genericActionLvl1 = [...GENERIC_ACTION_CARDS, ...LEVEL_1_ACTION_CARDS.filter((c) => c.movement !== 99)];
-    const specificActionLvl1 = LEVEL_1_ACTION_CARDS.filter((c) => c.movement === 99);
-    const genericActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement !== 99);
-    const specificActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement === 99);
-    const genericActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement !== 99);
-    const specificActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement === 99);
+    const genericActionLvl1 = [...GENERIC_ACTION_CARDS, ...LEVEL_1_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED)];
+    const specificActionLvl1 = LEVEL_1_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
+    const genericActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED);
+    const specificActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
+    const genericActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED);
+    const specificActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
 
     const genericChallengeLvl1 = [...GENERIC_CHALLENGE_CARDS, ...LEVEL_1_CHALLENGE_CARDS.filter((c) => !["cha-19", "cha-20", "cha-21"].includes(c.id))];
     const specificChallengeLvl1 = LEVEL_1_CHALLENGE_CARDS.filter((c) => ["cha-19", "cha-20", "cha-21"].includes(c.id));
@@ -230,7 +231,7 @@ export default function App() {
     setActionDeck((prev) => prev.slice(1));
     setActiveActionCard(nextCard);
     setBonusApplied(false);
-    addLog(`Fase I: Carta robada. Destino: ${nextCard.destination}, ${nextCard.movement} PM.`);
+    addLog(`Fase I: Carta robada. Destino: ${nextCard.destination}, ${formatMovementGuide(nextCard.movement)}.`);
   };
 
   const applyActionCardBonuses = () => {

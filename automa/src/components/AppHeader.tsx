@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 import AppNav from "./AppNav";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
@@ -58,7 +58,7 @@ export default function AppHeader({
                     className="automa-touch-btn btn btn--secondary p-2"
                     aria-label="Más opciones"
                   >
-                    <MoreHorizontal className="w-5 h-5" />
+                    <WitcherIcon name="menu" size={22} />
                   </button>
                   {menuOpen && (
                     <div className="automa-header-menu__dropdown">

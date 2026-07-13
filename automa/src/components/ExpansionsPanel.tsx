@@ -1,4 +1,4 @@
-import { Anchor, Layers, Skull as SkeletonIcon } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 import { AutomaState, WitcherSchool } from "../types";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
 
@@ -58,21 +58,9 @@ export default function ExpansionsPanel({
             <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 flex justify-between items-center">
               <span className="text-xs text-zinc-300 font-bold">Debilidad enemigo</span>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => onAutomaChange((p) => ({ ...p, weaknesses: Math.max(0, p.weaknesses - 1) }))}
-                  className="automa-touch-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs"
-                >
-                  -
-                </button>
+                <button type="button" onClick={() => onAutomaChange((p) => ({ ...p, weaknesses: Math.max(0, p.weaknesses - 1) }))} className="automa-touch-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs">-</button>
                 <span className="font-mono font-black text-orange-400">{automa.weaknesses}/3</span>
-                <button
-                  type="button"
-                  onClick={() => onAutomaChange((p) => ({ ...p, weaknesses: Math.min(3, p.weaknesses + 1) }))}
-                  className="automa-touch-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs"
-                >
-                  +
-                </button>
+                <button type="button" onClick={() => onAutomaChange((p) => ({ ...p, weaknesses: Math.min(3, p.weaknesses + 1) }))} className="automa-touch-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs">+</button>
               </div>
             </div>
           </div>
@@ -88,7 +76,7 @@ export default function ExpansionsPanel({
         {useSkellige && (
           <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 flex justify-between items-center">
             <span className="text-xs text-zinc-300 font-bold flex items-center gap-1">
-              <Anchor className="w-3.5 h-3.5 text-sky-400" /> Dagon
+              <WitcherIcon name="anchor" size={16} className="text-sky-400" /> Dagon
             </span>
             <div className="flex items-center gap-2">
               <button type="button" onClick={() => onAutomaChange((p) => ({ ...p, dagonTrack: Math.max(0, p.dagonTrack - 1) }))} className="automa-touch-btn px-2 py-1 text-xs bg-zinc-900 border border-zinc-800 rounded-lg">-</button>
@@ -100,7 +88,7 @@ export default function ExpansionsPanel({
         {useLegendaryHunt && (
           <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 flex justify-between items-center">
             <span className="text-xs text-zinc-300 font-bold flex items-center gap-1">
-              <SkeletonIcon className="w-3.5 h-3.5 text-red-500" /> Destrucción
+              <WitcherIcon name="legendary" size={16} className="text-red-500" /> Destrucción
             </span>
             <div className="flex items-center gap-2">
               <button type="button" onClick={() => onAutomaChange((p) => ({ ...p, destructionTokens: Math.max(0, p.destructionTokens - 1) }))} className="automa-touch-btn px-2 py-1 text-xs bg-zinc-900 border border-zinc-800 rounded-lg">-</button>

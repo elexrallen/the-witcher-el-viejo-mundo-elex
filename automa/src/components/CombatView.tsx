@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Activity, Sword, Layers } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 import { CombatState, WitcherSchool } from "../types";
 import WitcherCard from "./WitcherCard";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
@@ -40,7 +40,7 @@ export default function CombatView({
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
           <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-red-500" />
+              <WitcherIcon name="combat" size={22} className="text-red-500" />
               <h2 className="font-display text-base sm:text-lg font-black text-red-400 uppercase">
                 vs {combat.opponentName}
               </h2>
@@ -71,7 +71,7 @@ export default function CombatView({
               className="py-3 min-h-[var(--touch-min)] bg-red-600 hover:bg-red-500 disabled:bg-zinc-800 text-white font-black rounded-xl flex items-center justify-center gap-2 text-sm font-display uppercase"
               id="combat-attack-btn"
             >
-              <Sword className="w-4 h-4" /> Atacar (Automa)
+              <WitcherIcon name="sword" size={18} /> Atacar (Automa)
             </button>
             <div className="flex gap-2">
               <input
@@ -138,7 +138,7 @@ export default function CombatView({
               <div
                 key={logIdx}
                 className={`border-l-2 pl-2 ${
-                  logLine.includes("⚡") ? "border-red-500 text-red-300" : logLine.includes("Turno Automa") ? "border-orange-500 text-orange-300" : "border-zinc-800 text-zinc-400"
+                  logLine.includes("⚡") ? "border-red-500 text-red-300" : logLine.includes("Turno Automa") || logLine.includes("Ataque") ? "border-orange-500 text-orange-300" : "border-zinc-800 text-zinc-400"
                 }`}
               >
                 {logLine}
@@ -148,20 +148,10 @@ export default function CombatView({
         </div>
 
         <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => onEndCombat(true)}
-            className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-emerald-950 text-emerald-400 font-display font-black rounded-xl text-xs uppercase"
-            id="combat-win-btn"
-          >
+          <button type="button" onClick={() => onEndCombat(true)} className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-emerald-950 text-emerald-400 font-display font-black rounded-xl text-xs uppercase" id="combat-win-btn">
             Automa gana
           </button>
-          <button
-            type="button"
-            onClick={() => onEndCombat(false)}
-            className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-red-950 text-red-400 font-display font-black rounded-xl text-xs uppercase"
-            id="combat-lose-btn"
-          >
+          <button type="button" onClick={() => onEndCombat(false)} className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-red-950 text-red-400 font-display font-black rounded-xl text-xs uppercase" id="combat-lose-btn">
             Automa pierde
           </button>
         </div>
@@ -169,11 +159,7 @@ export default function CombatView({
         {isMobile ? (
           <>
             {combat.revealedCard && (
-              <button
-                type="button"
-                onClick={() => setCardSheetOpen(!cardSheetOpen)}
-                className="combat-card-sheet__toggle py-2 text-xs text-orange-400 font-bold uppercase"
-              >
+              <button type="button" onClick={() => setCardSheetOpen(!cardSheetOpen)} className="combat-card-sheet__toggle py-2 text-xs text-orange-400 font-bold uppercase">
                 {cardSheetOpen ? "Ocultar carta" : "Ver carta revelada"}
               </button>
             )}
@@ -188,7 +174,7 @@ export default function CombatView({
                 </div>
               ) : (
                 <div className="p-6 text-center text-zinc-500 text-sm">
-                  <Layers className="w-10 h-10 mx-auto mb-2" />
+                  <WitcherIcon name="cards" size={40} className="mx-auto mb-2 text-zinc-600" />
                   Pulsa Atacar para revelar carta
                 </div>
               )}
@@ -206,7 +192,7 @@ export default function CombatView({
               </>
             ) : (
               <div className="w-full max-w-[280px] min-h-[12rem] border-2 border-dashed border-zinc-800 rounded-2xl flex flex-col justify-center items-center p-6 text-zinc-500 text-center text-sm">
-                <Layers className="w-12 h-12 mb-3" />
+                <WitcherIcon name="cards" size={48} className="mb-3 text-zinc-600" />
                 Pulsa Atacar (Automa) para revelar carta
               </div>
             )}

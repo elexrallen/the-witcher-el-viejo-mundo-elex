@@ -1,19 +1,5 @@
-import { useState, type ReactNode } from "react";
-import {
-  ShieldAlert,
-  Zap,
-  Flame,
-  Shield,
-  Skull,
-  Droplet,
-  Play,
-  ChevronLeft,
-  ChevronRight,
-  Dices,
-  Layers,
-  Anchor,
-  Skull as SkeletonIcon,
-} from "lucide-react";
+import { useState } from "react";
+import { WitcherIcon, SchoolIcon, type WitcherIconName } from "./WitcherIcon";
 import { WitcherSchoolId, WitcherSchool } from "../types";
 import { WITCHER_SCHOOLS } from "../data/schools";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
@@ -40,15 +26,6 @@ type SetupWizardProps = {
 };
 
 const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
-
-const SCHOOL_ICONS: Record<WitcherSchoolId, ReactNode> = {
-  wolf: <ShieldAlert className="w-4 h-4 text-red-400" />,
-  cat: <Zap className="w-4 h-4 text-emerald-400" />,
-  griffin: <Flame className="w-4 h-4 text-amber-400" />,
-  bear: <Shield className="w-4 h-4 text-amber-600" />,
-  viper: <Skull className="w-4 h-4 text-purple-400" />,
-  manticore: <Droplet className="w-4 h-4 text-cyan-400" />,
-};
 
 function DeckTable({ difficulty }: { difficulty: Difficulty }) {
   const action =
@@ -87,25 +64,27 @@ function DeckTable({ difficulty }: { difficulty: Difficulty }) {
   );
 }
 
-export default function SetupWizard({
-  selectedSchoolId,
-  onSchoolChange,
-  difficulty,
-  onDifficultyChange,
-  useDicePoker,
-  onDicePokerChange,
-  useMutagens,
-  onMutagensChange,
-  useSkellige,
-  onSkelligeChange,
-  useLegendaryHunt,
-  onLegendaryHuntChange,
-  selectedSchool,
-  onStart,
-}: SetupWizardProps) {
+export default function SetupWizard(props: SetupWizardProps) {
   const isMobile = useIsMobile();
   const [step, setStep] = useState(0);
   const [showBonusTip, setShowBonusTip] = useState(false);
+
+  const {
+    selectedSchoolId,
+    onSchoolChange,
+    difficulty,
+    onDifficultyChange,
+    useDicePoker,
+    onDicePokerChange,
+    useMutagens,
+    onMutagensChange,
+    useSkellige,
+    onSkelligeChange,
+    useLegendaryHunt,
+    onLegendaryHuntChange,
+    selectedSchool,
+    onStart,
+  } = props;
 
   const bonusLabel = (id: WitcherSchoolId) => {
     if (id === "wolf") return "+1 Daño";
@@ -114,8 +93,12 @@ export default function SetupWizard({
     return "+1 Daño / +1 Escudo";
   };
 
-  const canNext = step < STEPS.length - 1;
-  const canPrev = step > 0;
+  const modules = [
+    { checked: useDicePoker, onChange: onDicePokerChange, icon: "dice" as const, title: "Póker de Dados", desc: "Rerolls con cartas del mazo Desafío." },
+    { checked: useMutagens, onChange: onMutagensChange, icon: "magic" as const, title: "Mutágenos y Debilidad", desc: "Mutaciones y debilitar monstruos con rastros." },
+    { checked: useSkellige, onChange: onSkelligeChange, icon: "sail" as const, title: "Skellige", desc: "Islas, barcos y pista de Dagon." },
+    { checked: useLegendaryHunt, onChange: onLegendaryHuntChange, icon: "legendary" as const, title: "Cacería Legendaria", desc: "Fichas de destrucción vs jefe legendario." },
+  ];
 
   return (
     <main className="setup-wizard flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6" id="setup-view">
@@ -165,7 +148,7 @@ export default function SetupWizard({
                       >
                         <div className="flex items-center justify-between w-full gap-1">
                           <span className="font-display text-xs sm:text-sm font-bold">{school.name}</span>
-                          {SCHOOL_ICONS[school.id]}
+                          <SchoolIcon school={school.id} size={20} />
                         </div>
                         <span className="text-[10px] font-mono mt-2 text-orange-400 font-black uppercase">
                           {bonusLabel(school.id)}
@@ -174,16 +157,12 @@ export default function SetupWizard({
                     );
                   })}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowBonusTip(!showBonusTip)}
-                  className="mt-3 text-xs text-orange-400 underline cursor-pointer"
-                >
+                <button type="button" onClick={() => setShowBonusTip(!showBonusTip)} className="mt-3 text-xs text-orange-400 underline cursor-pointer">
                   {showBonusTip ? "Ocultar" : "¿Qué significan los bonos de escuela?"}
                 </button>
                 {showBonusTip && (
                   <p className="mt-2 text-xs text-zinc-400 leading-relaxed bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
-                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza (+daño o +escudo según escuela).
+                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza.
                   </p>
                 )}
               </div>
@@ -191,9 +170,7 @@ export default function SetupWizard({
 
             {step === 1 && (
               <div className="space-y-4">
-                <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono font-bold">
-                  Nivel de Dificultad
-                </label>
+                <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono font-bold">Nivel de Dificultad</label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { key: "easy" as const, label: "Fácil", desc: "13 Acciones / 11 Desafíos" },
@@ -221,37 +198,19 @@ export default function SetupWizard({
 
             {step === 2 && (
               <div className="space-y-3">
-                <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono font-bold mb-2">
-                  Módulos y expansiones
-                </label>
-                {[
-                  { checked: useDicePoker, onChange: onDicePokerChange, icon: Dices, title: "Póker de Dados", desc: "Rerolls con cartas del mazo Desafío." },
-                  { checked: useMutagens, onChange: onMutagensChange, icon: Layers, title: "Mutágenos y Debilidad", desc: "Mutaciones y debilitar monstruos con rastros." },
-                  { checked: useSkellige, onChange: onSkelligeChange, icon: Anchor, title: "Skellige", desc: "Islas, barcos y pista de Dagon." },
-                  { checked: useLegendaryHunt, onChange: onLegendaryHuntChange, icon: SkeletonIcon, title: "Cacería Legendaria", desc: "Fichas de destrucción vs jefe legendario." },
-                ].map((mod) => {
-                  const Icon = mod.icon;
-                  return (
-                    <label
-                      key={mod.title}
-                      className="flex items-start gap-3 cursor-pointer select-none min-h-[var(--touch-min)] p-3 rounded-xl border border-zinc-850 bg-zinc-950/40"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={mod.checked}
-                        onChange={(e) => mod.onChange(e.target.checked)}
-                        className="mt-1 accent-orange-500"
-                      />
-                      <div>
-                        <span className="font-display text-xs font-bold text-zinc-200 flex items-center gap-1.5 uppercase">
-                          <Icon className="w-3.5 h-3.5 text-orange-500" />
-                          {mod.title}
-                        </span>
-                        <p className="text-[10px] text-zinc-500 mt-0.5">{mod.desc}</p>
-                      </div>
-                    </label>
-                  );
-                })}
+                <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono font-bold mb-2">Módulos y expansiones</label>
+                {modules.map((mod) => (
+                  <label key={mod.title} className="flex items-start gap-3 cursor-pointer select-none min-h-[var(--touch-min)] p-3 rounded-xl border border-zinc-850 bg-zinc-950/40">
+                    <input type="checkbox" checked={mod.checked} onChange={(e) => mod.onChange(e.target.checked)} className="mt-1 accent-orange-500" />
+                    <div>
+                      <span className="font-display text-xs font-bold text-zinc-200 flex items-center gap-1.5 uppercase">
+                        <WitcherIcon name={mod.icon} size={16} className="text-orange-500" />
+                        {mod.title}
+                      </span>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">{mod.desc}</p>
+                    </div>
+                  </label>
+                ))}
               </div>
             )}
 
@@ -264,60 +223,36 @@ export default function SetupWizard({
                     {[useDicePoker && "Póker", useMutagens && "Mutágenos", useSkellige && "Skellige", useLegendaryHunt && "Cacería"].filter(Boolean).join(", ") || "Ninguno"}
                   </p>
                 </div>
-                {!isMobile && (
-                  <div className="flex justify-center">
-                    <SpecialSchoolCardComponent school={selectedSchool} />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={onStart}
-                  className="w-full btn btn--primary font-display uppercase tracking-wider flex items-center justify-center gap-2 min-h-[var(--touch-min)]"
-                  id="start-game-btn"
-                >
-                  <Play className="w-5 h-5 fill-current" />
+                {!isMobile && <div className="flex justify-center"><SpecialSchoolCardComponent school={selectedSchool} /></div>}
+                <button type="button" onClick={onStart} className="w-full btn btn--primary font-display uppercase tracking-wider flex items-center justify-center gap-2 min-h-[var(--touch-min)]" id="start-game-btn">
+                  <WitcherIcon name="play" size={22} />
                   Iniciar Misión en Solitario
                 </button>
               </div>
             )}
 
             <div className="setup-wizard__nav flex gap-3 mt-6 pt-4 border-t border-zinc-850">
-              <button
-                type="button"
-                onClick={() => setStep((s) => s - 1)}
-                disabled={!canPrev}
-                className="flex-1 py-3 btn btn--secondary flex items-center justify-center gap-1 min-h-[var(--touch-min)] disabled:opacity-40"
-              >
-                <ChevronLeft className="w-4 h-4" /> Anterior
+              <button type="button" onClick={() => setStep((s) => s - 1)} disabled={step === 0} className="flex-1 py-3 btn btn--secondary flex items-center justify-center gap-1 min-h-[var(--touch-min)] disabled:opacity-40">
+                <WitcherIcon name="chevron-left" size={16} /> Anterior
               </button>
-              {canNext ? (
-                <button
-                  type="button"
-                  onClick={() => setStep((s) => s + 1)}
-                  className="flex-1 py-3 btn btn--primary flex items-center justify-center gap-1 min-h-[var(--touch-min)]"
-                >
-                  Siguiente <ChevronRight className="w-4 h-4" />
+              {step < STEPS.length - 1 && (
+                <button type="button" onClick={() => setStep((s) => s + 1)} className="flex-1 py-3 btn btn--primary flex items-center justify-center gap-1 min-h-[var(--touch-min)]">
+                  Siguiente <WitcherIcon name="chevron-right" size={16} />
                 </button>
-              ) : null}
+              )}
             </div>
           </div>
 
           {isMobile && step === 3 && (
-            <div className="mt-4 flex justify-center">
-              <SpecialSchoolCardComponent school={selectedSchool} />
-            </div>
+            <div className="mt-4 flex justify-center"><SpecialSchoolCardComponent school={selectedSchool} /></div>
           )}
 
-          <div className="mt-6">
-            <PlayerAssistantLinks compact />
-          </div>
+          <div className="mt-6"><PlayerAssistantLinks compact /></div>
         </div>
 
         {!isMobile && (
           <div className="w-full lg:w-[340px] shrink-0 flex flex-col items-center bg-zinc-950/60 border border-zinc-850 p-6 rounded-2xl gap-4">
-            <span className="text-[10px] uppercase tracking-widest text-orange-400 font-mono font-black">
-              Carta de Habilidad Especial
-            </span>
+            <span className="text-[10px] uppercase tracking-widest text-orange-400 font-mono font-black">Carta de Habilidad Especial</span>
             <SpecialSchoolCardComponent school={selectedSchool} />
           </div>
         )}

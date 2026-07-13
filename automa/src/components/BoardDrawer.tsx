@@ -1,4 +1,4 @@
-import { X, LayoutDashboard } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 import { AutomaState } from "../types";
 import AutomaBoard from "./AutomaBoard";
 
@@ -16,14 +16,8 @@ type BoardDrawerProps = {
 
 export function BoardFab({ trophies, onClick }: { trophies: number; onClick: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="board-fab"
-      id="board-fab"
-      aria-label="Estado del Automa"
-    >
-      <LayoutDashboard className="w-5 h-5" />
+    <button type="button" onClick={onClick} className="board-fab" id="board-fab" aria-label="Estado del Automa">
+      <WitcherIcon name="state" size={22} />
       <span className="board-fab__label">Estado</span>
       <span className="board-fab__badge">{trophies}/4</span>
     </button>
@@ -50,7 +44,7 @@ export default function BoardDrawer({
         <div className="board-drawer__header">
           <h2 className="font-display text-sm font-black text-orange-400 uppercase">Estado del Automa</h2>
           <button type="button" onClick={onClose} className="board-drawer__close automa-touch-btn" aria-label="Cerrar">
-            <X className="w-5 h-5" />
+            <WitcherIcon name="close" size={20} />
           </button>
         </div>
         <div className="board-drawer__body">

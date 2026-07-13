@@ -1,18 +1,18 @@
-import { ArrowRight, Map, ScrollText } from "lucide-react";
+import { WitcherIcon } from "./WitcherIcon";
 
 const TOOLS = [
   {
     href: "../exploracion.html",
     title: "Exploración",
     description: "Mazos barajados de Ciudad y Tierras Salvajes con revelado progresivo.",
-    icon: Map,
+    icon: "map" as const,
     id: "tool-exploracion",
   },
   {
     href: "../eventos.html",
     title: "Eventos",
     description: "Cartas numeradas de campaña, misiones y expansiones.",
-    icon: ScrollText,
+    icon: "scroll" as const,
     id: "tool-eventos",
   },
 ] as const;
@@ -31,21 +31,18 @@ export default function PlayerAssistantLinks({ compact = false }: PlayerAssistan
       </p>
 
       <div className="automa-assistant__grid">
-        {TOOLS.map((tool) => {
-          const Icon = tool.icon;
-          return (
-            <a key={tool.id} href={tool.href} id={tool.id} className="automa-assistant__card">
-              <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
-                <span className="automa-assistant__title">{tool.title}</span>
-                <Icon aria-hidden style={{ width: "1rem", height: "1rem", color: "var(--gold-bright)" }} />
-              </div>
-              <p className="automa-assistant__desc">{tool.description}</p>
-              <span className="automa-assistant__cta">
-                Abrir <ArrowRight style={{ width: "0.85rem", height: "0.85rem", display: "inline" }} />
-              </span>
-            </a>
-          );
-        })}
+        {TOOLS.map((tool) => (
+          <a key={tool.id} href={tool.href} id={tool.id} className="automa-assistant__card">
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
+              <span className="automa-assistant__title">{tool.title}</span>
+              <WitcherIcon name={tool.icon} size={18} className="text-[var(--gold-bright)]" />
+            </div>
+            <p className="automa-assistant__desc">{tool.description}</p>
+            <span className="automa-assistant__cta">
+              Abrir <WitcherIcon name="arrow-right" size={14} className="inline align-middle ml-0.5" />
+            </span>
+          </a>
+        ))}
       </div>
     </section>
   );

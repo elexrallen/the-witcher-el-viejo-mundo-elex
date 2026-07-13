@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { RefreshCw, Play, Info, CheckCircle2 } from 'lucide-react';
+import { WitcherIcon } from './WitcherIcon';
 import { ChallengeCard } from '../types';
 import { GENERIC_CHALLENGE_CARDS } from '../data/cards';
 
@@ -178,7 +178,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
         </svg>
         {isKept && (
           <div className="absolute -top-1.5 -right-1.5 bg-amber-500 text-neutral-950 rounded-full p-0.5" style={{ fontSize: '7px' }}>
-            <CheckCircle2 className="w-3 h-3 stroke-[3]" />
+            <WitcherIcon name="check" size={12} className="text-neutral-950" />
           </div>
         )}
       </div>
@@ -255,7 +255,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
             className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm font-display tracking-wide shadow-lg shadow-purple-900/20"
             id="roll-first-btn"
           >
-            <Play className="w-4 h-4 fill-current" />
+            <WitcherIcon name="play" size={16} />
             Lanzar Primer Tiro (5 Dados)
           </button>
         )}
@@ -267,7 +267,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
             className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-neutral-950 font-bold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm font-display tracking-wide shadow-lg shadow-amber-900/20"
             id="draw-poker-card-btn"
           >
-            <RefreshCw className="w-4 h-4" />
+            <WitcherIcon name="refresh" size={16} />
             Robar Carta de Decisión para Relanzar
           </button>
         )}
@@ -275,7 +275,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
         {pokerStep === 'card_drawn' && drawnCard && (
           <div className="bg-purple-950/20 border border-purple-900/40 p-3.5 rounded-xl text-xs space-y-2">
             <div className="flex items-center gap-1.5 text-purple-200 font-bold uppercase tracking-tight font-display text-xs">
-              <Info className="w-4 h-4 text-purple-400" />
+              <WitcherIcon name="info" size={16} className="text-purple-400" />
               <span>Instrucción del Mazo: "{drawnCard.pokerPattern}"</span>
             </div>
             <p className="text-zinc-300 leading-normal">{pokerPatternExplanation}</p>
@@ -288,7 +288,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
               className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg flex items-center justify-center gap-2 mt-2 transition-colors cursor-pointer text-sm font-display tracking-wide"
               id="roll-second-btn"
             >
-              <RefreshCw className="w-4 h-4 animate-spin-slow" />
+              <WitcherIcon name="refresh" size={16} className="witcher-icon--spin" />
               Relanzar Dados Libres (Tirada Final)
             </button>
           </div>
@@ -305,7 +305,7 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
               className="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-250 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer text-xs"
               id="reset-poker-btn"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <WitcherIcon name="refresh" size={14} />
               Nueva Partida de Dados
             </button>
           </div>

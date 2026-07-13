@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { ActionCard, ChallengeCard, WitcherSchool } from '../types';
-import { Shield, Swords, Sparkles, AlertTriangle, Trash2, Compass, Award, ShieldAlert, Zap, Flame, Skull, Droplet } from 'lucide-react';
+import { formatMovementPM } from '../utils/actionCard';
+import { WitcherIcon, SchoolIcon } from './WitcherIcon';
 
 interface WitcherCardProps {
   card: ActionCard | ChallengeCard;
@@ -30,17 +31,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
     return `Nivel ${lvl}`;
   };
 
-  // Helper to render school icons
-  const renderSchoolIcon = (schoolId?: string, sizeClass: string = 'w-4 h-4') => {
-    switch (schoolId) {
-      case 'wolf': return <ShieldAlert className={`${sizeClass} text-red-500`} />;
-      case 'cat': return <Zap className={`${sizeClass} text-emerald-500`} />;
-      case 'griffin': return <Flame className={`${sizeClass} text-amber-500`} />;
-      case 'bear': return <Shield className={`${sizeClass} text-amber-600`} />;
-      case 'viper': return <Skull className={`${sizeClass} text-purple-500`} />;
-      case 'manticore': return <Droplet className={`${sizeClass} text-cyan-500`} />;
-      default: return <Sparkles className={`${sizeClass} text-amber-500`} />;
-    }
+  const renderSchoolIcon = (schoolId?: string, size = 16) => {
+    if (!schoolId) return <WitcherIcon name="magic" size={size} className="text-amber-500" />;
+    return <SchoolIcon school={schoolId} size={size} />;
   };
 
   if (type === 'action') {
@@ -64,14 +57,14 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         {/* Travel Destination & Movement */}
         <div className="bg-zinc-950 rounded-xl p-3 mb-3 border border-zinc-850 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Compass className="w-5 h-5 text-orange-500 shrink-0" />
+            <WitcherIcon name="compass" size={22} className="text-orange-500 shrink-0" />
             <div>
               <div className="text-[9px] uppercase font-mono tracking-wider text-zinc-500 font-bold">Viajar hacia</div>
               <div className="text-sm font-display font-bold text-white tracking-tight">{actCard.destination}</div>
             </div>
           </div>
           <div className="bg-orange-600 text-white px-2.5 py-1 rounded-lg flex flex-col items-center justify-center shrink-0 min-w-[36px]">
-            <span className="text-sm font-mono font-black leading-none">{actCard.movement === 99 ? '∞' : actCard.movement}</span>
+            <span className="text-sm font-mono font-black leading-none">{formatMovementPM(actCard.movement)}</span>
             <span className="text-[8px] font-mono uppercase font-bold leading-none mt-0.5">PM</span>
           </div>
         </div>
@@ -86,7 +79,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
-              <Award className="w-3.5 h-3.5 shrink-0" />
+              <WitcherIcon name="trophy" size={14} className="shrink-0" />
               <span className="font-sans">
                 {(() => {
                   if (!actCard.attributeBonus) return 'Ningún Atributo';
@@ -114,7 +107,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
-              <Droplet className="w-3.5 h-3.5 shrink-0" />
+              <WitcherIcon name="potion" size={14} className="shrink-0" />
               <span className="font-sans">{actCard.potionBonus ? 'Coger Poción' : 'Sin Poción'}</span>
             </div>
 
@@ -124,7 +117,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
-              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <WitcherIcon name="bomb" size={14} className="shrink-0" />
               <span className="font-sans">{actCard.bombBonus ? 'Coger Bomba' : 'Sin Bomba'}</span>
             </div>
 
@@ -134,7 +127,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
-              <Compass className="w-3.5 h-3.5 shrink-0" />
+              <WitcherIcon name="trail" size={14} className="shrink-0" />
               <span className="font-sans">{actCard.trailBonus ? 'Obtener Rastro' : 'Sin Rastro'}</span>
             </div>
           </div>
@@ -144,7 +137,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         <div className="bg-zinc-900 rounded-xl p-2.5 border border-zinc-850 mb-3 text-center">
           <div className="text-[9px] uppercase font-mono tracking-wider text-zinc-500 font-bold mb-0.5">Fase II: Requisito de Combate</div>
           <div className="text-xs font-sans font-medium text-orange-500 flex items-center justify-center gap-1.5">
-            <AlertTriangle className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+            <WitcherIcon name="alert" size={14} className="text-orange-500 shrink-0" />
             <span>{actCard.combatRequirement}</span>
           </div>
         </div>
@@ -152,7 +145,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         {/* Phase III: Market discards */}
         <div className="border-t border-zinc-800 pt-3 flex items-center justify-between text-xs mt-auto">
           <div className="flex items-center gap-1 text-zinc-400">
-            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+            <WitcherIcon name="trash" size={14} className="text-red-500" />
             <span className="font-sans text-[11px] font-bold">Descartar Mercado:</span>
           </div>
           <div className="flex gap-1">
@@ -189,7 +182,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           <div className="bg-zinc-950 border border-zinc-850 rounded-xl p-2.5 text-center flex flex-col items-center justify-center">
             <div className="text-[8px] uppercase font-mono tracking-wider text-zinc-500 font-bold">Ataque Base</div>
             <div className="flex items-center gap-1 mt-1 font-bold text-red-400 text-sm">
-              <Swords className="w-4 h-4 text-red-500" />
+              <WitcherIcon name="sword" size={18} className="text-red-500" />
               <span className="font-display">{chaCard.damage} Daño</span>
             </div>
           </div>
@@ -198,7 +191,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           <div className="bg-zinc-950 border border-zinc-850 rounded-xl p-2.5 text-center flex flex-col items-center justify-center">
             <div className="text-[8px] uppercase font-mono tracking-wider text-zinc-500 font-bold">Defensa Activa</div>
             <div className="flex items-center gap-1 mt-1 font-bold text-sky-400 text-sm">
-              <Shield className="w-4 h-4 text-sky-500" />
+              <WitcherIcon name="shield" size={18} className="text-sky-500" />
               <span className="font-display">+{chaCard.shields} Escudo</span>
             </div>
           </div>
@@ -212,7 +205,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
               ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
               : 'bg-zinc-900/20 border-transparent text-zinc-650'
           }`}>
-            {school ? renderSchoolIcon(school.id, 'w-3.5 h-3.5') : <Sparkles className="w-3.5 h-3.5 text-zinc-650" />}
+            {school ? renderSchoolIcon(school.id, 14) : <WitcherIcon name="magic" size={14} className="text-zinc-500" />}
             <span className="font-sans">{chaCard.schoolSymbol ? 'Activa Bono' : 'Sin Bono'}</span>
           </div>
 
@@ -222,7 +215,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
               ? 'bg-zinc-900 border-orange-900/30 text-orange-400 font-semibold' 
               : 'bg-zinc-900/20 border-transparent text-zinc-650'
           }`}>
-            <Droplet className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+            <WitcherIcon name="potion" size={14} className="text-orange-400 shrink-0" />
             <span className="font-sans">{chaCard.consumableSlot ? 'Usa Poción' : 'Sin Poción'}</span>
           </div>
         </div>
@@ -231,7 +224,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         {chaCard.reaction ? (
           <div className="bg-red-950/25 border border-red-900/30 rounded-xl p-3 mb-3 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-8 h-8 opacity-10 rotate-12 shrink-0">
-              <Shield className="w-full h-full text-red-500" />
+              <WitcherIcon name="shield" size={32} className="text-red-500 opacity-10" />
             </div>
             <div className="text-[9px] uppercase font-mono tracking-wider text-red-400 mb-1 flex items-center gap-1 font-bold">
               <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
