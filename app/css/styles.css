@@ -153,7 +153,9 @@ body.play-mode .header:focus-within {
 }
 
 .header__sigil {
-  font-size: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--gold);
   filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.35));
 }
@@ -180,6 +182,33 @@ body.play-mode .header:focus-within {
 
 .panel--settings {
   margin-bottom: 1rem;
+}
+
+.pwa-install-wrap {
+  margin-top: 1.25rem;
+}
+
+.pwa-install {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(201, 162, 39, 0.06);
+}
+
+.pwa-install h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.pwa-install__hint,
+.pwa-install__ios {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.pwa-install .btn {
+  width: 100%;
 }
 
 .panel--settings[hidden],
@@ -1065,7 +1094,7 @@ kbd {
   }
 
   .header__sigil {
-    font-size: 1.35rem;
+    flex-shrink: 0;
   }
 
   .header__actions {
@@ -1759,7 +1788,8 @@ kbd {
 
 /* —— UX: iconos, tooltips, navegación móvil —— */
 
-.icon {
+.icon,
+.witcher-icon {
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;

@@ -48,6 +48,17 @@ def main() -> int:
         if code != 0:
             return code
 
+    export_icons = ROOT / "scripts" / "export_app_icons.mjs"
+    if export_icons.is_file() and shutil.which("node"):
+        print("> node scripts/export_app_icons.mjs")
+        icon_result = subprocess.run(
+            ["node", str(export_icons)],
+            cwd=ROOT,
+            check=False,
+        )
+        if icon_result.returncode != 0:
+            print("Aviso: no se pudieron regenerar iconos de la app.", file=sys.stderr)
+
     if not APP_DIR.is_dir():
         print(f"No existe la carpeta de la app: {APP_DIR}", file=sys.stderr)
         return 1

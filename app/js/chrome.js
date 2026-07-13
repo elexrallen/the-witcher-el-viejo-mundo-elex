@@ -1,16 +1,18 @@
 import { enhanceIconElements, icon } from "./icons.js";
 import { initTooltips } from "./tooltip.js";
+import { initPwa } from "./pwa.js";
 
 const NAV_ITEMS = [
   { id: "home", href: "index.html", label: "Inicio", icon: "home" },
   { id: "exploracion", href: "exploracion.html", label: "Explorar", icon: "map" },
   { id: "eventos", href: "eventos.html", label: "Eventos", icon: "scroll" },
-  { id: "automa", href: "automa/", label: "Automa", icon: "bot" },
+  { id: "automa", href: "automa/", label: "Automa", icon: "automa" },
 ];
 
 export function initAppChrome({ page }) {
   enhanceIconElements();
   initTooltips();
+  initPwa();
   upgradeSettingsButton();
   injectBottomNav(page);
   initCollapsibleSections();

@@ -59,9 +59,14 @@ https://elexrallen.github.io/the-witcher-el-viejo-mundo-elex/
 - Eventos: `.../eventos.html`
 - Automa: `.../automa/`
 
-### 5. Añadir a la pantalla de inicio (móvil)
+### 5. Instalar como aplicación (PWA)
 
-Abre la URL en el navegador del móvil → **Añadir a pantalla de inicio**.
+La app se puede instalar desde el navegador para usarla a pantalla completa:
+
+- **Android / Chrome / Edge:** menú del navegador → **Instalar app**, o el botón **Instalar app** en Inicio / Configuración (⚙).
+- **iPhone / iPad:** Safari → **Compartir** → **Añadir a pantalla de inicio** (instrucciones también en Configuración).
+
+Requisito: servir por **HTTPS** (GitHub Pages) o `localhost` en desarrollo.
 
 ## Estructura
 
@@ -79,6 +84,7 @@ Abre la URL en el navegador del móvil → **Añadir a pantalla de inicio**.
 |--------|-------------|
 | `scripts/sync_images.py` | Copia `data/images` → `app/data/images` |
 | `scripts/build_automa.py` | Compila el Automa con Vite |
+| `scripts/export_app_icons.mjs` | Regenera `app/js/icons.js` (Game Icons, mismo set que Automa) |
 | `scripts/prepare_pages.py` | Genera `_site/` para probar el despliegue local |
 
 Probar el sitio como en GitHub Pages:
