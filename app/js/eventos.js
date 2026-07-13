@@ -34,22 +34,6 @@ const DATA_URL = "data/eventos.json";
 const STORAGE_KEY = "witcher-eventos-v1";
 const MAIN_DECK_ID = "eventos";
 
-const EQUIPMENT_RE = /equipamiento/i;
-const COMPANION_RE = /compa[nñ]ero/i;
-const KEEP_RE = /deja\s+esta\s+carta\s+(?:frente\s+a\s+ti|delante\s+de\s+ti)/i;
-
-const PERSISTENT_TYPE_LABELS = {
-  equipment: "Equipamiento",
-  companion: "Compañero",
-  keep: "Carta en mesa",
-};
-
-const STASH_GROUP_ORDER = [
-  { type: "equipment", label: "Equipamiento", icon: "shield" },
-  { type: "companion", label: "Compañeros", icon: "magic" },
-  { type: "keep", label: "Otras", icon: "stash" },
-];
-
 const state = {
   data: null,
   session: loadPartidaSession(),
@@ -137,6 +121,11 @@ async function init() {
     hint: els.cardRevealHint,
     resetButton: els.btnRevealReset,
     zoomImage: els.zoomImage,
+    onRevealChange: () => {
+      if (state.cardRevealed) {
+        renderStashActions();
+      }
+    },
   });
   loadPersistedState();
 
@@ -160,7 +149,7 @@ async function init() {
       state.stashViewPlayer = session.activePlayer;
       updateRoleBanner();
       updateInstruction();
-      renderPersistentActions();
+      renderStashActions();
       updateStashIndicators();
       if (els.stashDialog?.open) {
         renderStashPanel();
@@ -280,7 +269,7 @@ function bindEvents() {
     }
     if (clearStashForPlayer(state.session.activePlayer)) {
       showToast("Cartas en mesa vaciadas");
-      renderPersistentActions();
+      renderStashActions();
       updateStashIndicators();
       if (els.stashDialog?.open) {
         renderStashPanel();
@@ -296,7 +285,7 @@ function bindEvents() {
     }
     if (clearAllStash()) {
       showToast("Cartas en mesa vaciadas");
-      renderPersistentActions();
+      renderStashActions();
       updateStashIndicators();
       if (els.stashDialog?.open) {
         renderStashPanel();
@@ -733,193 +722,41 @@ function renderRevealedCard(deck, card) {
   els.btnZoom.disabled = false;
   setCardImage(card);
   cardReveal?.show();
-  renderPersistentActions();
+  renderStashActions();
 }
 
-function getPersistentMeta(card) {
-  if (card.persistent) {
-    return card.persistent;
-  }
-  return detectPersistentRuntime(card.structured || {}, card.number);
+function isCardFullyRevealed() {
+  return (cardReveal?.getReveal?.() ?? 0) >= 100;
 }
 
-function detectPersistentRuntime(structured, position) {
-  const texts = collectCardText(structured);
-  if (texts.length === 0) {
-    return null;
-  }
-
-  let persistentType = null;
-  for (const text of texts) {
-    if (EQUIPMENT_RE.test(text)) {
-      persistentType = "equipment";
-      break;
-    }
-    if (COMPANION_RE.test(text)) {
-      persistentType = "companion";
-      break;
-    }
-  }
-
-  if (!persistentType) {
-    for (const text of texts) {
-      if (KEEP_RE.test(text)) {
-        persistentType = "keep";
-        break;
-      }
-    }
-  }
-
-  if (!persistentType) {
-    return null;
-  }
-
-  return {
-    type: persistentType,
-    label: extractPersistentLabel(texts, persistentType, position),
-  };
-}
-
-function collectCardText(structured) {
-  const texts = [];
-  for (const paragraph of structured.paragraphs || []) {
-    if (typeof paragraph === "string" && paragraph.trim()) {
-      texts.push(paragraph.trim());
-    }
-  }
-  for (const option of structured.options || []) {
-    if (option && typeof option === "object") {
-      for (const key of ["text", "label"]) {
-        const value = option[key];
-        if (typeof value === "string" && value.trim()) {
-          texts.push(value.trim());
-        }
-      }
-    }
-  }
-  for (const effect of structured.effects || []) {
-    if (typeof effect === "string" && effect.trim()) {
-      texts.push(effect.trim());
-    }
-  }
-  return texts;
-}
-
-function cleanLabel(raw) {
-  let text = raw.trim().replace(/^[89]0[89]\s*/i, "");
-  text = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\s\-']+/g, " ");
-  text = text.replace(/\s+/g, " ").trim();
-  if (!text) {
-    return "";
-  }
-  if (text === text.toUpperCase() && text.length > 3) {
-    return text
-      .toLowerCase()
-      .replace(/(^|\s)\S/g, (char) => char.toUpperCase());
-  }
-  return text;
-}
-
-function extractLabelFromKeepLine(text) {
-  const match = KEEP_RE.exec(text);
-  if (!match) {
-    return "";
-  }
-  const remainder = text.slice(match.index + match[0].length).trim();
-  if (!remainder) {
-    return "";
-  }
-  const firstChunk = remainder.split(/[.:;]\s+/)[0];
-  return cleanLabel(firstChunk);
-}
-
-function extractPersistentLabel(texts, persistentType, position) {
-  for (const text of texts) {
-    if (persistentType === "equipment" && EQUIPMENT_RE.test(text)) {
-      for (const other of texts) {
-        if (other === text) {
-          continue;
-        }
-        const label = extractLabelFromKeepLine(other);
-        if (label) {
-          return label;
-        }
-        const cleaned = cleanLabel(other);
-        if (cleaned && !EQUIPMENT_RE.test(cleaned) && !KEEP_RE.test(cleaned)) {
-          return cleaned;
-        }
-      }
-    }
-    if (persistentType === "companion" && COMPANION_RE.test(text)) {
-      for (const other of texts) {
-        if (other === text) {
-          continue;
-        }
-        const label = extractLabelFromKeepLine(other);
-        if (label) {
-          return label;
-        }
-        const cleaned = cleanLabel(other);
-        if (cleaned && !COMPANION_RE.test(cleaned) && !KEEP_RE.test(cleaned)) {
-          return cleaned;
-        }
-      }
-    }
-  }
-
-  for (const text of texts) {
-    const label = extractLabelFromKeepLine(text);
-    if (label) {
-      return label;
-    }
-  }
-
-  for (const text of texts) {
-    if (KEEP_RE.test(text)) {
-      continue;
-    }
-    const cleaned = cleanLabel(text);
-    if (cleaned && cleaned.length <= 48) {
-      return cleaned;
-    }
-  }
-
-  return `Evento #${position}`;
-}
-
-function buildStashCardMeta(deck, card, persistent) {
+function buildStashCardMeta(deck, card) {
   const deckKey = getDeckKey(deck);
   return {
     id: makeCardId(deckKey, card.card_id),
     cardId: card.card_id,
     deckKey,
     number: card.number,
-    label: persistent.label,
-    type: persistent.type,
+    label: `Evento #${card.number}`,
+    type: "event",
     image: card.image,
   };
 }
 
-function renderPersistentActions() {
+function renderStashActions() {
   hidePersistentActions();
   if (!state.cardRevealed || !state.currentCard || !state.currentDeck) {
     return;
   }
 
-  const persistent = getPersistentMeta(state.currentCard);
-  if (!persistent) {
-    return;
-  }
-
   const activePlayer = state.session.activePlayer;
   const activeLabel = getActivePlayerLabel(activePlayer, state.session.playerCount);
-  const stashMeta = buildStashCardMeta(state.currentDeck, state.currentCard, persistent);
+  const stashMeta = buildStashCardMeta(state.currentDeck, state.currentCard);
   const alreadyInStash = hasCard(activePlayer, stashMeta.id);
-  const typeLabel = PERSISTENT_TYPE_LABELS[persistent.type] || "Carta en mesa";
+  const fullyRevealed = isCardFullyRevealed();
 
   els.eventPersistentBanner.innerHTML = `
-    <span class="event-persistent__type-badge" data-icon="${persistent.type === "equipment" ? "shield" : persistent.type === "companion" ? "magic" : "stash"}" data-icon-size="18" aria-hidden="true"></span>
-    <span><strong>${typeLabel}:</strong> ${persistent.label}</span>
+    <span class="event-persistent__type-badge" data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
+    <span><strong>Evento #${state.currentCard.number}</strong></span>
   `;
 
   if (alreadyInStash) {
@@ -929,6 +766,14 @@ function renderPersistentActions() {
         <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
         Ver en inventario
       </button>
+    `;
+  } else if (!fullyRevealed) {
+    els.eventPersistentActions.innerHTML = `
+      <button type="button" class="btn btn--primary btn--icon-label" data-action="add-stash" disabled>
+        <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
+        Añadir a cartas en mesa
+      </button>
+      <p class="event-persistent__hint muted">Revela la carta por completo para poder añadirla.</p>
     `;
   } else {
     els.eventPersistentActions.innerHTML = `
@@ -944,9 +789,13 @@ function renderPersistentActions() {
   enhanceIconElements(els.eventPersistent);
 
   els.eventPersistentActions.querySelector("[data-action='add-stash']")?.addEventListener("click", () => {
+    if (!isCardFullyRevealed()) {
+      showToast("Revela la carta por completo antes de añadirla");
+      return;
+    }
     if (addCard(activePlayer, stashMeta)) {
       showToast(`Añadido a cartas en mesa (${activeLabel})`);
-      renderPersistentActions();
+      renderStashActions();
       updateStashIndicators();
     }
   });
@@ -1018,56 +867,32 @@ function renderStashPanel() {
     return;
   }
 
-  const grouped = new Map(STASH_GROUP_ORDER.map((group) => [group.type, []]));
-  for (const card of cards) {
-    const bucket = grouped.get(card.type) || grouped.get("keep");
-    bucket.push(card);
-  }
+  const list = document.createElement("ul");
+  list.className = "event-stash__items";
 
-  for (const group of STASH_GROUP_ORDER) {
-    const items = grouped.get(group.type) || [];
-    if (items.length === 0) {
-      continue;
-    }
-
-    const section = document.createElement("section");
-    section.className = "event-stash__group";
-    section.innerHTML = `
-      <h3 class="event-stash__group-title">
-        <span data-icon="${group.icon}" data-icon-size="18" aria-hidden="true"></span>
-        ${group.label}
-      </h3>
+  for (const item of [...cards].sort((a, b) => a.number - b.number)) {
+    const li = document.createElement("li");
+    li.className = "event-stash__item";
+    li.innerHTML = `
+      <img class="event-stash__thumb" src="${item.image}" alt="" loading="lazy" width="40" height="56">
+      <div class="event-stash__meta">
+        <span class="event-stash__label">Evento #${item.number}</span>
+      </div>
+      <div class="event-stash__actions">
+        <button type="button" class="btn btn--secondary btn--icon-label" data-action="view" data-id="${item.id}" aria-label="Ver evento #${item.number}">
+          <span data-icon="eye" data-icon-size="16" aria-hidden="true"></span>
+          <span class="event-stash__btn-label">Ver</span>
+        </button>
+        <button type="button" class="btn btn--ghost btn--icon-label" data-action="remove" data-id="${item.id}" aria-label="Quitar evento #${item.number}">
+          <span data-icon="trash" data-icon-size="16" aria-hidden="true"></span>
+          <span class="event-stash__btn-label">Quitar</span>
+        </button>
+      </div>
     `;
-
-    const list = document.createElement("ul");
-    list.className = "event-stash__items";
-
-    for (const item of items.sort((a, b) => a.number - b.number)) {
-      const li = document.createElement("li");
-      li.className = "event-stash__item";
-      li.innerHTML = `
-        <img class="event-stash__thumb" src="${item.image}" alt="" loading="lazy">
-        <div class="event-stash__meta">
-          <span class="event-stash__label">${item.label}</span>
-          <span class="event-stash__number muted">#${item.number}</span>
-        </div>
-        <div class="event-stash__actions">
-          <button type="button" class="btn btn--secondary btn--icon-label" data-action="view" data-id="${item.id}">
-            <span data-icon="eye" data-icon-size="16" aria-hidden="true"></span>
-            Ver
-          </button>
-          <button type="button" class="btn btn--ghost btn--icon-label" data-action="remove" data-id="${item.id}" aria-label="Quitar carta">
-            <span data-icon="trash" data-icon-size="16" aria-hidden="true"></span>
-            Quitar
-          </button>
-        </div>
-      `;
-      list.append(li);
-    }
-
-    section.append(list);
-    els.stashList.append(section);
+    list.append(li);
   }
+
+  els.stashList.append(list);
 
   enhanceIconElements(els.stashList);
 
@@ -1086,7 +911,7 @@ function renderStashPanel() {
       const id = button.dataset.id;
       if (removeCard(state.stashViewPlayer, id)) {
         showToast("Carta quitada de la mesa");
-        renderPersistentActions();
+        renderStashActions();
         updateStashIndicators();
         renderStashPanel();
       }
@@ -1100,7 +925,7 @@ function openStashCardView(item) {
   }
   els.zoomImage.src = item.image;
   els.zoomImage.style.clipPath = "none";
-  els.zoomImage.alt = `${item.label} (#${item.number})`;
+  els.zoomImage.alt = `Evento #${item.number}`;
   els.zoomDialog.showModal();
 }
 

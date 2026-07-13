@@ -10,6 +10,7 @@ export function initCardReveal({
   hint,
   resetButton,
   zoomImage,
+  onRevealChange,
 }) {
   let reveal = 0;
 
@@ -45,6 +46,7 @@ export function initCardReveal({
     }
 
     updateHintVisibility();
+    onRevealChange?.(reveal);
   }
 
   if (slider) {
