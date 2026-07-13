@@ -1,5 +1,6 @@
 import { initCardReveal } from "./card-reveal.js";
 import { initMobileUX, refreshPlayBarHeight } from "./mobile.js";
+import { initAppChrome } from "./chrome.js";
 import {
   loadActiveExpansions,
   migrateLegacyExpansions,
@@ -111,6 +112,7 @@ async function init() {
   renderCampaignDecks();
   bindEvents();
   initMobileUX();
+  initAppChrome({ page: "eventos" });
   setPlayMode(true);
   els.playBar.classList.add("play-bar--visible");
   refreshPlayBarHeight();
@@ -588,6 +590,7 @@ function updateJumpControls(deck, number) {
   els.jumpNumber.max = String(totalCards);
   els.jumpNumber.value = String(number);
   els.jumpHint.textContent = `${describeDeckSize(deck)} · del 1 al ${totalCards}`;
+  els.jumpHint.dataset.tip = els.jumpHint.textContent;
 
   els.btnPrev.disabled = number <= 1;
   els.btnNextNumber.disabled = number >= totalCards;

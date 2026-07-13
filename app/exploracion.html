@@ -28,7 +28,7 @@
           <a class="mode-nav__link" href="eventos.html">Eventos</a>
           <a class="mode-nav__link" href="automa/">Automa</a>
         </nav>
-        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración">⚙</button>
+        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración" data-icon="settings" data-icon-size="22"></button>
       </div>
     </header>
 
@@ -49,8 +49,16 @@
     <main class="main">
       <section class="panel panel--locations" id="screen-locations">
         <div class="role-banner" id="role-banner-locations" hidden></div>
-        <h2>¿Dónde exploras?</h2>
-        <p class="lead" id="locations-lead">Elige Ciudad o Tierras Salvajes. El mazo se baraja al robar.</p>
+        <div class="section-head">
+          <h2>¿Dónde exploras?</h2>
+          <button
+            type="button"
+            class="help-btn"
+            data-tip="Elige Ciudad o Tierras Salvajes. El mazo se baraja al robar. En multijugador, roba el jugador a la derecha del activo."
+            aria-label="Ayuda de exploración"
+          ></button>
+        </div>
+        <p class="lead hide-on-mobile-tip" id="locations-lead">Elige Ciudad o Tierras Salvajes. El mazo se baraja al robar.</p>
 
         <div class="resume-banner" id="resume-banner" hidden>
           <p class="resume-banner__text" id="resume-text"></p>
@@ -70,17 +78,23 @@
         <div class="role-banner" id="role-banner" hidden></div>
         <div class="deck-progress" id="deck-progress" hidden></div>
 
-        <div class="phase-steps" id="phase-steps" hidden>
-          <span class="phase-step" id="phase-draw">1. Robar</span>
-          <span class="phase-step" id="phase-read">2. Leer</span>
-          <span class="phase-step" id="phase-choose">3. Elegir</span>
-          <span class="phase-step" id="phase-result">4. Resultado</span>
-        </div>
-
         <div class="card-meta">
           <span class="badge" id="card-location"></span>
           <span class="badge badge--muted" id="card-expansion"></span>
           <span class="badge badge--muted" id="card-remaining"></span>
+          <button
+            type="button"
+            class="help-btn"
+            data-tip="Desliza la barra lateral hacia abajo para revelar la carta. En móvil: toca A o B para elegir."
+            aria-label="Ayuda de lectura"
+          ></button>
+        </div>
+
+        <div class="phase-steps" id="phase-steps" hidden>
+          <span class="phase-step" id="phase-draw"><span class="phase-step__icon" data-icon="layers" data-icon-size="16"></span><span class="phase-step__label">Robar</span></span>
+          <span class="phase-step" id="phase-read"><span class="phase-step__icon" data-icon="eye" data-icon-size="16"></span><span class="phase-step__label">Leer</span></span>
+          <span class="phase-step" id="phase-choose"><span class="phase-step__icon" data-icon="hand" data-icon-size="16"></span><span class="phase-step__label">Elegir</span></span>
+          <span class="phase-step" id="phase-result"><span class="phase-step__icon" data-icon="check" data-icon-size="16"></span><span class="phase-step__label">Resultado</span></span>
         </div>
 
         <article class="explore-card">
@@ -106,7 +120,7 @@
                   <div class="card-reveal__shade" id="card-shade" aria-hidden="true"></div>
                   <div class="card-reveal__line" id="card-reveal-line" aria-hidden="true" hidden></div>
                   <p class="card-reveal__hint" id="card-reveal-hint">
-                    Desliza hacia abajo en la barra lateral para ir revelando la carta mientras lees.
+                    Desliza hacia abajo en la barra lateral.
                   </p>
                 </div>
                 <div class="card-reveal__rail" aria-label="Control de revelado">
@@ -148,7 +162,6 @@
         <p class="rule-reminder rule-reminder--desktop muted" id="rule-reminder">
           Atajos: <kbd>A</kbd> / <kbd>B</kbd> elegir · <kbd>↑</kbd> <kbd>↓</kbd> revelar · <kbd>Enter</kbd> continuar · <kbd>Esc</kbd> volver
         </p>
-        <p class="rule-reminder rule-reminder--mobile muted">Desliza la barra en la carta para leer · Toca A o B para elegir</p>
       </section>
     </main>
   </div>

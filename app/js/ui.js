@@ -47,16 +47,29 @@ export function hideProgress(element) {
   }
 }
 
+import { icon } from "./icons.js";
+
 export function bindInstructionToggle(button, panel) {
   if (!button || !panel) {
     return;
   }
 
+  const setLabel = (collapsed) => {
+    button.setAttribute("aria-expanded", String(!collapsed));
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    if (isMobile) {
+      button.innerHTML = `${icon("book", { size: 16 })}<span class="instruction-toggle__text">${collapsed ? "Guía" : "Ocultar"}</span>`;
+      return;
+    }
+    button.textContent = collapsed ? "Mostrar guía" : "Ocultar guía";
+  };
+
   button.addEventListener("click", () => {
     const collapsed = panel.classList.toggle("instruction--collapsed");
-    button.setAttribute("aria-expanded", String(!collapsed));
-    button.textContent = collapsed ? "Mostrar guía" : "Ocultar guía";
+    setLabel(collapsed);
   });
+
+  setLabel(panel.classList.contains("instruction--collapsed"));
 }
 
 export function renderRoleBanner(element, { role, player, detail }) {

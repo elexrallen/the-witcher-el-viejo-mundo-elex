@@ -18,20 +18,14 @@ import {
   updateProgress,
 } from "./ui.js";
 import { initMobileUX, refreshPlayBarHeight } from "./mobile.js";
+import { initAppChrome } from "./chrome.js";
+import { enhanceIconElements, locationIconId } from "./icons.js";
 
 const DATA_URL = "data/exploracion.json";
 const STORAGE_KEY = "witcher-exploracion-v1";
 
 const MAIN_LOCATION_IDS = new Set(["ciudad", "naturaleza"]);
 const CAMPAIGN_LOCATION_IDS = new Set(["skellige", "caceria-fase-1", "caceria-fase-2"]);
-
-const LOCATION_ICONS = {
-  ciudad: "🏰",
-  naturaleza: "🌲",
-  skellige: "⚓",
-  "caceria-fase-1": "🐺",
-  "caceria-fase-2": "🐺",
-};
 
 const INSTRUCTIONS = {
   draw: {
@@ -151,6 +145,7 @@ async function init() {
   renderLocationsRoleBanner();
   bindEvents();
   initMobileUX();
+  initAppChrome({ page: "exploracion" });
   updateDeckStatus();
 }
 
@@ -548,7 +543,7 @@ function renderLocationButton(location) {
   const deckKey = getDeckKey(location);
   const deck = available ? getDeckState(deckKey, cards) : null;
   const remaining = deck ? deck.draw.length : totalCards;
-  const icon = LOCATION_ICONS[location.id] || "🃏";
+  const iconName = locationIconId(location.id);
   const meta = available
     ? `${remaining}/${totalCards} en el mazo`
     : `Requiere: ${location.expansion.name}`;
@@ -558,12 +553,13 @@ function renderLocationButton(location) {
   button.className = "location-card";
   button.disabled = !available;
   button.innerHTML = `
-    <div class="location-card__icon" aria-hidden="true">${icon}</div>
+    <div class="location-card__icon" data-icon="${iconName}" data-icon-size="28" aria-hidden="true"></div>
     <h3 class="location-card__title">${location.name}</h3>
     <p class="location-card__desc">${location.description}</p>
     <p class="location-card__meta">${meta}</p>
     ${available ? '<span class="location-card__cta">Preparar robo</span>' : ""}
   `;
+  enhanceIconElements(button);
   button.addEventListener("click", () => openCardScreen(location));
   return button;
 }

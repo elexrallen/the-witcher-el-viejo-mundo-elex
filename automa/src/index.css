@@ -1,9 +1,192 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
 @import "tailwindcss";
+@import "../../app/css/styles.css";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Source Serif 4", Georgia, serif;
+  --font-display: Cinzel, serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  --color-zinc-200: #ebe4d4;
+  --color-zinc-300: #d8d0c0;
+  --color-zinc-400: #8f98a8;
+  --color-zinc-500: #8f98a8;
+  --color-zinc-600: #6b7280;
+  --color-zinc-700: #4a5568;
+  --color-zinc-800: #2d3544;
+  --color-zinc-850: #252b36;
+  --color-zinc-900: #141820;
+  --color-zinc-950: #0a0c10;
+
+  --color-orange-300: #f0d078;
+  --color-orange-400: #e8c45c;
+  --color-orange-500: #c9a227;
+  --color-orange-600: #9a7b1a;
+  --color-orange-700: #8f7420;
+  --color-orange-950: #1a1408;
+
+  --color-amber-400: #e8c45c;
+  --color-amber-500: #c9a227;
+  --color-amber-600: #9a7b1a;
 }
 
+#app-root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.app--automa {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1rem 1rem 0;
+}
+
+.automa-content {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem 1.5rem;
+}
+
+.automa-header {
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.header__actions--stack {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+.automa-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.automa-status__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 4.5rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(20, 24, 32, 0.85);
+}
+
+.automa-status__label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-family: Cinzel, serif;
+}
+
+.automa-status__value {
+  font-size: 0.78rem;
+  color: var(--text);
+  font-family: Cinzel, serif;
+  text-transform: uppercase;
+}
+
+.automa-status__value--gold {
+  color: var(--gold-bright);
+}
+
+.automa-footer {
+  margin-top: auto;
+  padding: 1rem 0 0.25rem;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: Cinzel, serif;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+.automa-panel-accent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-bright),
+    var(--gold),
+    var(--gold-bright),
+    transparent
+  );
+}
+
+.automa-assistant__grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.automa-assistant__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.automa-assistant__card:hover {
+  border-color: var(--gold-soft);
+  transform: translateY(-2px);
+}
+
+.automa-assistant__title {
+  font-family: Cinzel, serif;
+  color: var(--gold-bright);
+  font-size: 0.9rem;
+}
+
+.automa-assistant__desc {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.automa-assistant__cta {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .header__actions--stack {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .automa-status {
+    justify-content: center;
+  }
+
+  .mode-nav {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}

@@ -28,7 +28,7 @@
           <a class="mode-nav__link mode-nav__link--active" href="eventos.html" aria-current="page">Eventos</a>
           <a class="mode-nav__link" href="automa/">Automa</a>
         </nav>
-        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración">⚙</button>
+        <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración" data-icon="settings" data-icon-size="22"></button>
       </div>
     </header>
 
@@ -60,6 +60,12 @@
           <span class="badge badge--gold" id="card-number"></span>
           <span class="badge badge--muted" id="card-expansion"></span>
           <span class="badge badge--muted" id="card-remaining"></span>
+          <button
+            type="button"
+            class="help-btn"
+            data-tip="El mazo de eventos no se baraja. Introduce el número y pulsa Ver. Desliza la barra para leer la carta."
+            aria-label="Ayuda de eventos"
+          ></button>
         </div>
 
         <article class="explore-card explore-card--eventos">
@@ -86,7 +92,7 @@
               <button type="button" class="btn btn--secondary btn--icon" id="btn-next-number" aria-label="Evento siguiente">›</button>
               <button type="submit" class="btn btn--primary event-jump__submit">Ver</button>
             </div>
-            <p class="event-jump__hint muted" id="jump-hint"></p>
+            <p class="event-jump__hint muted hide-on-mobile-tip" id="jump-hint"></p>
           </form>
 
           <div class="card-placeholder explore-card__card-area" id="card-placeholder">
@@ -133,7 +139,6 @@
         </article>
 
         <p class="rule-reminder rule-reminder--desktop muted">Pulsa <strong>Ver</strong> para revelar · <kbd>↑</kbd> <kbd>↓</kbd> deslizar lectura · <kbd>←</kbd> <kbd>→</kbd> cambiar número</p>
-        <p class="rule-reminder rule-reminder--mobile muted">Desliza la barra sobre la carta para leer · Toca <strong>Ver</strong> para revelar</p>
       </section>
     </main>
   </div>

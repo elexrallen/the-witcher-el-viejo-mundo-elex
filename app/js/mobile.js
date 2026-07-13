@@ -1,6 +1,8 @@
 /**
  * Ajustes de experiencia para pantallas táctiles y móvil.
  */
+import { icon } from "./icons.js";
+
 export function initMobileUX() {
   const isMobile = window.matchMedia("(max-width: 640px)").matches;
 
@@ -26,7 +28,7 @@ function collapseInstructionsByDefault() {
 
     panel.classList.add("instruction--collapsed");
     button.setAttribute("aria-expanded", "false");
-    button.textContent = "Mostrar guía";
+    button.innerHTML = `${icon("book", { size: 16 })}<span class="instruction-toggle__text">Guía</span>`;
   });
 }
 

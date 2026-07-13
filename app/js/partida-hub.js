@@ -12,6 +12,8 @@ import {
   savePartidaSession,
 } from "./partida.js";
 import { initMobileUX } from "./mobile.js";
+import { initAppChrome } from "./chrome.js";
+import { enhanceIconElements } from "./icons.js";
 
 const EXPANSIONS_URL = "data/exploracion.json";
 const STORAGE_KEY = "witcher-partida-v1";
@@ -57,6 +59,7 @@ async function init() {
   renderPhaseIIActions();
   bindEvents();
   initMobileUX();
+  initAppChrome({ page: "partida" });
   renderHub();
 }
 
@@ -181,13 +184,15 @@ function renderPhaseIIActions() {
     card.className = "action-card";
     card.dataset.action = action.id;
     card.innerHTML = `
-      <span class="action-card__icon" aria-hidden="true">${action.icon}</span>
+      <span class="action-card__icon" data-icon="${action.icon}" data-icon-size="24" aria-hidden="true"></span>
       <span class="action-card__title">${action.name}</span>
       <span class="action-card__desc">${action.description}</span>
     `;
     card.addEventListener("click", () => selectPhaseIIAction(action));
     els.actionGrid.append(card);
   }
+
+  enhanceIconElements(els.actionGrid);
 }
 
 function setPhase(phaseId) {
@@ -236,9 +241,11 @@ function renderHub() {
 
   const drawer = getDrawerLabel(state.session.activePlayer, state.session.playerCount);
   const isSolo = state.session.playerCount <= 1;
-  els.drawerHint.textContent = isSolo
+  const hintText = isSolo
     ? "En solitario, tú lees y eliges. Usa el Automa para el oponente virtual y el combate."
     : `Para explorar o eventos, roba y lee: ${drawer}.`;
+  els.drawerHint.textContent = hintText;
+  els.drawerHint.dataset.tip = hintText;
 
   if (els.soloBanner) {
     if (isSolo) {

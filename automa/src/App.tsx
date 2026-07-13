@@ -53,7 +53,7 @@ import WitcherCard from './components/WitcherCard';
 import DicePoker from './components/DicePoker';
 import RulesReference from './components/RulesReference';
 import SpecialSchoolCardComponent from './components/SpecialSchoolCardComponent';
-import AppNav from './components/AppNav';
+import AppHeader from './components/AppHeader';
 import PlayerAssistantLinks from './components/PlayerAssistantLinks';
 
 // Helper to shuffle arrays
@@ -864,56 +864,25 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-[#e5e5e5] flex flex-col font-sans p-4 sm:p-6 md:p-8 gap-6" id="app-root">
-      {/* Top Main Navigation Header */}
-      <header className="flex flex-col gap-4 border-b border-zinc-800 pb-4 shrink-0" id="game-header">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
-          <div>
-            <h1 className="text-3xl font-black tracking-tighter text-white font-display uppercase">
-              THE WITCHER <span className="text-[#c2410c]">AUTOMA V1.4</span>
-            </h1>
-            <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mt-1">
-              Modo solitario no oficial — compañero de reglas
-            </p>
-          </div>
+    <div className="min-h-screen flex flex-col" id="app-root">
+      <div className="app app--automa">
+        <AppHeader
+          setupMode={setupMode}
+          schoolName={activeSchoolObj.name}
+          difficulty={automa.difficulty}
+          turnCount={turnCount}
+          onReconfig={() => setSetupMode(true)}
+        />
+      </div>
 
-          {!setupMode && (
-            <div className="flex flex-wrap items-center gap-3 bg-zinc-900/60 p-2 rounded-xl border border-zinc-800">
-            <div className="bg-zinc-900 border border-zinc-800 px-3.5 py-1.5 rounded-lg flex flex-col min-w-[90px]">
-              <span className="text-[9px] uppercase text-zinc-500 font-bold">School</span>
-              <span className="text-xs text-zinc-200 font-bold font-display uppercase tracking-tight">{activeSchoolObj.name}</span>
-            </div>
-            <div className="bg-zinc-900 border border-zinc-800 px-3.5 py-1.5 rounded-lg flex flex-col min-w-[90px]">
-              <span className="text-[9px] uppercase text-zinc-500 font-bold">Difficulty</span>
-              <span className="text-xs text-orange-500 font-bold font-display uppercase tracking-tight">{automa.difficulty}</span>
-            </div>
-            <div className="bg-zinc-900 border border-zinc-800 px-3.5 py-1.5 rounded-lg flex flex-col min-w-[60px]">
-              <span className="text-[9px] uppercase text-zinc-500 font-bold">Turn</span>
-              <span className="text-xs text-zinc-300 font-bold font-mono">#{turnCount}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setSetupMode(true)}
-              className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3.5 py-2.5 rounded-lg font-bold font-display transition-colors border border-zinc-700 cursor-pointer uppercase tracking-wider"
-              id="reconfig-btn"
-            >
-              Ajustes
-            </button>
-          </div>
-          )}
-        </div>
-
-        <AppNav />
-      </header>
-
-      {/* Main Content Area */}
+      <div className="automa-content flex flex-col flex-1 gap-6">
       {setupMode ? (
         /* SETUP MODE VIEW */
         <main className="flex-1 max-w-6xl w-full mx-auto p-6 flex flex-col justify-center" id="setup-view">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Left Column: Form Settings */}
-            <div className="flex-1 bg-[#111111] border-2 border-zinc-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden w-full">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600" />
+            <div className="flex-1 panel automa-panel-accent border-2 border-zinc-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden w-full">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-80" />
               
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-black text-white tracking-tight font-display uppercase">Preparación del Automa V1.4</h2>
@@ -1141,7 +1110,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleStartGame}
-                className="w-full py-4 bg-[#c2410c] hover:bg-orange-600 text-white font-black uppercase rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer font-display tracking-wider"
+                className="w-full btn btn--primary font-display uppercase tracking-wider flex items-center justify-center gap-2"
                 id="start-game-btn"
               >
                 <Play className="w-5 h-5 fill-current" />
@@ -1178,7 +1147,7 @@ export default function App() {
           {/* Left Column: Combat State and Actions */}
           <div className="flex-1 space-y-6 flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="bg-[#111111] border-2 border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+              <div className="bg-zinc-900 border-2 border-zinc-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -1251,7 +1220,7 @@ export default function App() {
               </div>
 
               {/* Combat Logs narrative */}
-              <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 h-[250px] flex flex-col shadow-lg">
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 h-[250px] flex flex-col shadow-lg">
                 <span className="text-[9px] uppercase font-mono tracking-wider text-zinc-500 font-bold mb-2.5 block border-b border-zinc-800/80 pb-2">Bitácora de Combate</span>
                 <div className="overflow-y-auto space-y-1.5 flex-1 pr-1 font-mono text-[11px]" id="combat-logs-scroller">
                   {combat.fightLog.map((logLine, logIdx) => (
@@ -1277,7 +1246,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => handleEndCombat(true)}
-                className="flex-1 py-3 bg-[#111111] border border-emerald-950 hover:bg-emerald-950/20 text-emerald-400 font-display font-black rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider"
+                className="flex-1 py-3 bg-zinc-900 border border-emerald-950 hover:bg-emerald-950/20 text-emerald-400 font-display font-black rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider"
                 id="combat-win-btn"
               >
                 ¡El Automa Gana! (Finalizar)
@@ -1285,7 +1254,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => handleEndCombat(false)}
-                className="flex-1 py-3 bg-[#111111] border border-red-950 hover:bg-red-950/20 text-red-400 font-display font-black rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider"
+                className="flex-1 py-3 bg-zinc-900 border border-red-950 hover:bg-red-950/20 text-red-400 font-display font-black rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider"
                 id="combat-lose-btn"
               >
                 El Automa Pierde / Se Retira
@@ -1301,7 +1270,7 @@ export default function App() {
             {combat.revealedCard ? (
               <div className="space-y-4 w-full flex flex-col items-center">
                 <WitcherCard card={combat.revealedCard} type="challenge" school={activeSchoolObj} />
-                <div className="w-full max-w-[280px] bg-[#111111] border border-zinc-800 rounded-2xl p-4 text-center text-xs shadow-lg">
+                <div className="w-full max-w-[280px] bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-center text-xs shadow-lg">
                   <span className="text-zinc-500 font-semibold uppercase tracking-wider text-[10px]">Valores finales en su ataque:</span>
                   <div className="grid grid-cols-2 gap-2 mt-2 font-mono text-sm">
                     <span className="text-red-400 font-black">{combat.damageInflictedThisTurn} Daño</span>
@@ -1338,7 +1307,7 @@ export default function App() {
           <section className="lg:col-span-4 space-y-6" id="automa-board">
             
             {/* Attributes Tracking Widget */}
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
               <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-2.5">
                 <h3 className="font-display text-xs font-black text-orange-500 uppercase tracking-wider">Atributos del Automa</h3>
                 <span className="text-[10px] font-mono text-zinc-500 uppercase font-bold">MÁX. NIVEL 5 (BLOQUEO)</span>
@@ -1427,7 +1396,7 @@ export default function App() {
             </div>
 
             {/* Inventory Tracker (Items and Trophies) */}
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
               <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-2.5">
                 <h3 className="font-display text-xs font-black text-orange-500 uppercase tracking-wider">Inventario y Trofeos</h3>
                 <span className="text-[10px] font-mono text-zinc-500 uppercase font-bold">Mantenimiento</span>
@@ -1518,7 +1487,7 @@ export default function App() {
             </div>
 
             {/* Location and Trails Collector */}
-            <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
               <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-2.5">
                 <h3 className="font-display text-xs font-black text-orange-500 uppercase tracking-wider">Localización y Rastros</h3>
                 <span className="text-[10px] font-mono text-zinc-500 uppercase font-bold">Ubicación</span>
@@ -1612,8 +1581,8 @@ export default function App() {
                       onClick={() => setCurrentTab((tab as any).id)}
                       className={`px-4 py-2.5 font-display text-xs font-black rounded-t-2xl border-t border-x transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider ${
                         isActive
-                          ? 'bg-[#111111] border-zinc-800 text-orange-400 font-bold border-b-[#111111]'
-                          : 'bg-[#090909] border-transparent text-zinc-500 hover:text-zinc-300'
+                          ? 'bg-zinc-900 border-zinc-800 text-orange-400 font-bold border-b-zinc-900'
+                          : 'bg-zinc-950 border-transparent text-zinc-500 hover:text-zinc-300'
                       }`}
                       id={`tab-btn-${(tab as any).id}`}
                     >
@@ -1635,7 +1604,7 @@ export default function App() {
               <div className="space-y-6" id="turn-tab-content">
                 
                 {/* Active Card / Phase Play Mat */}
-                <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
                   
                   <div className="flex flex-col md:flex-row gap-6">
                     {/* Play Area: Decks overview and active actions */}
@@ -1794,7 +1763,7 @@ export default function App() {
                 </div>
 
                 {/* Notifications & System Logs Dashboard */}
-                <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
                   <div className="flex items-center justify-between mb-3.5 border-b border-zinc-800 pb-2.5">
                     <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 font-bold block">Registro de Eventos y Combate</span>
                     <button
@@ -1830,7 +1799,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="expansions-tab-content">
                 
                 {/* Module A: Mutagens and weaknesses */}
-                <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4 shadow-xl">
                   <h4 className="font-display text-xs font-black text-orange-500 uppercase tracking-wider border-b border-zinc-800/80 pb-2">
                     Módulo: Mutágenos y Debilidad (Combate)
                   </h4>
@@ -1903,7 +1872,7 @@ export default function App() {
                 </div>
 
                 {/* Module B: Skellige & Legendary Hunt */}
-                <div className="bg-[#111111] border border-zinc-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4 shadow-xl">
                   <h4 className="font-display text-xs font-black text-orange-500 uppercase tracking-wider border-b border-zinc-800/80 pb-2">
                     Módulo: Skellige y Legendary Hunt
                   </h4>
@@ -2009,10 +1978,10 @@ export default function App() {
         </main>
       )}
 
-      {/* Footer */}
-      <footer className="bg-[#111111] border-t border-zinc-900 text-center py-5 text-[10px] text-zinc-500 shrink-0 font-mono uppercase tracking-widest" id="game-footer-element">
-        Witcher Automa Companion V1.4 • Desarrollado según Reglamento de la Comunidad No Oficial
+      <footer className="automa-footer" id="game-footer-element">
+        Automa V1.4 — reglamento no oficial de la comunidad
       </footer>
+      </div>
     </div>
   );
 }
