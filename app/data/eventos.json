@@ -63,6 +63,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "BallESTA Una vez por Combate"
           }
         },
         {
@@ -175,6 +179,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "JardeL"
           }
         },
         {
@@ -337,6 +345,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Martyn"
           }
         },
         {
@@ -386,6 +398,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "Armadura"
           }
         },
         {
@@ -410,6 +426,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "BALLESTA Una vez por combate"
           }
         },
         {
@@ -432,6 +452,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "NUDILLOS DE BRONCE Una vez por combate descarta 1 carta de tu mano para infligir 2 de Daño"
           }
         },
         {
@@ -455,6 +479,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "Despues de robar esta carta avanza inmediatamente a la Fase IIL"
           }
         },
         {
@@ -504,6 +532,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Oscar"
           }
         },
         {
@@ -560,6 +592,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Adje"
           }
         },
         {
@@ -616,6 +652,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "obtén 4 de Oro"
           }
         },
         {
@@ -639,6 +679,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "KaYa"
           }
         },
         {
@@ -692,6 +736,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "Aumenta tu nivel de Especialidad"
           }
         },
         {
@@ -722,6 +770,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "aumenta tu nivel de Atributo"
           }
         },
         {
@@ -751,6 +803,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Reduce tu nivel de Escudo en 2 y roba 2 cartas de tu mazo juega inmediatamente un Combo aplica solo Escudos y Daño A continuación en función del Daño total obtén el efecto correspondiente Después continúa tu Turno"
           }
         },
         {
@@ -776,6 +832,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "Brazales"
           }
         },
         {
@@ -855,6 +915,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "Botas de CUERo Una vez por Combate"
           }
         },
         {
@@ -888,6 +952,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "Obtén 2 de Oro"
           }
         },
         {
@@ -1181,6 +1249,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Nivel de Jugador 1-2 Aumenta el nivel de cualquier Atributo en"
           }
         },
         {
@@ -1396,6 +1468,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Edgar de Spota"
           }
         },
         {
@@ -1570,6 +1646,10 @@
             "name": "El Viejo Mundo",
             "name_en": "The Witcher: Old World",
             "kind": "base"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "Medicación"
           }
         }
       ],
@@ -1847,6 +1927,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "companion",
+                "label": "Cada Jugador roba 2 cartas y juega inmediatamente un Combo solo aplica Daño Considera los resultados de cada Jugador"
               }
             },
             {
@@ -2050,6 +2134,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "companion",
+                "label": "0 Jugadores que rechazaron Un fantasma de pesadilla carga contra ti No puedes moverte como si estuvieras atado por nudos invisibles El espectro se acerca Ves el fuego ardiendo en sus ojos Entonces el fantasma se desvanece La imagen cambia Ves el lago y a la bestia dando vueltas cerca de él En un abrir y cerrar de ojos estás en otra parte inclinado sobre el sangriento rastro en el claro Otro latido y estás entre montañas rocosas junto a la guarida de la criatura Te despiertas Instintivamente agarras tu espada A tu alrededor no hay nada Obtén 1 Rastro cualquiera"
               }
             },
             {
@@ -2272,6 +2360,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "companion",
+                "label": "Katia"
               }
             },
             {
@@ -2359,6 +2451,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "equipment",
+                "label": "cota dE MALLA Ligera Una vez por Combate durante tu Turno de Combate si tu nivel de Escudo es 0 aumenta tu nivel de Escudo en 1"
               }
             },
             {
@@ -2443,6 +2539,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "keep",
+                "label": "La Cacería Salvaje pierde 2 Escudos"
               }
             },
             {
@@ -2509,6 +2609,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "keep",
+                "label": "Búsqueda Montaña Entra Obtén 5 de Oro"
               }
             },
             {
@@ -2828,6 +2932,10 @@
                 "name": "Pack de Aventuras",
                 "name_en": "Adventure Pack",
                 "kind": "expansion"
+              },
+              "persistent": {
+                "type": "keep",
+                "label": "La Cacería Salvaje pierde 3 Escudos"
               }
             },
             {
@@ -3797,6 +3905,10 @@
             "name": "Skellige",
             "name_en": "Skellige",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "CoLGANtE Una vez por Turno"
           }
         },
         {
@@ -3821,6 +3933,10 @@
             "name": "Skellige",
             "name_en": "Skellige",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "PIEL De 0S0 Si terminas tu Turno en una Isla durante la Fase III roba 1 carta adicional"
           }
         },
         {
@@ -3846,6 +3962,10 @@
             "name": "Skellige",
             "name_en": "Skellige",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Reduce tu nivel de Escudo en 2 y roba 2 cartas de tu mazo Juega inmediatamente un Combo solo aplica Daño A continuación en función del Daño total recibe el efecto correspondiente Después continúa tu Turno"
           }
         },
         {
@@ -3976,6 +4096,10 @@
             "name": "Skellige",
             "name_en": "Skellige",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "coraza dE SkelLIGE Una vez por Combate durante el paso 4 de tu Turno de Combate roba 1 carta adicional"
           }
         },
         {
@@ -3998,6 +4122,10 @@
             "name": "Skellige",
             "name_en": "Skellige",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "equipment",
+            "label": "catalejo Una vez por Turno"
           }
         },
         {
@@ -4722,6 +4850,10 @@
             "name": "Cacería Salvaje",
             "name_en": "Wild Hunt",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "Cada Jugador roba 2 cartas y juega inmediatamente un Combo solo aplica Daño Considera los resultados de cada Jugador"
           }
         },
         {
@@ -4925,6 +5057,10 @@
             "name": "Cacería Salvaje",
             "name_en": "Wild Hunt",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "companion",
+            "label": "0 Jugadores que rechazaron Un fantasma de pesadilla carga contra ti No puedes moverte como si estuvieras atado por nudos invisibles El espectro se acerca Ves el fuego ardiendo en sus ojos Entonces el fantasma se desvanece La imagen cambia Ves el lago y a la bestia dando vueltas cerca de él En un abrir y cerrar de ojos estás en otra parte inclinado sobre el sangriento rastro en el claro Otro latido y estás entre montañas rocosas junto a la guarida de la criatura Te despiertas Instintivamente agarras tu espada A tu alrededor no hay nada Obtén 1 Rastro cualquiera"
           }
         },
         {
@@ -5043,6 +5179,10 @@
             "name": "Cacería Salvaje",
             "name_en": "Wild Hunt",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "La Cacería Salvaje pierde 2 Escudos"
           }
         },
         {
@@ -5109,6 +5249,10 @@
             "name": "Cacería Salvaje",
             "name_en": "Wild Hunt",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "Búsqueda Montaña Entra Obtén 5 de Oro"
           }
         },
         {
@@ -5428,6 +5572,10 @@
             "name": "Cacería Salvaje",
             "name_en": "Wild Hunt",
             "kind": "expansion"
+          },
+          "persistent": {
+            "type": "keep",
+            "label": "La Cacería Salvaje pierde 3 Escudos"
           }
         }
       ],

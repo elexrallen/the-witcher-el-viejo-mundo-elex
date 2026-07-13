@@ -49,6 +49,10 @@ const ICON_COMPONENTS = {
   "crossed-swords": gi.GiCrossedSwords,
   potion: gi.GiPotionBall,
   trophy: gi.GiTrophy,
+  chest: gi.GiChest,
+  stash: gi.GiChest,
+  shield: gi.GiShield,
+  trash: gi.GiTrashCan,
 };
 
 function parseSvgMarkup(markup) {

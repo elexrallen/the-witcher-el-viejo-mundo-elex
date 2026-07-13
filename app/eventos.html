@@ -34,6 +34,16 @@
           <a class="mode-nav__link mode-nav__link--active" href="eventos.html" aria-current="page">Eventos</a>
           <a class="mode-nav__link" href="automa/">Automa</a>
         </nav>
+        <button
+          type="button"
+          class="btn btn--ghost btn--icon-label event-stash-chip"
+          id="btn-stash-chip"
+          hidden
+          aria-label="Cartas en mesa"
+        >
+          <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
+          <span class="event-stash-chip__label">Cartas (<span id="stash-chip-count">0</span>)</span>
+        </button>
         <button type="button" class="btn btn--ghost" id="btn-settings" aria-label="Configuración" data-icon="settings" data-icon-size="22"></button>
       </div>
     </header>
@@ -68,6 +78,12 @@
         <p class="muted" id="deck-status">—</p>
         <button type="button" class="btn btn--secondary" id="btn-reset-deck">Reiniciar mazo</button>
         <button type="button" class="btn btn--secondary" id="btn-reset-all">Reiniciar todos los mazos</button>
+      </section>
+      <section>
+        <h3>Cartas en mesa</h3>
+        <p class="muted">Equipamiento, compañeros y cartas que permanecen frente a ti.</p>
+        <button type="button" class="btn btn--secondary" id="btn-clear-stash-active">Vaciar cartas del jugador activo</button>
+        <button type="button" class="btn btn--secondary" id="btn-clear-stash-all">Vaciar cartas de todos los jugadores</button>
       </section>
       <section id="campaign-decks-section" hidden>
         <h3>Eventos de campaña</h3>
@@ -161,6 +177,11 @@
             </div>
             <figcaption class="card-figure__caption muted" id="card-caption"></figcaption>
           </figure>
+
+          <div class="event-persistent" id="event-persistent" hidden>
+            <div class="event-persistent__banner" id="event-persistent-banner"></div>
+            <div class="event-persistent__actions" id="event-persistent-actions"></div>
+          </div>
         </article>
 
         <p class="rule-reminder rule-reminder--desktop muted">Pulsa <strong>Ver</strong> para revelar · <kbd>↑</kbd> <kbd>↓</kbd> deslizar lectura · <kbd>←</kbd> <kbd>→</kbd> cambiar número</p>
@@ -169,9 +190,23 @@
   </div>
 
   <footer class="play-bar play-bar--visible" id="play-bar">
+    <button type="button" class="btn btn--secondary btn--icon-label" id="btn-open-stash">
+      <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
+      <span class="hide-on-narrow">Cartas en mesa</span>
+    </button>
     <button type="button" class="btn btn--secondary" id="btn-zoom">Ampliar</button>
     <button type="button" class="btn btn--primary" id="btn-next">Siguiente (#<span id="btn-next-label">2</span>)</button>
   </footer>
+
+  <dialog class="event-stash-dialog" id="stash-dialog">
+    <header class="event-stash-dialog__header">
+      <h2 class="event-stash-dialog__title">Cartas en mesa</h2>
+      <button type="button" class="event-stash-dialog__close" id="btn-close-stash" aria-label="Cerrar">✕</button>
+    </header>
+    <p class="event-stash-dialog__hint muted">Cartas que permanecen frente al jugador activo.</p>
+    <div class="event-stash__tabs" id="stash-player-tabs" hidden></div>
+    <div class="event-stash" id="stash-list"></div>
+  </dialog>
 
   <dialog class="zoom-dialog" id="zoom-dialog">
     <button type="button" class="zoom-dialog__close" id="btn-close-zoom" aria-label="Cerrar">✕</button>

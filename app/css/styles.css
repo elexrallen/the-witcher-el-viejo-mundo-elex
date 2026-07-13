@@ -941,6 +941,200 @@ body.play-mode .card-figure__img {
   object-fit: contain;
 }
 
+.event-stash-chip {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--gold-bright);
+}
+
+.event-stash-chip__label {
+  white-space: nowrap;
+}
+
+.event-persistent {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  background: rgba(201, 162, 39, 0.06);
+}
+
+.event-persistent__banner {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+}
+
+.event-persistent__type-badge {
+  display: inline-flex;
+  color: var(--gold-bright);
+}
+
+.event-persistent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.event-persistent__hint,
+.event-persistent__status {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.event-stash-dialog {
+  width: min(96vw, 640px);
+  max-height: min(88vh, 720px);
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #0a0c10;
+  color: var(--text);
+  overflow: auto;
+}
+
+.event-stash-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.event-stash-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.event-stash-dialog__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-family: Cinzel, serif;
+  color: var(--gold-bright);
+}
+
+.event-stash-dialog__close {
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.event-stash-dialog__hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+}
+
+.event-stash__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.event-stash__tab {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  padding: 0.35rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.event-stash__tab--active {
+  color: var(--gold-bright);
+  border-color: rgba(201, 162, 39, 0.45);
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.event-stash__empty {
+  margin: 0.5rem 0 0;
+  text-align: center;
+  padding: 1.25rem 0.5rem;
+}
+
+.event-stash__group + .event-stash__group {
+  margin-top: 1rem;
+}
+
+.event-stash__group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+  font-family: Cinzel, serif;
+  color: var(--gold-bright);
+}
+
+.event-stash__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.event-stash__item {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.event-stash__thumb {
+  width: 3.25rem;
+  height: 4.5rem;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+.event-stash__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.event-stash__label {
+  font-size: 0.9rem;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.event-stash__number {
+  font-size: 0.78rem;
+}
+
+.event-stash__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.event-stash__actions .btn {
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+  min-height: auto;
+}
+
+.hide-on-narrow {
+  display: inline;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -2114,6 +2308,37 @@ kbd {
   }
 
   .player-setup__hint {
+    display: none;
+  }
+
+  .hide-on-narrow {
+    display: none;
+  }
+
+  .event-stash__item {
+    grid-template-columns: 2.75rem 1fr;
+    grid-template-areas:
+      "thumb meta"
+      "actions actions";
+  }
+
+  .event-stash__thumb {
+    grid-area: thumb;
+    width: 2.75rem;
+    height: 3.75rem;
+  }
+
+  .event-stash__meta {
+    grid-area: meta;
+  }
+
+  .event-stash__actions {
+    grid-area: actions;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .event-stash-chip__label {
     display: none;
   }
 

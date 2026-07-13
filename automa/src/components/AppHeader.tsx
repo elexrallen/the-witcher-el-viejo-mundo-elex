@@ -51,7 +51,7 @@ export default function AppHeader({
                 <span className="automa-status__compact-item automa-status__compact-school">
                   {schoolName}
                 </span>
-                <div className="automa-header-menu relative">
+                <div className="automa-header-menu">
                   <button
                     type="button"
                     onClick={() => setMenuOpen(!menuOpen)}

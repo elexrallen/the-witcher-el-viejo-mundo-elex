@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,17 +89,139 @@ def sort_cards(cards: list[dict]) -> list[dict]:
     return ordered
 
 
+EQUIPMENT_RE = re.compile(r"equipamiento", re.IGNORECASE)
+COMPANION_RE = re.compile(r"compa[nñ]ero", re.IGNORECASE)
+KEEP_RE = re.compile(
+    r"deja\s+esta\s+carta\s+(?:frente\s+a\s+ti|delante\s+de\s+ti)",
+    re.IGNORECASE,
+)
+OCR_PREFIX_RE = re.compile(r"^[89]0[89]\s*", re.IGNORECASE)
+LABEL_CLEAN_RE = re.compile(r"[^A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\s\-']+")
+
+
+def collect_card_text(structured: dict) -> list[str]:
+    texts: list[str] = []
+    for paragraph in structured.get("paragraphs") or []:
+        if isinstance(paragraph, str) and paragraph.strip():
+            texts.append(paragraph.strip())
+    for option in structured.get("options") or []:
+        if isinstance(option, dict):
+            for key in ("text", "label"):
+                value = option.get(key)
+                if isinstance(value, str) and value.strip():
+                    texts.append(value.strip())
+    for effect in structured.get("effects") or []:
+        if isinstance(effect, str) and effect.strip():
+            texts.append(effect.strip())
+    return texts
+
+
+def clean_label(raw: str) -> str:
+    text = OCR_PREFIX_RE.sub("", raw.strip())
+    text = LABEL_CLEAN_RE.sub(" ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    if not text:
+        return ""
+    if text.isupper() and len(text) > 3:
+        return text.title()
+    return text
+
+
+def extract_label_from_keep_line(text: str) -> str:
+    match = KEEP_RE.search(text)
+    if not match:
+        return ""
+    remainder = text[match.end() :].strip()
+    if not remainder:
+        return ""
+    first_chunk = re.split(r"[.:;]\s+", remainder, maxsplit=1)[0]
+    return clean_label(first_chunk)
+
+
+def extract_persistent_label(texts: list[str], persistent_type: str, position: int) -> str:
+    for text in texts:
+        if persistent_type == "equipment" and EQUIPMENT_RE.search(text):
+            for other in texts:
+                if other is text:
+                    continue
+                label = extract_label_from_keep_line(other)
+                if label:
+                    return label
+                cleaned = clean_label(other)
+                if cleaned and not EQUIPMENT_RE.search(cleaned) and not KEEP_RE.search(cleaned):
+                    return cleaned
+        if persistent_type == "companion" and COMPANION_RE.search(text):
+            for other in texts:
+                if other is text:
+                    continue
+                label = extract_label_from_keep_line(other)
+                if label:
+                    return label
+                cleaned = clean_label(other)
+                if cleaned and not COMPANION_RE.search(cleaned) and not KEEP_RE.search(cleaned):
+                    return cleaned
+
+    for text in texts:
+        label = extract_label_from_keep_line(text)
+        if label:
+            return label
+
+    for text in texts:
+        if KEEP_RE.search(text):
+            continue
+        cleaned = clean_label(text)
+        if cleaned and len(cleaned) <= 48:
+            return cleaned
+
+    return f"Evento #{position}"
+
+
+def detect_persistent(card: dict) -> dict | None:
+    structured = card.get("structured") or {}
+    texts = collect_card_text(structured)
+    if not texts:
+        return None
+
+    persistent_type = None
+    for text in texts:
+        if EQUIPMENT_RE.search(text):
+            persistent_type = "equipment"
+            break
+        if COMPANION_RE.search(text):
+            persistent_type = "companion"
+            break
+
+    if persistent_type is None:
+        for text in texts:
+            if KEEP_RE.search(text):
+                persistent_type = "keep"
+                break
+
+    if persistent_type is None:
+        return None
+
+    label = extract_persistent_label(texts, persistent_type, card.get("position", 0))
+    return {
+        "type": persistent_type,
+        "label": label,
+    }
+
+
 def slim_card(card: dict, expansion_id: str | None = None) -> dict:
     expansion = card.get("expansion")
     if expansion is None and expansion_id:
         expansion = EXPANSIONS[expansion_id]
-    return {
+    payload = {
         "position": card["position"],
         "card_id": card["card_id"],
         "image": card["image"],
         "structured": card.get("structured", {}),
         "expansion": expansion,
     }
+    persistent = detect_persistent(card)
+    if persistent:
+        payload["persistent"] = persistent
+    return payload
 
 
 def load_event_decks() -> dict[str, dict]:
@@ -188,7 +311,13 @@ def main() -> None:
 
     TARGET.parent.mkdir(parents=True, exist_ok=True)
     TARGET.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Guardado: {TARGET} ({len(output_decks)} mazos de eventos)")
+    persistent_count = sum(
+        1
+        for deck in output_decks
+        for card in deck["cards"] + [c for addon in deck.get("addons", []) for c in addon["cards"]]
+        if card.get("persistent")
+    )
+    print(f"Guardado: {TARGET} ({len(output_decks)} mazos, {persistent_count} cartas persistentes)")
 
 
 if __name__ == "__main__":
