@@ -1,13 +1,6 @@
-import { ArrowRight, Map, ScrollText, Swords } from "lucide-react";
+import { ArrowRight, Map, ScrollText } from "lucide-react";
 
 const TOOLS = [
-  {
-    href: "../index.html",
-    title: "Hub de partida",
-    description: "Fases del turno, jugador activo y acceso a misiones.",
-    icon: Swords,
-    id: "tool-partida",
-  },
   {
     href: "../exploracion.html",
     title: "Exploración",
@@ -31,10 +24,10 @@ type PlayerAssistantLinksProps = {
 export default function PlayerAssistantLinks({ compact = false }: PlayerAssistantLinksProps) {
   return (
     <section className="panel automa-assistant" id="player-assistant-links">
-      <h3 style={{ marginTop: 0 }}>Tu bruJo — asistente de partida</h3>
+      <h3 style={{ marginTop: 0 }}>Herramientas de mesa</h3>
       <p className="muted" style={{ marginTop: "-0.35rem", marginBottom: compact ? "0.75rem" : "1rem" }}>
-        El Automa gestiona al oponente virtual. Para tus acciones de exploración, eventos y
-        fases de turno, usa las herramientas de la aplicación principal.
+        El Automa gestiona al oponente virtual. Para exploración y eventos usa estas
+        herramientas mientras juegas en la mesa.
       </p>
 
       <div className="automa-assistant__grid">

@@ -17,6 +17,7 @@ import {
   setPlayMode,
   showToast,
 } from "./ui.js";
+import { initPlayerSetup } from "./player-setup.js";
 
 const DATA_URL = "data/eventos.json";
 const STORAGE_KEY = "witcher-eventos-v1";
@@ -30,13 +31,15 @@ const state = {
   currentCard: null,
   pendingNumber: 1,
   cardRevealed: false,
-  fromMission: false,
   decks: {},
 };
 
 const els = {
   panelSettings: document.getElementById("panel-settings"),
   btnSettings: document.getElementById("btn-settings"),
+  playerCount: document.getElementById("player-count"),
+  activePlayer: document.getElementById("active-player"),
+  drawerHint: document.getElementById("drawer-hint"),
   expansionList: document.getElementById("expansion-list"),
   deckStatus: document.getElementById("deck-status"),
   btnResetDeck: document.getElementById("btn-reset-deck"),
@@ -67,7 +70,6 @@ const els = {
   btnPrev: document.getElementById("btn-prev"),
   btnNextNumber: document.getElementById("btn-next-number"),
   playBar: document.getElementById("play-bar"),
-  btnHub: document.getElementById("btn-hub"),
   btnZoom: document.getElementById("btn-zoom"),
   btnNext: document.getElementById("btn-next"),
   btnNextLabel: document.getElementById("btn-next-label"),
@@ -100,7 +102,6 @@ async function init() {
 
   const params = new URLSearchParams(window.location.search);
   const eventParam = Number.parseInt(params.get("event") || "", 10);
-  state.fromMission = params.get("from") === "mission";
 
   const mainDeck = getMainDeck();
   if (!mainDeck) {
@@ -110,6 +111,16 @@ async function init() {
   state.currentDeck = state.data.decks.find((deck) => deck.id === state.currentDeck?.id) || mainDeck;
   renderExpansions();
   renderCampaignDecks();
+  initPlayerSetup({
+    playerCountEl: els.playerCount,
+    activePlayerEl: els.activePlayer,
+    drawerHintEl: els.drawerHint,
+    onChange: (session) => {
+      state.session = session;
+      updateRoleBanner();
+      updateInstruction();
+    },
+  });
   bindEvents();
   initMobileUX();
   initAppChrome({ page: "eventos" });
@@ -124,7 +135,7 @@ async function init() {
   updateRoleBanner();
   updateInstruction();
 
-  if (state.fromMission && !Number.isNaN(eventParam)) {
+  if (!Number.isNaN(eventParam)) {
     revealEvent(state.currentDeck, eventParam);
   }
 }
@@ -205,12 +216,6 @@ function bindEvents() {
     setupDeck(state.currentDeck, 1);
     showToast("Todos los mazos reiniciados");
   });
-
-  if (els.btnHub) {
-    els.btnHub.addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-  }
 
   bindInstructionToggle(els.btnToggleInstruction, els.instruction);
 
@@ -406,9 +411,7 @@ function updateRoleBanner() {
     return;
   }
 
-  const detail = state.fromMission
-    ? "Misión resuelta: roba la carta numerada indicada."
-    : "Busca la carta por número en el mazo ordenado (no barajado).";
+  const detail = "Busca la carta por número en el mazo ordenado (no barajado).";
 
   renderRoleBanner(els.roleBanner, {
     role: "Roba evento",
@@ -503,11 +506,6 @@ function revealEvent(deck, number) {
   updateRoleBanner();
   updateInstruction();
   refreshPlayBarHeight();
-
-  if (state.fromMission) {
-    showToast(`Evento #${targetNumber} revelado tras misión`);
-    state.fromMission = false;
-  }
 }
 
 function renderExpansions() {

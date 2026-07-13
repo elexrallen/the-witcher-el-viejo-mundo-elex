@@ -20,6 +20,7 @@ import {
 import { initMobileUX, refreshPlayBarHeight } from "./mobile.js";
 import { initAppChrome } from "./chrome.js";
 import { enhanceIconElements, locationIconId } from "./icons.js";
+import { initPlayerSetup } from "./player-setup.js";
 
 const DATA_URL = "data/exploracion.json";
 const STORAGE_KEY = "witcher-exploracion-v1";
@@ -68,6 +69,9 @@ const state = {
 const els = {
   panelSettings: document.getElementById("panel-settings"),
   btnSettings: document.getElementById("btn-settings"),
+  playerCount: document.getElementById("player-count"),
+  activePlayer: document.getElementById("active-player"),
+  drawerHint: document.getElementById("drawer-hint"),
   expansionList: document.getElementById("expansion-list"),
   deckStatus: document.getElementById("deck-status"),
   btnResetDeck: document.getElementById("btn-reset-deck"),
@@ -110,7 +114,6 @@ const els = {
   choiceB: document.getElementById("choice-b"),
   playBar: document.getElementById("play-bar"),
   btnBack: document.getElementById("btn-back"),
-  btnHub: document.getElementById("btn-hub"),
   btnZoom: document.getElementById("btn-zoom"),
   btnNext: document.getElementById("btn-next"),
   zoomDialog: document.getElementById("zoom-dialog"),
@@ -143,6 +146,16 @@ async function init() {
   renderLocations();
   renderResumeBanner();
   renderLocationsRoleBanner();
+  initPlayerSetup({
+    playerCountEl: els.playerCount,
+    activePlayerEl: els.activePlayer,
+    drawerHintEl: els.drawerHint,
+    onChange: (session) => {
+      state.session = session;
+      renderLocationsRoleBanner();
+      updateRoleBanner();
+    },
+  });
   bindEvents();
   initMobileUX();
   initAppChrome({ page: "exploracion" });
@@ -222,9 +235,6 @@ function bindEvents() {
   els.choiceA.addEventListener("click", () => revealOutcome("A"));
   els.choiceB.addEventListener("click", () => revealOutcome("B"));
   els.btnBack.addEventListener("click", showLocations);
-  els.btnHub.addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
   els.btnNext.addEventListener("click", () => {
     if (!state.currentLocation) {
       return;
@@ -354,7 +364,7 @@ function updateRoleBanner(phase) {
 function renderLocationsRoleBanner() {
   const drawer = getDrawerLabel(state.session.activePlayer, state.session.playerCount);
   renderRoleBanner(els.roleBannerLocations, {
-    role: "Fase II",
+    role: "Explorar",
     player: drawer,
     detail: "Tras elegir ubicación, este jugador robará la carta.",
   });

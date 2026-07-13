@@ -1,6 +1,6 @@
-# The Witcher: El Viejo Mundo — Asistente de partida
+# The Witcher: El Viejo Mundo — Asistente de mesa
 
-Asistente web para partidas de *The Witcher: El Viejo Mundo*: hub de turnos, exploración, eventos y Automa (modo solitario).
+Asistente web para *The Witcher: El Viejo Mundo*: exploración, eventos y Automa (modo solitario). Automatiza lo que no puedes resolver fácilmente en la mesa; el resto de la partida se juega con las reglas físicas.
 
 ## Uso local
 
@@ -30,7 +30,7 @@ Crea un repo vacío (por ejemplo `the-witcher-el-viejo-mundo`).
 cd "D:\Proyectos\The witcher el viejo mundo"
 git init
 git add .
-git commit -m "Publicar asistente de partida"
+git commit -m "Publicar asistente de mesa"
 git branch -M main
 git remote add origin https://github.com/elexrallen/the-witcher-el-viejo-mundo-elex.git
 git push -u origin main
@@ -54,7 +54,7 @@ Si tu repo es `the-witcher-el-viejo-mundo`:
 https://elexrallen.github.io/the-witcher-el-viejo-mundo-elex/
 ```
 
-- Partida: `.../index.html`
+- Inicio: `.../index.html`
 - Exploración: `.../exploracion.html`
 - Eventos: `.../eventos.html`
 - Automa: `.../automa/`

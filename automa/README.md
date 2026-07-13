@@ -26,8 +26,8 @@ La salida queda en `app/automa/` y se sirve junto al resto de la aplicación.
 
 1. Arranca el servidor: `py -3 app/serve.py`
 2. Abre `http://localhost:8080/app/`
-3. En el hub, entra en **Automa** o usa el acceso directo en modo solitario.
+3. Entra en **Automa** desde la portada o el acceso directo `app/automa/`.
 
-Desde el Automa puedes volver a **Partida**, **Exploración** y **Eventos** con la barra de navegación superior o la pestaña **Tu partida**.
+Desde el Automa puedes volver a **Inicio**, **Exploración** y **Eventos** con la barra de navegación superior o la pestaña **Herramientas**.
 
 No requiere API de Gemini: toda la lógica corre en el navegador.

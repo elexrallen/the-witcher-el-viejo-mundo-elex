@@ -1564,7 +1564,7 @@ export default function App() {
             {/* Interactive Module Tab Headers */}
             <div className="flex flex-wrap border-b border-zinc-850 gap-1.5" id="tab-nav">
               {[
-                { id: 'assistant', label: 'Tu partida', icon: User },
+                { id: 'assistant', label: 'Herramientas', icon: User },
                 { id: 'turn', label: 'Turno del Automa', icon: Play },
                 useDicePoker ? { id: 'poker', label: 'Póker de Dados', icon: Dice5 } : null,
                 (useMutagens || useSkellige || useLegendaryHunt) ? { id: 'expansions', label: 'Expansiones', icon: Layers } : null,

@@ -18,12 +18,12 @@
         <span class="header__sigil" aria-hidden="true">⚔</span>
         <div>
           <h1>El Viejo Mundo</h1>
-          <p>Fase II — Explorar</p>
+          <p>Exploración</p>
         </div>
       </div>
       <div class="header__actions">
         <nav class="mode-nav" aria-label="Modos de juego">
-          <a class="mode-nav__link" href="index.html">Partida</a>
+          <a class="mode-nav__link" href="index.html">Inicio</a>
           <a class="mode-nav__link mode-nav__link--active" href="exploracion.html" aria-current="page">Exploración</a>
           <a class="mode-nav__link" href="eventos.html">Eventos</a>
           <a class="mode-nav__link" href="automa/">Automa</a>
@@ -34,6 +34,25 @@
 
     <aside class="panel panel--settings" id="panel-settings" hidden>
       <h2>Configuración</h2>
+      <section>
+        <h3>Jugadores en mesa</h3>
+        <div class="player-setup">
+          <label class="player-setup__field">
+            <span>Número de jugadores</span>
+            <select id="player-count">
+              <option value="1">1 — Solitario</option>
+              <option value="2">2 jugadores</option>
+              <option value="3">3 jugadores</option>
+              <option value="4">4 jugadores</option>
+            </select>
+          </label>
+          <label class="player-setup__field">
+            <span>Jugador activo</span>
+            <select id="active-player"></select>
+          </label>
+        </div>
+        <p class="muted player-setup__hint" id="drawer-hint"></p>
+      </section>
       <section>
         <h3>Expansiones activas</h3>
         <div id="expansion-list" class="chip-list"></div>
@@ -171,7 +190,6 @@
       <span class="btn-text-full">Ubicación</span>
       <span class="btn-text-short" aria-hidden="true">Volver</span>
     </button>
-    <button type="button" class="btn btn--secondary" id="btn-hub">Partida</button>
     <button type="button" class="btn btn--secondary" id="btn-zoom" hidden>Ampliar</button>
     <button type="button" class="btn btn--primary" id="btn-next" hidden>
       <span class="btn-text-full">Siguiente carta</span>

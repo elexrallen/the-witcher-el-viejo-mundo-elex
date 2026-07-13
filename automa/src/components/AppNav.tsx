@@ -1,5 +1,5 @@
 const APP_LINKS = [
-  { href: "../index.html", label: "Partida", id: "nav-partida" },
+  { href: "../index.html", label: "Inicio", id: "nav-home" },
   { href: "../exploracion.html", label: "Exploración", id: "nav-exploracion" },
   { href: "../eventos.html", label: "Eventos", id: "nav-eventos" },
   { href: "./", label: "Automa", id: "nav-automa", active: true },
