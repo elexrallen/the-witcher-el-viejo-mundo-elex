@@ -124,7 +124,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
               <WitcherIcon name="potion" size={14} className="shrink-0" />
-              <span className="font-sans">{actCard.potionBonus ? 'Coger Poción' : 'Sin Poción'}</span>
+              <span className="font-sans">
+                {actCard.potionBonus
+                  ? actCard.potionBonusCount && actCard.potionBonusCount > 1
+                    ? `+${actCard.potionBonusCount} Pociones`
+                    : 'Coger Poción'
+                  : 'Sin Poción'}
+              </span>
             </div>
 
             {/* Bomb Item */}
@@ -264,7 +270,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           </div>
         </div>
 
-        {(chaCard.attackPotionForDamage || chaCard.attackDiscardTopCard) && (
+        {(chaCard.attackPotionForDamage ||
+          chaCard.attackDiscardTopCard ||
+          chaCard.attackBombDiscardTopDamage ||
+          chaCard.attackBombExtraCombo ||
+          chaCard.attackPotionShuffleDiscardTop) && (
           <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 mb-3 text-xs font-sans text-amber-200/90 space-y-1">
             <div className="text-[9px] uppercase font-mono tracking-wider text-amber-400 font-bold">Efecto de ataque</div>
             {chaCard.attackPotionForDamage && (
@@ -272,6 +282,15 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             )}
             {chaCard.attackDiscardTopCard && (
               <p>Descarta la carta superior del mazo de combate sin barajar.</p>
+            )}
+            {chaCard.attackBombDiscardTopDamage && (
+              <p>Si tiene bomba: gasta 1, descarta la carta superior sin barajar → +{chaCard.attackBombDiscardTopDamage} daño.</p>
+            )}
+            {chaCard.attackBombExtraCombo && (
+              <p>Si tiene bomba: tras resolver esta carta, juega otro combo inmediatamente.</p>
+            )}
+            {chaCard.attackPotionShuffleDiscardTop && (
+              <p>Si tiene poción: gasta 1 y baraja la carta superior del descarte en el mazo de combate.</p>
             )}
           </div>
         )}

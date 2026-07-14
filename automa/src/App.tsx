@@ -245,7 +245,11 @@ export default function App() {
     else if (bonus === "highest_special") { handleAutoImproveAttribute("highest"); handleUpdateAttribute("special", 1); }
     else if (bonus === "alchemy_any") { handleUpdateAttribute("alchemy", 1); handleAutoImproveAttribute("lowest"); }
 
-    if (activeActionCard.potionBonus) setAutoma((p) => ({ ...p, potions: Math.min(4, p.potions + 1) }));
+    if (activeActionCard.potionBonus) {
+      const count = activeActionCard.potionBonusCount ?? 1;
+      setAutoma((p) => ({ ...p, potions: Math.min(4, p.potions + count) }));
+      if (count > 1) addLog(`+${count} pociones (máx. 4).`);
+    }
     const grantBomb =
       activeActionCard.bombBonus &&
       (!activeActionCard.bombRequiresModule || useBombs);
@@ -337,21 +341,26 @@ export default function App() {
     addLog(`¡COMBATE contra ${name.toUpperCase()}!`);
   };
 
-  const handleAutomaAttackTurn = () => {
-    if (combat.combatDeck.length === 0) {
-      addLog("Automa derrotado — sin cartas.");
-      return;
-    }
-
-    let deck = [...combat.combatDeck];
-    const card = deck[0];
-    deck = deck.slice(1);
+  const resolveAutomaAttack = (
+    deck: ChallengeCard[],
+    discard: ChallengeCard[],
+    card: ChallengeCard,
+    consumables: { potions: number; bombs: number }
+  ): {
+    deck: ChallengeCard[];
+    discard: ChallengeCard[];
+    totalDamage: number;
+    totalShield: number;
+    fightLogs: string[];
+    extraCombo: boolean;
+  } => {
+    let workingDeck = deck;
     const fightLogs: string[] = [];
     const extraDiscard: ChallengeCard[] = [];
 
-    if (card.attackDiscardTopCard && deck.length > 0) {
-      const discardedTop = deck[0];
-      deck = deck.slice(1);
+    if (card.attackDiscardTopCard && workingDeck.length > 0) {
+      const discardedTop = workingDeck[0];
+      workingDeck = workingDeck.slice(1);
       extraDiscard.push(discardedTop);
       fightLogs.push(`Efecto de ataque (${card.id}): descarta ${discardedTop.id} sin barajar.`);
     }
@@ -360,6 +369,30 @@ export default function App() {
     let baseShield = card.shields;
     let schoolDamageBonus = 0;
     let schoolShieldBonus = 0;
+
+    if (card.attackBombDiscardTopDamage && useBombs && consumables.bombs > 0) {
+      consumables.bombs -= 1;
+      if (workingDeck.length > 0) {
+        const discardedTop = workingDeck[0];
+        workingDeck = workingDeck.slice(1);
+        extraDiscard.push(discardedTop);
+        fightLogs.push(`Bomba: descarta ${discardedTop.id} sin barajar.`);
+      }
+      baseDamage += card.attackBombDiscardTopDamage;
+      fightLogs.push(`Bomba consumida: +${card.attackBombDiscardTopDamage} daño.`);
+    }
+
+    if (card.attackPotionShuffleDiscardTop && consumables.potions > 0) {
+      consumables.potions -= 1;
+      if (discard.length > 0) {
+        const topDiscard = discard[discard.length - 1];
+        workingDeck = shuffleArray([...workingDeck, topDiscard]);
+        discard = discard.slice(0, -1);
+        fightLogs.push(`Poción consumida: ${topDiscard.id} barajada al mazo de combate.`);
+      } else {
+        fightLogs.push("Poción consumida: descarte vacío, sin carta que barajar.");
+      }
+    }
 
     if (card.id === "cha-25" && activeSchoolObj.specialCard) {
       baseDamage = activeSchoolObj.specialCard.special1.damage;
@@ -370,8 +403,8 @@ export default function App() {
     } else if (card.id === "cha-27" && activeSchoolObj.specialCard) {
       baseDamage = activeSchoolObj.specialCard.special3.damage;
       baseShield = activeSchoolObj.specialCard.special3.shields;
-      if (automa.schoolId === "manticore" && automa.potions > 0) {
-        setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
+      if (automa.schoolId === "manticore" && consumables.potions > 0) {
+        consumables.potions -= 1;
         baseDamage = 6;
         fightLogs.push("Mantícora: poción consumida, 6 daño.");
       }
@@ -382,22 +415,22 @@ export default function App() {
       schoolShieldBonus = activeSchoolObj.combatBonus.shields;
     }
 
-    if (card.attackPotionForDamage && automa.potions > 0) {
-      setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
+    if (card.attackPotionForDamage && consumables.potions > 0) {
+      consumables.potions -= 1;
       baseDamage += card.attackPotionForDamage;
       fightLogs.push(`Poción consumida en ataque: +${card.attackPotionForDamage} daño.`);
     }
 
     if (card.consumableSlot) {
-      if (automa.potions > 0) {
-        setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
+      if (consumables.potions > 0) {
+        consumables.potions -= 1;
         const potionBonus =
           card.potionDamageBonus ??
           (automa.schoolId === "manticore" ? 4 : 2);
         baseDamage += potionBonus;
         fightLogs.push(`Poción consumida: +${potionBonus} daño.`);
-      } else if (useBombs && automa.bombs > 0) {
-        setAutoma((p) => ({ ...p, bombs: p.bombs - 1 }));
+      } else if (useBombs && consumables.bombs > 0) {
+        consumables.bombs -= 1;
         baseDamage += 2;
       }
     }
@@ -413,9 +446,6 @@ export default function App() {
     }
 
     const defenseShieldBonus = automa.attributes.defense;
-    const totalDamage = baseDamage + schoolDamageBonus;
-
-    // shieldRequiresDefense: el escudo de la carta solo aplica si el atributo de Defensa lo permite
     const cardShieldAllowed = card.shieldRequiresDefense
       ? automa.attributes.defense > 0
       : true;
@@ -427,20 +457,87 @@ export default function App() {
       );
     }
 
+    const totalDamage = baseDamage + schoolDamageBonus;
     const totalShield = effectiveCardShield + schoolShieldBonus + defenseShieldBonus;
 
     if (defenseShieldBonus > 0) {
       fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);
     }
 
+    const extraCombo =
+      Boolean(card.attackBombExtraCombo && useBombs && consumables.bombs > 0);
+
+    if (extraCombo) {
+      consumables.bombs -= 1;
+      fightLogs.push("Bomba consumida: juega otro combo inmediatamente.");
+    }
+
+    return {
+      deck: workingDeck,
+      discard: [...discard, ...extraDiscard, card],
+      totalDamage,
+      totalShield,
+      fightLogs,
+      extraCombo,
+    };
+  };
+
+  const handleAutomaAttackTurn = () => {
+    if (combat.combatDeck.length === 0) {
+      addLog("Automa derrotado — sin cartas.");
+      return;
+    }
+
+    let deck = [...combat.combatDeck];
+    let discard = [...combat.combatDiscard];
+    const consumables = { potions: automa.potions, bombs: automa.bombs };
+    const allFightLogs: string[] = [];
+    let lastDamage = 0;
+    let lastShield = 0;
+    let lastCard: ChallengeCard | null = null;
+
+    const runAttack = () => {
+      if (deck.length === 0) return false;
+      const card = deck[0];
+      deck = deck.slice(1);
+      const result = resolveAutomaAttack(deck, discard, card, consumables);
+      deck = result.deck;
+      discard = result.discard;
+      lastDamage = result.totalDamage;
+      lastShield = result.totalShield;
+      lastCard = card;
+      allFightLogs.push(
+        `Ataque (${card.id}): ${result.totalDamage} daño, ${result.totalShield} escudo. Restan ${deck.length}.`,
+        ...result.fightLogs
+      );
+      if (result.extraCombo && deck.length > 0) {
+        allFightLogs.push("--- Combo adicional ---");
+        return true;
+      }
+      return false;
+    };
+
+    let continueCombo = runAttack();
+    while (continueCombo) {
+      continueCombo = runAttack();
+    }
+
+    if (!lastCard) return;
+
+    setAutoma((p) => ({
+      ...p,
+      potions: consumables.potions,
+      bombs: consumables.bombs,
+    }));
+
     setCombat((prev) => ({
       ...prev,
       combatDeck: deck,
-      combatDiscard: [...prev.combatDiscard, ...extraDiscard, card],
-      revealedCard: card,
-      damageInflictedThisTurn: totalDamage,
-      shieldsActiveThisTurn: totalShield,
-      fightLog: [`Ataque: ${totalDamage} daño, ${totalShield} escudo. Restan ${deck.length}.`, ...fightLogs, ...prev.fightLog],
+      combatDiscard: discard,
+      revealedCard: lastCard,
+      damageInflictedThisTurn: lastDamage,
+      shieldsActiveThisTurn: lastShield,
+      fightLog: [...allFightLogs, ...prev.fightLog],
     }));
   };
 

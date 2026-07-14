@@ -65,6 +65,8 @@ export interface ActionCard {
   /** Si true, al subir Defensa en Fase I el escudo en combate refleja el nivel de Defensa. */
   defenseBonusRaisesShield?: boolean;
   potionBonus: boolean;
+  /** Cantidad de pociones ganadas con potionBonus (por defecto 1). */
+  potionBonusCount?: number;
   bombBonus: boolean;
   /** Si true, el bono de bomba solo aplica con el módulo de bombas activo. */
   bombRequiresModule?: boolean;
@@ -91,8 +93,14 @@ export interface ChallengeCard {
   potionDamageBonus?: number;
   /** Daño extra al consumir poción en el ataque (p. ej. descartar poción → +2). */
   attackPotionForDamage?: number;
-  /** Descarta la carta superior del mazo de combate (sin barajar) al atacar con esta carta. */
+  /** Descarta la carta superior del mazo (sin barajar) al atacar con esta carta. */
   attackDiscardTopCard?: boolean;
+  /** Gasta 1 bomba: descarta la carta superior del mazo y suma este daño. */
+  attackBombDiscardTopDamage?: number;
+  /** Gasta 1 bomba: tras resolver, juega otro combo de inmediato. */
+  attackBombExtraCombo?: boolean;
+  /** Gasta 1 poción: baraja la carta superior del descarte en el mazo de combate. */
+  attackPotionShuffleDiscardTop?: boolean;
   schoolSymbol: boolean;   // Triggers School Bonus
   reaction: {
     type: 'shield' | 'damage' | 'shield_damage' | 'none';

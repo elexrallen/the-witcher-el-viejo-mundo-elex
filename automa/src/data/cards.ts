@@ -364,21 +364,216 @@ const CHA_1: ChallengeCard = {
   imagePath: '/cards/cha-1.png',
 };
 
+// ==========================================
+// CARTA #6 — Nivel II
+// ==========================================
+
+const ACT_6: ActionCard = {
+  id: 'act-6',
+  level: 2,
+  cardNumber: 6,
+  movement: 3,
+  destination: 'Casilla 6',
+  destinationSlot: 6,
+  tieBreakDirection: 'down',
+  attributeBonus: 'attack_defense',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatPriority: 'witcher_then_monster',
+  combatRequirement: 'Prioridad brujo/automa; si no, monstruo si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [3],
+  imagePath: '/cards/act-6.png',
+};
+
+const CHA_6: ChallengeCard = {
+  id: 'cha-6',
+  level: 2,
+  cardNumber: 6,
+  damage: 2,
+  shields: 2,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'red'],
+  pokerKeepValues: [1, 1, 1, 2, 2],
+  pokerPattern: 'Conservar 1, 1, 1, 2 y 2.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-6.png',
+};
+
+// ==========================================
+// CARTA #12 — Nivel II
+// ==========================================
+
+const ACT_12: ActionCard = {
+  id: 'act-12',
+  level: 2,
+  cardNumber: 12,
+  movement: 4,
+  destination: 'Casilla 12',
+  destinationSlot: 12,
+  tieBreakDirection: 'up',
+  attributeBonus: null,
+  potionBonus: true,
+  potionBonusCount: 2,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [1, 2],
+  imagePath: '/cards/act-12.png',
+};
+
+const CHA_12: ChallengeCard = {
+  id: 'cha-12',
+  level: 2,
+  cardNumber: 12,
+  damage: 3,
+  shields: 0,
+  consumableSlot: false,
+  attackBombExtraCombo: true,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [1, 6, 3, 5, 5],
+  pokerPattern: 'Conservar 1, 6, 3, 5 y 5.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-12.png',
+};
+
+// ==========================================
+// CARTA #13 — Nivel II
+// ==========================================
+
+const ACT_13: ActionCard = {
+  id: 'act-13',
+  level: 2,
+  cardNumber: 13,
+  movement: 2,
+  destination: 'Casilla 13',
+  destinationSlot: 13,
+  tieBreakDirection: 'down',
+  attributeBonus: 'defense',
+  potionBonus: true,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [2],
+  imagePath: '/cards/act-13.png',
+};
+
+const CHA_13: ChallengeCard = {
+  id: 'cha-13',
+  level: 2,
+  cardNumber: 13,
+  damage: 3,
+  shields: 0,
+  consumableSlot: false,
+  attackBombDiscardTopDamage: 2,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [4, 2, 2, 5, 5],
+  pokerPattern: 'Conservar 4, 2, 2, 5 y 5.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-13.png',
+};
+
+// ==========================================
+// CARTA #3 — Nivel III
+// ==========================================
+
+const ACT_3: ActionCard = {
+  id: 'act-3',
+  level: 3,
+  cardNumber: 3,
+  movement: 3,
+  destination: 'Casilla 3',
+  destinationSlot: 3,
+  tieBreakDirection: 'up',
+  attributeBonus: 'attack',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: true,
+  trailType: 'terrain',
+  combatPriority: 'witcher_then_monster',
+  combatRequirement: 'Prioridad brujo/automa; si no, monstruo si tienes ≤ 3 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 3 },
+  marketDiscards: [3],
+  imagePath: '/cards/act-3.png',
+};
+
+const CHA_3: ChallengeCard = {
+  id: 'cha-3',
+  level: 3,
+  cardNumber: 3,
+  damage: 3,
+  shields: 2,
+  consumableSlot: false,
+  attackPotionShuffleDiscardTop: true,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [2, 3, 4, 5, 6],
+  pokerPattern: 'Conservar 2, 3, 4, 5 y 6.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-3.png',
+};
+
+// ==========================================
+// CARTA #14 — Nivel III (destino casilla 7)
+// ==========================================
+
+const ACT_14: ActionCard = {
+  id: 'act-14',
+  level: 3,
+  cardNumber: 14,
+  movement: 3,
+  destination: 'Casilla 7',
+  destinationSlot: 7,
+  tieBreakDirection: 'down',
+  attributeBonus: 'special',
+  potionBonus: false,
+  bombBonus: true,
+  bombRequiresModule: true,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 3 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 3 },
+  marketDiscards: [2],
+  imagePath: '/cards/act-14.png',
+};
+
+const CHA_14: ChallengeCard = {
+  id: 'cha-14',
+  level: 3,
+  cardNumber: 14,
+  damage: 6,
+  shields: 0,
+  consumableSlot: false,
+  attackDiscardTopCard: true,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [1, 1, 1, 1, 1],
+  pokerPattern: 'Conservar 1, 1, 1, 1 y 1.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-14.png',
+};
+
 /** Todas las cartas de Acción catalogadas (orden de inserción). */
 export const ACTION_CARDS: ActionCard[] = [
-  ACT_1, ACT_2, ACT_5, ACT_8, ACT_10, ACT_11, ACT_15, ACT_16, ACT_18,
+  ACT_1, ACT_2, ACT_3, ACT_5, ACT_6, ACT_8, ACT_10, ACT_11, ACT_12, ACT_13, ACT_14, ACT_15, ACT_16, ACT_18,
 ];
 
 /** Todas las cartas de Desafío catalogadas (orden de inserción). */
 export const CHALLENGE_CARDS: ChallengeCard[] = [
-  CHA_1, CHA_2, CHA_5, CHA_8, CHA_10, CHA_11, CHA_15, CHA_16, CHA_18,
+  CHA_1, CHA_2, CHA_5, CHA_6, CHA_8, CHA_10, CHA_11, CHA_12, CHA_13, CHA_15, CHA_16, CHA_18,
 ];
 
 /**
  * Cartas de Desafío nivel 3 apartadas del mazo inicial.
  * Se añaden al mazo cuando el Automa medita o gana trofeos.
  */
-export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [];
+export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [CHA_3, CHA_14];
 
 export function getCatalogStats() {
   return {
