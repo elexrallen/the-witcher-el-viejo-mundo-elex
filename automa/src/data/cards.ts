@@ -7,6 +7,7 @@
  */
 
 import { ActionCard, ChallengeCard } from '../types';
+import { MOVEMENT_UNLIMITED } from '../utils/actionCard';
 
 // ==========================================
 // CARTA #2 — Genérica nivel I (primera del catálogo)
@@ -719,14 +720,221 @@ const CHA_4: ChallengeCard = {
   imagePath: '/cards/cha-4.png',
 };
 
-/** Todas las cartas de Acción catalogadas (orden de inserción). */
+// ==========================================
+// CARTAS ESPECÍFICAS DE ESCUELA — Nivel I (#19–21)
+// ==========================================
+
+const ACT_19: ActionCard = {
+  id: 'act-19',
+  level: 1,
+  cardNumber: 19,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'down',
+  attributeBonus: 'defense_attack',
+  defenseBonusRaisesShield: true,
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [1],
+  imagePath: '/cards/act-19.png',
+};
+
+const CHA_19: ChallengeCard = {
+  id: 'cha-19',
+  level: 1,
+  cardNumber: 19,
+  cardSet: 'school',
+  damage: 3,
+  shields: 0,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: {
+    type: 'damage',
+    value: 2,
+    description: 'Si esta carta es descartada por efecto de un ataque de un oponente, el oponente sufre 2 daños.',
+  },
+  mutagens: ['red'],
+  pokerKeepValues: [1, 6, 6, 5, 5],
+  pokerPattern: 'Conservar 1, 6, 6, 5 y 5.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-19.png',
+};
+
+const ACT_20: ActionCard = {
+  id: 'act-20',
+  level: 1,
+  cardNumber: 20,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'up',
+  attributeBonus: 'defense_special_trail',
+  defenseBonusRaisesShield: true,
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: true,
+  trailType: 'terrain',
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [2, 3],
+  imagePath: '/cards/act-20.png',
+};
+
+const CHA_20: ChallengeCard = {
+  id: 'cha-20',
+  level: 1,
+  cardNumber: 20,
+  cardSet: 'school',
+  damage: 1,
+  shields: 2,
+  consumableSlot: false,
+  attackPotionForDamage: 2,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue'],
+  pokerKeepValues: [4, 2, 6, 6, 6],
+  pokerPattern: 'Conservar 4, 2, 6, 6 y 6.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-20.png',
+};
+
+const ACT_21: ActionCard = {
+  id: 'act-21',
+  level: 1,
+  cardNumber: 21,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'down',
+  attributeBonus: 'alchemy_attack',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [4],
+  imagePath: '/cards/act-21.png',
+};
+
+const CHA_21: ChallengeCard = {
+  id: 'cha-21',
+  level: 1,
+  cardNumber: 21,
+  cardSet: 'school',
+  damage: 2,
+  shields: 1,
+  consumableSlot: false,
+  attackShuffleDiscardTopCount: 2,
+  schoolSymbol: false,
+  reaction: null,
+  greenMutagen: true,
+  pokerKeepValues: [1, 2, 3, 5, 5],
+  pokerPattern: 'Conservar 1, 2, 3, 5 y 5.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-21.png',
+};
+
+// ==========================================
+// CARTAS ESPECÍFICAS DE ESCUELA — Nivel II (#22–23)
+// ==========================================
+
+const ACT_22: ActionCard = {
+  id: 'act-22',
+  level: 2,
+  cardNumber: 22,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'up',
+  attributeBonus: 'highest',
+  potionBonus: false,
+  bombBonus: true,
+  bombRequiresModule: true,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [3, 4],
+  imagePath: '/cards/act-22.png',
+};
+
+const CHA_22: ChallengeCard = {
+  id: 'cha-22',
+  level: 2,
+  cardNumber: 22,
+  cardSet: 'school',
+  damage: 3,
+  shields: 1,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: {
+    type: 'damage',
+    value: 2,
+    description: 'Si esta carta es descartada por efecto de un ataque de un oponente, el oponente sufre 2 daños.',
+  },
+  mutagens: ['red', 'blue'],
+  pokerKeepValues: [2, 3, 4, 5, 6],
+  pokerPattern: 'Conservar 2, 3, 4, 5 y 6.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-22.png',
+};
+
+const ACT_23: ActionCard = {
+  id: 'act-23',
+  level: 2,
+  cardNumber: 23,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'down',
+  attributeBonus: 'lowest',
+  potionBonus: true,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [1],
+  imagePath: '/cards/act-23.png',
+};
+
+const CHA_23: ChallengeCard = {
+  id: 'cha-23',
+  level: 2,
+  cardNumber: 23,
+  cardSet: 'school',
+  damage: 5,
+  shields: 0,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['red', 'green'],
+  pokerKeepValues: [1, 2, 2, 5, 5],
+  pokerPattern: 'Conservar 1, 2, 2, 5 y 5.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-23.png',
+};
+
+/** Cartas de Acción genéricas (mazo común). */
 export const ACTION_CARDS: ActionCard[] = [
   ACT_1, ACT_2, ACT_3, ACT_4, ACT_5, ACT_6, ACT_7, ACT_8, ACT_9, ACT_10, ACT_11, ACT_12, ACT_13, ACT_14, ACT_15, ACT_16, ACT_17, ACT_18,
 ];
 
-/** Todas las cartas de Desafío catalogadas (orden de inserción). */
+/** Cartas de Acción específicas de escuela (compartidas por todas las escuelas). */
+export const SCHOOL_ACTION_CARDS: ActionCard[] = [
+  ACT_19, ACT_20, ACT_21, ACT_22, ACT_23,
+];
+
+/** Cartas de Desafío genéricas catalogadas (orden de inserción). */
 export const CHALLENGE_CARDS: ChallengeCard[] = [
   CHA_1, CHA_2, CHA_5, CHA_6, CHA_8, CHA_10, CHA_11, CHA_12, CHA_13, CHA_15, CHA_16, CHA_18,
+];
+
+/** Cartas de Desafío específicas de escuela. */
+export const SCHOOL_CHALLENGE_CARDS: ChallengeCard[] = [
+  CHA_19, CHA_20, CHA_21, CHA_22, CHA_23,
 ];
 
 /**
@@ -739,8 +947,10 @@ export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [
 
 export function getCatalogStats() {
   return {
-    actionCount: ACTION_CARDS.length,
-    challengeCount: CHALLENGE_CARDS.length,
+    actionCount: ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length,
+    challengeCount: CHALLENGE_CARDS.length + SCHOOL_CHALLENGE_CARDS.length,
+    genericActionCount: ACTION_CARDS.length,
+    schoolActionCount: SCHOOL_ACTION_CARDS.length,
     reserveCount: LEVEL_3_CHALLENGE_RESERVE.length,
   };
 }

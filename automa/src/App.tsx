@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ACTION_CARDS, CHALLENGE_CARDS } from "./data/cards";
+import { ACTION_CARDS, CHALLENGE_CARDS, SCHOOL_ACTION_CARDS, SCHOOL_CHALLENGE_CARDS } from "./data/cards";
 import { WITCHER_SCHOOLS } from "./data/schools";
 import {
   WitcherSchoolId,
@@ -196,7 +196,7 @@ export default function App() {
     setCurrentTab("turn");
     setCombat((prev) => ({ ...prev, isActive: false }));
     addLog(
-      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${ACTION_CARDS.length} acción, ${CHALLENGE_CARDS.length} desafío.`
+      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length} acción, ${CHALLENGE_CARDS.length + SCHOOL_CHALLENGE_CARDS.length} desafío.`
     );
   };
 
@@ -258,6 +258,24 @@ export default function App() {
     else if (bonus === "special_highest") {
       handleUpdateAttribute("special", 1);
       handleAutoImproveAttribute("highest");
+    }
+    else if (bonus === "defense_attack") {
+      handleUpdateAttribute("defense", 1);
+      if (activeActionCard.defenseBonusRaisesShield) {
+        addLog(`Defensa +1 (nivel ${Math.min(5, automa.attributes.defense + 1)}): el escudo en combate suma el nivel de Defensa del tablero.`);
+      }
+      handleUpdateAttribute("attack", 1);
+    }
+    else if (bonus === "defense_special_trail") {
+      handleUpdateAttribute("defense", 1);
+      if (activeActionCard.defenseBonusRaisesShield) {
+        addLog(`Defensa +1 (nivel ${Math.min(5, automa.attributes.defense + 1)}): el escudo en combate suma el nivel de Defensa del tablero.`);
+      }
+      handleUpdateAttribute("special", 1);
+    }
+    else if (bonus === "alchemy_attack") {
+      handleUpdateAttribute("alchemy", 1);
+      handleUpdateAttribute("attack", 1);
     }
 
     if (activeActionCard.potionBonus) {
@@ -407,6 +425,20 @@ export default function App() {
         fightLogs.push(`Poción consumida: ${topDiscard.id} barajada al mazo de combate.`);
       } else {
         fightLogs.push("Poción consumida: descarte vacío, sin carta que barajar.");
+      }
+    }
+
+    if (card.attackShuffleDiscardTopCount && card.attackShuffleDiscardTopCount > 0) {
+      for (let i = 0; i < card.attackShuffleDiscardTopCount; i++) {
+        if (discard.length > 0) {
+          const topDiscard = discard[discard.length - 1];
+          workingDeck = shuffleArray([...workingDeck, topDiscard]);
+          discard = discard.slice(0, -1);
+          fightLogs.push(`Efecto (${card.id}): ${topDiscard.id} barajada al mazo (${i + 1}/${card.attackShuffleDiscardTopCount}).`);
+        } else {
+          fightLogs.push(`Efecto (${card.id}): descarte vacío en barajada ${i + 1}/${card.attackShuffleDiscardTopCount}.`);
+          break;
+        }
       }
     }
 

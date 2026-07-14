@@ -80,6 +80,8 @@ export interface ActionCard {
   /** Meditar si puede; si no, combate con monstruo si cumple combatCondition. */
   phaseIIPriority?: 'meditate_or_monster';
   marketDiscards: number[];
+  /** Genérica (mazo común) o específica de escuela. */
+  cardSet?: 'generic' | 'school';
   /** Ruta a imagen de la carta física (opcional). */
   imagePath?: string;
 }
@@ -105,6 +107,8 @@ export interface ChallengeCard {
   attackPotionShuffleDiscardTop?: boolean;
   /** Gasta 1 poción: el oponente sufre daño igual a los escudos activos del Automa. */
   attackPotionOpponentShieldDamage?: boolean;
+  /** Baraja la carta superior del descarte al mazo de combate (N veces) al atacar. */
+  attackShuffleDiscardTopCount?: number;
   schoolSymbol: boolean;   // Triggers School Bonus
   reaction: {
     type: 'shield' | 'damage' | 'shield_damage' | 'none';
@@ -126,6 +130,7 @@ export interface ChallengeCard {
   shieldRequiresDefense?: boolean;
   /** Símbolo de ataque del monstruo cuando el jugador combate (mordisco/embestida). */
   playerMonsterAttack?: 'mordisco' | 'embestida' | null;
+  cardSet?: 'generic' | 'school';
   imagePath?: string;
 }
 

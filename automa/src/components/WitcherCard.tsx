@@ -47,6 +47,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         id={`action-card-${actCard.id}`}
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 to-amber-500"></div>
+        {actCard.cardSet === 'school' && (
+          <div className="absolute top-3 right-3 text-[9px] uppercase font-mono tracking-wider bg-orange-950/80 text-orange-400 border border-orange-800/50 px-2 py-0.5 rounded font-bold">
+            Escuela
+          </div>
+        )}
         {actCard.imagePath && !compact && (
           <img
             src={actCard.imagePath}
@@ -113,6 +118,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                     case 'defense_highest': return 'Defensa +1 y Atributo más Alto +1';
                     case 'attack_highest': return 'Ataque +1 y Atributo más Alto +1';
                     case 'special_highest': return 'Especial +1 y Atributo más Alto +1';
+                    case 'defense_attack': return 'Defensa +1 y Ataque +1';
+                    case 'defense_special_trail': return 'Defensa +1, Especial +1 y Rastro';
+                    case 'alchemy_attack': return 'Alquimia +1 y Ataque +1';
                     case 'alchemy_any': return 'Alquimia y Elegir +1';
                     default: return `Subir ${actCard.attributeBonus}`;
                   }
@@ -205,6 +213,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         id={`challenge-card-${chaCard.id}`}
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-orange-500"></div>
+        {chaCard.cardSet === 'school' && (
+          <div className="absolute top-3 right-3 text-[9px] uppercase font-mono tracking-wider bg-orange-950/80 text-orange-400 border border-orange-800/50 px-2 py-0.5 rounded font-bold z-10">
+            Escuela
+          </div>
+        )}
         {chaCard.imagePath && !compact && (
           <img
             src={chaCard.imagePath}
@@ -278,7 +291,8 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           chaCard.attackBombDiscardTopDamage ||
           chaCard.attackBombExtraCombo ||
           chaCard.attackPotionShuffleDiscardTop ||
-          chaCard.attackPotionOpponentShieldDamage) && (
+          chaCard.attackPotionOpponentShieldDamage ||
+          chaCard.attackShuffleDiscardTopCount) && (
           <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 mb-3 text-xs font-sans text-amber-200/90 space-y-1">
             <div className="text-[9px] uppercase font-mono tracking-wider text-amber-400 font-bold">Efecto de ataque</div>
             {chaCard.attackPotionForDamage && (
@@ -298,6 +312,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             )}
             {chaCard.attackPotionOpponentShieldDamage && (
               <p>Si tiene poción: gasta 1 → el oponente sufre daño igual a los escudos activos del Automa.</p>
+            )}
+            {chaCard.attackShuffleDiscardTopCount != null && chaCard.attackShuffleDiscardTopCount > 0 && (
+              <p>Baraja la carta superior del descarte al mazo de combate {chaCard.attackShuffleDiscardTopCount} vez(es).</p>
             )}
           </div>
         )}
