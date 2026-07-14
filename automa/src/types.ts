@@ -98,6 +98,10 @@ export interface ChallengeCard {
   pokerKeepValues?: number[];
   /** Mutágeno rojo impreso en el margen de la carta. */
   redMutagen?: boolean;
+  /** Mutágeno verde impreso en el margen de la carta. */
+  greenMutagen?: boolean;
+  /** Si true, el escudo solo se aplica si el atributo Defensa lo permite. */
+  shieldRequiresDefense?: boolean;
   /** Símbolo de ataque del monstruo cuando el jugador combate (mordisco/embestida). */
   playerMonsterAttack?: 'mordisco' | 'embestida' | null;
   imagePath?: string;

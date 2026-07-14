@@ -101,8 +101,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                     case 'alchemy': return 'Subir Alquimia';
                     case 'special': return 'Subir Especial';
                     case 'attack_defense': return 'Ataque y Defensa +1';
-                    case 'defense_special_any': return 'Defensa, Especial y Elegir +1';
                     case 'attack_alchemy': return 'Ataque y Alquimia +1';
+                    case 'attack_special': return 'Ataque y Especial +1';
+                    case 'defense_special_any': return 'Defensa, Especial y Elegir +1';
                     case 'highest': return 'Subir Atributo más Alto';
                     case 'lowest': return 'Subir Atributo más Bajo';
                     case 'lowest_defense': return 'Bajo +1 y Defensa +1';
@@ -227,6 +228,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
               <WitcherIcon name="shield" size={18} className="text-sky-500" />
               <span className="font-display">+{chaCard.shields} Escudo</span>
             </div>
+            {chaCard.shieldRequiresDefense && (
+              <div className="text-[8px] font-mono text-amber-500 mt-1 leading-tight">Si Defensa lo permite</div>
+            )}
           </div>
         </div>
 
@@ -283,6 +287,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         <div className="border-t border-zinc-800 pt-2.5 text-center text-[10px] mt-auto space-y-1">
           {chaCard.redMutagen && (
             <div className="text-red-400 font-mono uppercase text-[8px] tracking-wider font-bold">Mutágeno rojo en combate</div>
+          )}
+          {chaCard.greenMutagen && (
+            <div className="text-emerald-400 font-mono uppercase text-[8px] tracking-wider font-bold">Mutágeno verde en combate</div>
           )}
           {chaCard.playerMonsterAttack && (
             <div className="text-sky-400 font-mono uppercase text-[8px] tracking-wider font-bold">

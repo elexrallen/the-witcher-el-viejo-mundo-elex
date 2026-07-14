@@ -226,6 +226,7 @@ export default function App() {
     else if (bonus === "special") handleUpdateAttribute("special", 1);
     else if (bonus === "attack_defense") { handleUpdateAttribute("attack", 1); handleUpdateAttribute("defense", 1); }
     else if (bonus === "attack_alchemy") { handleUpdateAttribute("attack", 1); handleUpdateAttribute("alchemy", 1); }
+    else if (bonus === "attack_special") { handleUpdateAttribute("attack", 1); handleUpdateAttribute("special", 1); }
     else if (bonus === "defense_special_any") { handleUpdateAttribute("defense", 1); handleUpdateAttribute("special", 1); handleAutoImproveAttribute("lowest"); }
     else if (bonus === "highest") handleAutoImproveAttribute("highest");
     else if (bonus === "lowest") handleAutoImproveAttribute("lowest");
@@ -389,9 +390,28 @@ export default function App() {
       fightLogs.push("Carta con icono de mutágeno rojo (sin mutágeno adquirido aún).");
     }
 
+    if (useMutagens && card.greenMutagen && automa.mutagens.includes("green")) {
+      fightLogs.push("Mutágeno verde activo en esta carta.");
+    } else if (useMutagens && card.greenMutagen) {
+      fightLogs.push("Carta con icono de mutágeno verde (sin mutágeno adquirido aún).");
+    }
+
     const defenseShieldBonus = automa.attributes.defense;
     const totalDamage = baseDamage + schoolDamageBonus;
-    const totalShield = baseShield + schoolShieldBonus + defenseShieldBonus;
+
+    // shieldRequiresDefense: el escudo de la carta solo aplica si el atributo de Defensa lo permite
+    const cardShieldAllowed = card.shieldRequiresDefense
+      ? automa.attributes.defense > 0
+      : true;
+    const effectiveCardShield = cardShieldAllowed ? baseShield : 0;
+    if (card.shieldRequiresDefense) {
+      fightLogs.push(cardShieldAllowed
+        ? `Escudo condicional: Defensa (${automa.attributes.defense}) > 0, +${baseShield} escudo aplicado.`
+        : `Escudo condicional: Defensa en 0, escudo de carta no aplicado.`
+      );
+    }
+
+    const totalShield = effectiveCardShield + schoolShieldBonus + defenseShieldBonus;
 
     if (defenseShieldBonus > 0) {
       fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);

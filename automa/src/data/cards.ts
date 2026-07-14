@@ -166,11 +166,54 @@ const CHA_11: ChallengeCard = {
   imagePath: '/cards/cha-11.png',
 };
 
+// ==========================================
+// CARTA #5 — Genérica nivel I
+// ==========================================
+
+const ACT_5: ActionCard = {
+  id: 'act-5',
+  level: 'generic',
+  cardNumber: 5,
+  movement: 3,
+  destination: 'Casilla 5',
+  destinationSlot: 5,
+  tieBreakDirection: 'up',
+  attributeBonus: 'attack_special',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [2],
+  imagePath: '/cards/act-5.png',
+};
+
+const CHA_5: ChallengeCard = {
+  id: 'cha-5',
+  level: 'generic',
+  cardNumber: 5,
+  damage: 2,
+  shields: 1,
+  shieldRequiresDefense: true,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: {
+    type: 'damage',
+    value: 2,
+    description: 'Si esta carta es descartada por efecto de un ataque de un oponente, el oponente sufre 2 daños.',
+  },
+  pokerKeepValues: [6, 6, 3, 3, 3],
+  pokerPattern: 'Conservar 6, 6, 3, 3 y 3.',
+  greenMutagen: true,
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-5.png',
+};
+
 /** Todas las cartas de Acción catalogadas (orden de inserción). */
-export const ACTION_CARDS: ActionCard[] = [ACT_2, ACT_8, ACT_11, ACT_15];
+export const ACTION_CARDS: ActionCard[] = [ACT_2, ACT_5, ACT_8, ACT_11, ACT_15];
 
 /** Todas las cartas de Desafío catalogadas (orden de inserción). */
-export const CHALLENGE_CARDS: ChallengeCard[] = [CHA_2, CHA_8, CHA_11, CHA_15];
+export const CHALLENGE_CARDS: ChallengeCard[] = [CHA_2, CHA_5, CHA_8, CHA_11, CHA_15];
 
 /**
  * Cartas de Desafío nivel 3 apartadas del mazo inicial.
