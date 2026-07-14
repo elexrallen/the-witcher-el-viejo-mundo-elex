@@ -1,16 +1,73 @@
 import { ActionCard, AutomaState } from "../types";
+import { canMeditate } from "./meditation";
 import { meetsCombatRequirement, formatCombatCondition } from "./combatCondition";
 
 export type PhaseIIAction = "meditate" | "combat" | "explore";
 
-export function canMeditate(automa: AutomaState): boolean {
-  return Object.values(automa.attributes).some((v) => v === 5) && automa.trophies < 4;
+export type PhaseIIPresence = {
+  witcherPresent: boolean;
+  monsterPresent: boolean;
+};
+
+export type PhaseIICombatOption = {
+  opponentType: "monster" | "witcher";
+};
+
+const DEFAULT_PRESENCE: PhaseIIPresence = {
+  witcherPresent: false,
+  monsterPresent: true,
+};
+
+/**
+ * Resuelve combate en Fase II según prioridad exclusiva de la carta (manual p. 7–8).
+ * Opciones con barra ( / ): intentar la izquierda primero; si no aplica, la derecha.
+ */
+export function resolvePhaseIICombat(
+  card: ActionCard,
+  automa: AutomaState,
+  presence: PhaseIIPresence = DEFAULT_PRESENCE
+): PhaseIICombatOption | null {
+  if (card.legendaryMonsterCombat) {
+    return presence.monsterPresent ? { opponentType: "monster" } : null;
+  }
+
+  if (card.combatPriority === "witcher_then_monster") {
+    if (presence.witcherPresent) {
+      return { opponentType: "witcher" };
+    }
+    if (presence.monsterPresent && meetsCombatRequirement(card, automa)) {
+      return { opponentType: "monster" };
+    }
+    return null;
+  }
+
+  if (presence.monsterPresent && meetsCombatRequirement(card, automa)) {
+    return { opponentType: "monster" };
+  }
+
+  if (presence.witcherPresent && meetsCombatRequirement(card, automa)) {
+    return { opponentType: "witcher" };
+  }
+
+  return null;
 }
 
-export function inferPhaseIIAction(card: ActionCard, automa: AutomaState): PhaseIIAction {
+export function canPhaseIICombat(
+  card: ActionCard,
+  automa: AutomaState,
+  presence: PhaseIIPresence = DEFAULT_PRESENCE
+): boolean {
+  return resolvePhaseIICombat(card, automa, presence) !== null;
+}
+
+export function inferPhaseIIAction(
+  card: ActionCard,
+  automa: AutomaState,
+  presence: PhaseIIPresence = DEFAULT_PRESENCE
+): PhaseIIAction {
   if (card.phaseIIPriority === "meditate_or_monster") {
     if (canMeditate(automa)) return "meditate";
-    if (meetsCombatRequirement(card, automa)) return "combat";
+    if (canPhaseIICombat(card, automa, presence)) return "combat";
     return "explore";
   }
 
@@ -18,33 +75,48 @@ export function inferPhaseIIAction(card: ActionCard, automa: AutomaState): Phase
     return "meditate";
   }
 
-  if (meetsCombatRequirement(card, automa)) {
+  if (canPhaseIICombat(card, automa, presence)) {
     return "combat";
   }
 
   return "explore";
 }
 
-export function getPhaseIIHint(card: ActionCard, automa: AutomaState): string {
+export function getPhaseIIHint(
+  card: ActionCard,
+  automa: AutomaState,
+  presence: PhaseIIPresence = DEFAULT_PRESENCE
+): string {
+  if (card.legendaryMonsterCombat) {
+    return presence.monsterPresent
+      ? "Combate con Monstruo Legendario (mismo espacio)."
+      : "Sin monstruo legendario en la localización — explorar.";
+  }
+
   if (card.phaseIIPriority === "meditate_or_monster") {
     if (canMeditate(automa)) {
-      return "Prioridad: Meditar (atributo en nivel 5 y trofeo disponible).";
+      return "Prioridad: Meditar (atributo en nivel 5 y trofeo de meditación disponible).";
     }
-    if (meetsCombatRequirement(card, automa)) {
-      return `Si no puede meditar: combate monstruo si ${formatCombatCondition(card).toLowerCase()}.`;
+    const combat = resolvePhaseIICombat(card, automa, presence);
+    if (combat) {
+      return `Si no puede meditar: combate ${combat.opponentType === "witcher" ? "brujo" : "monstruo"} (${formatCombatCondition(card).toLowerCase()}).`;
     }
     return `No medita ni combate (${formatCombatCondition(card)}). El Automa explora.`;
   }
 
   if (canMeditate(automa)) {
-    return "Prioridad: Meditar (atributo en nivel 5 y trofeo disponible).";
+    return "Prioridad: Meditar (atributo en nivel 5 y trofeo de meditación disponible).";
   }
 
-  if (meetsCombatRequirement(card, automa)) {
+  const combat = resolvePhaseIICombat(card, automa, presence);
+  if (combat) {
     if (card.combatPriority === "witcher_then_monster") {
-      return `Prioridad: combatir brujo/automa en la localización; si no hay, monstruo si ${formatCombatCondition(card).toLowerCase()}.`;
+      if (combat.opponentType === "witcher") {
+        return "Prioridad: combatir brujo en la localización.";
+      }
+      return `Sin brujo: combate monstruo si ${formatCombatCondition(card).toLowerCase()}.`;
     }
-    return `Condición de combate cumplida: ${formatCombatCondition(card)}. Si hay monstruo o brujo en la localización, combatir.`;
+    return `Condición cumplida: ${formatCombatCondition(card)}. Combate ${combat.opponentType === "witcher" ? "brujo" : "monstruo"}.`;
   }
 
   return `No cumple combate (${formatCombatCondition(card)}). El Automa explora (sin robar eventos).`;

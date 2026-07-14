@@ -75,6 +75,7 @@ const els = {
   cardRevealSlider: document.getElementById("card-reveal-slider"),
   cardRevealHint: document.getElementById("card-reveal-hint"),
   btnRevealReset: document.getElementById("btn-reveal-reset"),
+  btnRevealDirection: document.getElementById("btn-reveal-direction"),
   cardPlaceholder: document.getElementById("card-placeholder"),
   eventJump: document.getElementById("event-jump"),
   jumpNumber: document.getElementById("jump-number"),
@@ -120,6 +121,7 @@ async function init() {
     slider: els.cardRevealSlider,
     hint: els.cardRevealHint,
     resetButton: els.btnRevealReset,
+    directionButton: els.btnRevealDirection,
     zoomImage: els.zoomImage,
     onRevealChange: () => {
       if (state.cardRevealed) {
@@ -521,7 +523,7 @@ function updateInstruction() {
   if (state.cardRevealed && state.currentCard) {
     els.instruction.innerHTML = `
       <h3 class="instruction__title">Carta revelada</h3>
-      <p class="instruction__body">Desliza la barra sobre la carta para ir leyendo de arriba a abajo. Aplica los efectos a <strong>${active}</strong>.</p>
+      <p class="instruction__body">Desliza la barra para leer la carta. Pulsa ↑ junto a la barra para revelar de abajo arriba. Aplica los efectos a <strong>${active}</strong>.</p>
     `;
     return;
   }
@@ -681,10 +683,8 @@ function openZoom() {
   if (!state.cardRevealed || !state.currentCard) {
     return;
   }
-  const reveal = cardReveal?.getReveal?.() ?? 100;
   if (els.zoomImage) {
-    const hiddenBottom = 100 - reveal;
-    els.zoomImage.style.clipPath = reveal >= 100 ? "none" : `inset(0 0 ${hiddenBottom}% 0)`;
+    els.zoomImage.style.clipPath = cardReveal?.getClipPath?.() ?? "none";
     els.zoomImage.alt = `Evento #${state.currentCard.number}`;
   }
   els.zoomDialog.showModal();

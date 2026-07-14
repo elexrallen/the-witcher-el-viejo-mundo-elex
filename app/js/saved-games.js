@@ -41,6 +41,18 @@ export function createDefaultAutomaSnapshot() {
       weaknesses: 0,
       destructionTokens: 0,
       dagonTrack: 0,
+      legendaryMonsterDefeated: false,
+      legendaryMonsterBaseLife: 10,
+      destructionReserveRemaining: 8,
+      legendaryMonsterId: "ciclope",
+      meditationTrophiesClaimed: {
+        attack: false,
+        defense: false,
+        alchemy: false,
+        special: false,
+      },
+      shieldLevel: 1,
+      currentTerrain: "yellow",
     },
     lockedAttributes: {
       attack: false,

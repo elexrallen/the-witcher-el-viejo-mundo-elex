@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WitcherIcon } from "./WitcherIcon";import { ActionCard, WitcherSchool } from "../types";
 import WitcherCard from "./WitcherCard";
 import PhaseStepper from "./PhaseStepper";
-import { canMeditate, getPhaseIIHint, inferPhaseIIAction, PhaseIIAction } from "../utils/phaseII";
-import { COMMON_OPPONENTS } from "../utils/cities";
+import { canMeditate, getMeditationTrophyAttribute, ATTRIBUTE_LABELS } from "../utils/meditation";
+import {
+  getPhaseIIHint,
+  inferPhaseIIAction,
+  PhaseIIAction,
+  PhaseIIPresence,
+  resolvePhaseIICombat,
+} from "../utils/phaseII";
+import { COMBAT_MONSTER_OPTIONS } from "../utils/monsterSpecialAttacks";
 import { formatMovementGuide, formatDestination, formatTieBreak } from "../utils/actionCard";
 import { formatCombatCondition } from "../utils/combatCondition";
 import { AutomaState } from "../types";
@@ -25,6 +32,8 @@ type TurnFlowProps = {
   onEndTurn: () => void;
   onClearLogs: () => void;
   onAdvanceToPhase2: () => void;
+  useLegendaryHunt?: boolean;
+  onCollectDestructionToken?: () => void;
 };
 
 export default function TurnFlow({
@@ -44,13 +53,41 @@ export default function TurnFlow({
   onEndTurn,
   onClearLogs,
   onAdvanceToPhase2,
+  useLegendaryHunt = false,
+  onCollectDestructionToken,
 }: TurnFlowProps) {
-  const [opponentName, setOpponentName] = useState(COMMON_OPPONENTS[0]);
+  const [opponentName, setOpponentName] = useState("Grifo");
   const [opponentType, setOpponentType] = useState<"monster" | "witcher">("monster");
+  const [presence, setPresence] = useState<PhaseIIPresence>({
+    witcherPresent: false,
+    monsterPresent: true,
+  });
+
+  useEffect(() => {
+    if (activeActionCard?.legendaryMonsterCombat) {
+      setOpponentType("monster");
+      setOpponentName("Monstruo legendario");
+      setPresence({ witcherPresent: false, monsterPresent: true });
+    }
+  }, [activeActionCard?.id, activeActionCard?.legendaryMonsterCombat]);
+
+  useEffect(() => {
+    if (!activeActionCard || turnPhase !== 2) return;
+    const resolved = resolvePhaseIICombat(activeActionCard, automa, presence);
+    if (resolved) {
+      setOpponentType(resolved.opponentType);
+    }
+  }, [activeActionCard, automa.trophies, presence, turnPhase]);
 
   const recommended: PhaseIIAction | null = activeActionCard
-    ? inferPhaseIIAction(activeActionCard, automa)
+    ? inferPhaseIIAction(activeActionCard, automa, presence)
     : null;
+
+  const combatAvailable = activeActionCard
+    ? resolvePhaseIICombat(activeActionCard, automa, presence) !== null
+    : false;
+
+  const meditationAttribute = getMeditationTrophyAttribute(automa);
 
   const phaseIIActionClass = (action: PhaseIIAction) => {
     if (recommended !== action) return "";
@@ -86,6 +123,7 @@ export default function TurnFlow({
               <>
                 <p className="font-sans text-sm text-zinc-400">
                   Fase I: Roba la carta superior del mazo de Acción para definir movimiento, acciones y descarte de mercado.
+                  Si el mazo se vacía, se reponen solo las cartas de <strong className="text-zinc-300">nivel III</strong> del descarte (barajadas).
                 </p>
                 <button
                   type="button"
@@ -120,9 +158,22 @@ export default function TurnFlow({
                     Aplicar acciones de Fase I
                   </button>
                 ) : (
-                  <div className="bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 p-3 rounded-xl text-xs flex items-center gap-2 font-bold">
-                    <WitcherIcon name="check" size={18} className="shrink-0" />
-                    Acciones de Fase I aplicadas
+                  <div className="space-y-2">
+                    <div className="bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 p-3 rounded-xl text-xs flex items-center gap-2 font-bold">
+                      <WitcherIcon name="check" size={18} className="shrink-0" />
+                      Acciones de Fase I aplicadas
+                    </div>
+                    {useLegendaryHunt && onCollectDestructionToken && (
+                      <button
+                        type="button"
+                        onClick={onCollectDestructionToken}
+                        className="w-full py-2.5 min-h-[var(--touch-min)] bg-red-950/30 hover:bg-red-950/50 text-red-300 border border-red-900/40 rounded-xl text-xs font-bold font-display uppercase flex items-center justify-center gap-2"
+                        id="collect-destruction-btn"
+                      >
+                        <WitcherIcon name="legendary" size={16} />
+                        Recoger ficha de Destrucción (fin Fase I en casilla destruida)
+                      </button>
+                    )}
                   </div>
                 )}
                 {(bonusApplied || (!activeActionCard.attributeBonus && !activeActionCard.potionBonus && !activeActionCard.bombBonus && !activeActionCard.trailBonus)) && (
@@ -142,8 +193,33 @@ export default function TurnFlow({
         {turnPhase === 2 && activeActionCard && (
           <div className="space-y-4" id="phase-2-playmat">
             <p className="text-xs text-zinc-400 bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
-              {getPhaseIIHint(activeActionCard, automa)}
+              {getPhaseIIHint(activeActionCard, automa, presence)}
             </p>
+
+            <div className="flex flex-wrap gap-3 text-[10px] text-zinc-400 bg-zinc-950/40 border border-zinc-850 rounded-xl p-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={presence.monsterPresent}
+                  onChange={(e) =>
+                    setPresence((p) => ({ ...p, monsterPresent: e.target.checked }))
+                  }
+                  className="rounded border-zinc-700"
+                />
+                Monstruo en localización
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={presence.witcherPresent}
+                  onChange={(e) =>
+                    setPresence((p) => ({ ...p, witcherPresent: e.target.checked }))
+                  }
+                  className="rounded border-zinc-700"
+                />
+                Brujo en localización
+              </label>
+            </div>
 
             <div className="grid grid-cols-1 gap-2.5">
               <button
@@ -157,7 +233,9 @@ export default function TurnFlow({
                   Meditar {recommended === "meditate" && "← Prioridad carta"}
                 </span>
                 <span className="text-[10px] text-zinc-400 block mt-1">
-                  Atributo en nivel 5 + trofeo disponible. ¡Puede ganar la partida!
+                  {meditationAttribute
+                    ? `Trofeo de ${ATTRIBUTE_LABELS[meditationAttribute]} disponible (orden tablero).`
+                    : "Requiere atributo en nivel 5 con trofeo de meditación libre."}
                 </span>
               </button>
 
@@ -180,15 +258,28 @@ export default function TurnFlow({
                     onChange={(e) => setOpponentName(e.target.value)}
                     className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2 text-xs min-h-[var(--touch-min)]"
                   >
-                    {COMMON_OPPONENTS.map((o) => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
+                    {["Legendarios", "Regulares", undefined].map((group) => {
+                      const options = COMBAT_MONSTER_OPTIONS.filter(
+                        (o) => o.group === group || (!group && !o.group)
+                      );
+                      if (options.length === 0) return null;
+                      return (
+                        <optgroup key={group ?? "other"} label={group ?? "Otros"}>
+                          {options.map((o) => (
+                            <option key={o.value} value={o.value}>
+                              {o.label}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
                   </select>
                 </div>
                 <button
                   type="button"
                   onClick={() => onStartCombat(opponentType, opponentName)}
-                  className="w-full py-2.5 min-h-[var(--touch-min)] bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-900/40 rounded-xl text-xs font-bold uppercase"
+                  disabled={!combatAvailable}
+                  className="w-full py-2.5 min-h-[var(--touch-min)] bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-900/40 rounded-xl text-xs font-bold uppercase disabled:opacity-40"
                   id="option-combat-btn"
                 >
                   Iniciar combate
@@ -227,6 +318,11 @@ export default function TurnFlow({
               ))}
             </div>
             <p className="text-[10px] text-zinc-500">Reponer mercado tras descartar todas las indicadas.</p>
+            {activeActionCard.returnToDeckBottomIfLegendaryAlive && (
+              <p className="text-[10px] text-red-400/90 bg-red-950/20 border border-red-900/30 rounded-lg p-2">
+                Si el Monstruo Legendario sigue vivo, esta carta va al <strong>fondo del mazo de Acción</strong> (no al descarte).
+              </p>
+            )}
             <button
               type="button"
               onClick={onEndTurn}

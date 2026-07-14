@@ -601,7 +601,20 @@ body.play-mode .card-reveal__img {
     ),
     #0a0c10;
   pointer-events: none;
-  transition: top 0.08s ease-out;
+  transition: top 0.08s ease-out, height 0.08s ease-out;
+}
+
+.card-reveal--from-bottom .card-reveal__shade {
+  background:
+    linear-gradient(0deg, rgba(10, 12, 16, 0.15) 0%, rgba(10, 12, 16, 0.92) 18%),
+    repeating-linear-gradient(
+      -8deg,
+      rgba(201, 162, 39, 0.03) 0,
+      rgba(201, 162, 39, 0.03) 2px,
+      transparent 2px,
+      transparent 8px
+    ),
+    #0a0c10;
 }
 
 .card-reveal--full .card-reveal__shade {
@@ -714,6 +727,33 @@ body.play-mode .card-reveal__img {
 .card-reveal__reset:hover {
   background: rgba(201, 162, 39, 0.14);
   border-color: rgba(201, 162, 39, 0.65);
+}
+
+.card-reveal__direction {
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--gold-bright);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.card-reveal__direction:hover {
+  background: rgba(201, 162, 39, 0.12);
+  border-color: rgba(201, 162, 39, 0.55);
+}
+
+.card-reveal__direction[aria-pressed="true"] {
+  background: rgba(201, 162, 39, 0.22);
+  border-color: rgba(201, 162, 39, 0.75);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(201, 162, 39, 0.35);
 }
 
 .visually-hidden {

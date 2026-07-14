@@ -1,5 +1,5 @@
 /**
- * Revelado progresivo de cartas: desliza la barra vertical hacia abajo mientras lees.
+ * Revelado progresivo de cartas: de arriba abajo o de abajo arriba.
  */
 export function initCardReveal({
   root,
@@ -9,10 +9,48 @@ export function initCardReveal({
   slider,
   hint,
   resetButton,
+  directionButton,
   zoomImage,
   onRevealChange,
 }) {
   let reveal = 0;
+  /** @type {'down' | 'up'} down = de arriba a abajo; up = de abajo a arriba */
+  let direction = "down";
+
+  const HINT_DOWN =
+    "Desliza la barra hacia abajo para revelar la carta de arriba a abajo.";
+  const HINT_UP =
+    "Desliza la barra hacia abajo para revelar de abajo arriba (útil para la opción B).";
+
+  function getClipPath(percent = reveal) {
+    if (percent >= 100) {
+      return "none";
+    }
+    if (direction === "up") {
+      return `inset(${100 - percent}% 0 0 0)`;
+    }
+    return `inset(0 0 ${100 - percent}% 0)`;
+  }
+
+  function updateDirectionUI() {
+    if (root) {
+      root.classList.toggle("card-reveal--from-bottom", direction === "up");
+    }
+    if (directionButton) {
+      directionButton.setAttribute("aria-pressed", direction === "up" ? "true" : "false");
+      directionButton.title =
+        direction === "up"
+          ? "Revelando desde abajo — pulsa para revelar desde arriba"
+          : "Revelando desde arriba — pulsa para revelar desde abajo";
+      directionButton.setAttribute(
+        "aria-label",
+        direction === "up" ? "Revelar desde arriba" : "Revelar desde abajo",
+      );
+    }
+    if (hint && !root?.classList.contains("card-reveal--active")) {
+      hint.textContent = direction === "up" ? HINT_UP : HINT_DOWN;
+    }
+  }
 
   function updateHintVisibility() {
     if (!root) {
@@ -24,17 +62,31 @@ export function initCardReveal({
 
   function applyReveal(percent) {
     reveal = Math.min(100, Math.max(0, Math.round(percent)));
-    const hiddenBottom = 100 - reveal;
+    const clip = getClipPath(reveal);
 
     if (shade) {
-      shade.style.top = `${reveal}%`;
+      if (direction === "up") {
+        shade.style.top = "0";
+        shade.style.bottom = "auto";
+        shade.style.height = `${100 - reveal}%`;
+      } else {
+        shade.style.top = `${reveal}%`;
+        shade.style.bottom = "0";
+        shade.style.height = "";
+      }
     }
+
     if (line) {
-      line.style.top = `${reveal}%`;
+      if (direction === "up") {
+        line.style.top = `${100 - reveal}%`;
+        line.style.bottom = "auto";
+      } else {
+        line.style.top = `${reveal}%`;
+        line.style.bottom = "auto";
+      }
       line.hidden = reveal <= 0;
     }
 
-    const clip = reveal >= 100 ? "none" : `inset(0 0 ${hiddenBottom}% 0)`;
     image.style.clipPath = clip;
     if (zoomImage) {
       zoomImage.style.clipPath = clip;
@@ -62,6 +114,15 @@ export function initCardReveal({
     });
   }
 
+  if (directionButton) {
+    directionButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setDirection(direction === "down" ? "up" : "down");
+    });
+  }
+
+  updateDirectionUI();
+
   return {
     setImage(src) {
       image.src = src;
@@ -71,6 +132,7 @@ export function initCardReveal({
       applyReveal(0);
       if (hint) {
         hint.hidden = false;
+        hint.textContent = direction === "up" ? HINT_UP : HINT_DOWN;
       }
     },
 
@@ -88,6 +150,23 @@ export function initCardReveal({
 
     getReveal() {
       return reveal;
+    },
+
+    getClipPath() {
+      return getClipPath(reveal);
+    },
+
+    getDirection() {
+      return direction;
+    },
+
+    setDirection(nextDirection) {
+      if (nextDirection !== "down" && nextDirection !== "up") {
+        return;
+      }
+      direction = nextDirection;
+      updateDirectionUI();
+      applyReveal(reveal);
     },
 
     show() {

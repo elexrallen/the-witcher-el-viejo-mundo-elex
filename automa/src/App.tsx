@@ -9,14 +9,24 @@ import {
   CombatState,
 } from "./types";
 import { shuffleArray } from "./utils/shuffle";
-import { buildDecksFromCatalog } from "./utils/deckBuilder";
-import { getMaxShieldLevel } from "./utils/combat";
+import { buildDecksFromCatalog, getManualDeckTotals } from "./utils/deckBuilder";
+import { getMaxShieldLevel, capShieldLevel } from "./utils/combat";
 import { getCardMutagens, formatMutagenList } from "./utils/mutagens";
 import {
   applySchoolMutagenCombatBonuses,
   shuffleTopDiscardIntoDeck,
 } from "./utils/schoolMutagens";
+import { recycleActionDeckFromLevel3Discard } from "./utils/actionDeck";
 import { formatMovementGuide, formatDestination } from "./utils/actionCard";
+import {
+  applyLegendaryMonsterLossPenalty,
+  formatLegendaryLifeSummary,
+  getEffectiveLegendaryMonsterLife,
+  isLegendaryMonsterOpponent,
+  DEFAULT_DESTRUCTION_RESERVE,
+  DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
+} from "./utils/legendaryHuntRules";
+import { findMonsterSpecialAttack } from "./utils/monsterSpecialAttacks";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
 import GameBoard, { GameTab } from "./components/GameBoard";
@@ -138,7 +148,19 @@ export default function App() {
           addLog(`¡ATRIBUTO BLOQUEADO! ${attr.toUpperCase()} llegó a nivel 5.`);
         }, 100);
       }
-      return { ...prev, attributes: { ...prev.attributes, [attr]: updated } };
+      const nextAttributes = { ...prev.attributes, [attr]: updated };
+      const nextShieldLevel =
+        attr === "defense"
+          ? capShieldLevel(prev.shieldLevel, updated)
+          : prev.shieldLevel;
+      return {
+        ...prev,
+        attributes: nextAttributes,
+        shieldLevel:
+          attr === "defense" && delta > 0
+            ? Math.max(nextShieldLevel, getMaxShieldLevel(updated))
+            : nextShieldLevel,
+      };
     });
   };
 
@@ -163,7 +185,7 @@ export default function App() {
     }
 
     const { actionDeck: finalActions, challengeDeck: finalChallenges, level3Reserve: reserve } =
-      buildDecksFromCatalog();
+      buildDecksFromCatalog({ useLegendaryHunt, difficulty });
 
     const startLocation =
       selectedSchoolId === "wolf" ? "Kaer Morhen (Lobo)"
@@ -185,6 +207,12 @@ export default function App() {
       weaknesses: 0,
       destructionTokens: 0,
       dagonTrack: 0,
+      legendaryMonsterDefeated: false,
+      legendaryMonsterBaseLife: DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
+      destructionReserveRemaining: DEFAULT_DESTRUCTION_RESERVE,
+      legendaryMonsterId: "ciclope",
+      meditationTrophiesClaimed: { ...EMPTY_MEDITATION_TROPHIES },
+      shieldLevel: 1,
     });
     setLockedAttributes({ attack: false, defense: false, alchemy: false, special: false });
     setActionDeck(finalActions);
@@ -200,24 +228,49 @@ export default function App() {
     setCurrentTab("turn");
     setCombat((prev) => ({ ...prev, isActive: false }));
     const stats = getCatalogStats();
+    const manual = getManualDeckTotals(difficulty);
+    const lhCount =
+      useLegendaryHunt
+        ? difficulty === "easy"
+          ? 1
+          : difficulty === "difficult"
+            ? 3
+            : 2
+        : 0;
     addLog(
-      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${stats.actionCount} acción (${stats.genericActionCount} gen. + ${stats.schoolActionCount} esc.), ${stats.challengeCount} desafío (${stats.initialDeckChallengeCount} en mazo + ${stats.reserveCount} reserva).`
+      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Mazos: ${finalActions.length} acción, ${finalChallenges.length} desafío, ${reserve.length} reserva trofeos (manual: ${manual.actionTotal}${lhCount ? `+${lhCount} LH` : ""} / ${manual.challengeTotal}). Catálogo: ${stats.actionCount} acc. + ${stats.challengeCount} desaf.`
     );
   };
 
   const drawActionCard = () => {
-    if (actionDeck.length === 0) {
-      if (actionDiscard.length === 0) {
-        addLog("Error: mazo de acción vacío.");
+    let deck = actionDeck;
+    let discard = actionDiscard;
+
+    if (deck.length === 0) {
+      const { recycledDeck, remainingDiscard } =
+        recycleActionDeckFromLevel3Discard(discard);
+
+      if (recycledDeck.length === 0) {
+        if (discard.length === 0) {
+          addLog("Error: mazo de Acción vacío y sin descarte.");
+        } else {
+          addLog(
+            "Mazo de Acción vacío — no hay cartas de nivel III en el descarte para reponer (manual: solo niv. III se reciclan)."
+          );
+        }
         return;
       }
-      setActionDeck(shuffleArray(actionDiscard));
-      setActionDiscard([]);
-      addLog("Mazo de Acción vacío — barajando descarte.");
-      return;
+
+      deck = recycledDeck;
+      discard = remainingDiscard;
+      setActionDiscard(discard);
+      addLog(
+        `Mazo de Acción vacío — nuevo mazo con ${deck.length} carta(s) niv. III del descarte (barajadas).`
+      );
     }
-    const nextCard = actionDeck[0];
-    setActionDeck((prev) => prev.slice(1));
+
+    const nextCard = deck[0];
+    setActionDeck(deck.slice(1));
     setActiveActionCard(nextCard);
     setBonusApplied(false);
     addLog(`Fase I: Carta robada. Destino: ${formatDestination(nextCard)}, ${formatMovementGuide(nextCard.movement)}.`);
@@ -337,14 +390,29 @@ export default function App() {
   };
 
   const handleMeditate = () => {
-    if (!Object.values(automa.attributes).some((v) => v === 5)) {
-      addLog("No puede meditar: necesita un atributo en nivel 5.");
+    const trophyAttribute = getMeditationTrophyAttribute(automa);
+    if (!trophyAttribute) {
+      addLog("No puede meditar: necesita un atributo en nivel 5 con trofeo de meditación disponible.");
       return;
     }
     if (automa.trophies >= 4) return;
-    handleAddTrophy();
+
+    setAutoma((p) => ({
+      ...p,
+      trophies: p.trophies + 1,
+      meditationTrophiesClaimed: {
+        ...p.meditationTrophiesClaimed,
+        [trophyAttribute]: true,
+      },
+    }));
+    addLevel3CardToChallengeDeck();
     setTurnPhase(3);
-    addLog("Fase II: Meditación — trofeo reclamado.");
+    addLog(
+      `Fase II: Meditación — trofeo de ${ATTRIBUTE_LABELS[trophyAttribute]} reclamado (orden tablero: izq. → der.).`
+    );
+    if (automa.trophies + 1 >= 4) {
+      addLog("¡El Automa gana la partida por meditación!");
+    }
   };
 
   const handleExplore = () => {
@@ -354,9 +422,31 @@ export default function App() {
 
   const handleAdvanceToPhase2 = () => setTurnPhase(2);
 
+  const handleCollectDestructionToken = () => {
+    if (!useLegendaryHunt) return;
+    setAutoma((p) => ({ ...p, destructionTokens: p.destructionTokens + 1 }));
+    addLog(
+      `Cacería Legendaria: +1 ficha de Destrucción (total ${automa.destructionTokens + 1}). Al combatir el jefe: ${formatLegendaryLifeSummary({ ...automa, destructionTokens: automa.destructionTokens + 1 })}.`
+    );
+  };
+
   const handleEndTurn = () => {
     if (!activeActionCard) return;
-    setActionDiscard((prev) => [...prev, activeActionCard]);
+    const card = activeActionCard;
+
+    if (
+      card.returnToDeckBottomIfLegendaryAlive &&
+      useLegendaryHunt &&
+      !automa.legendaryMonsterDefeated
+    ) {
+      setActionDeck((prev) => [...prev, card]);
+      addLog(
+        `Cacería Legendaria (${card.id}): al fondo del mazo de Acción — Monstruo Legendario sigue vivo.`
+      );
+    } else {
+      setActionDiscard((prev) => [...prev, card]);
+    }
+
     setActiveActionCard(null);
     setTurnCount((prev) => prev + 1);
     setTurnPhase(1);
@@ -366,6 +456,28 @@ export default function App() {
 
   const handleStartCombat = (opponentType: "monster" | "witcher", name: string) => {
     const combinedCombatDeck = shuffleArray([...challengeDeck, ...challengeDiscard]);
+    const openingShield = capShieldLevel(
+      automa.shieldLevel,
+      automa.attributes.defense
+    );
+    const isLegendaryCombat =
+      useLegendaryHunt && isLegendaryMonsterOpponent(name);
+    const legendaryEffectiveLife = isLegendaryCombat
+      ? getEffectiveLegendaryMonsterLife(
+          automa.legendaryMonsterBaseLife,
+          automa.destructionTokens
+        )
+      : undefined;
+    const monsterRule =
+      opponentType === "monster"
+        ? findMonsterSpecialAttack(name, automa.legendaryMonsterId)
+        : null;
+    const needsBeforeCombat =
+      monsterRule &&
+      Object.values(monsterRule.parts).some(
+        (effect) => effect?.type === "before_combat_suffer"
+      );
+
     setCombat({
       isActive: true,
       opponentType,
@@ -374,13 +486,58 @@ export default function App() {
       combatDiscard: [],
       revealedCard: null,
       damageInflictedThisTurn: 0,
-      shieldsActiveThisTurn: 0,
+      shieldsActiveThisTurn: openingShield,
+      isLegendaryMonsterCombat: isLegendaryCombat,
+      legendaryMonsterEffectiveLife: legendaryEffectiveLife,
+      opponentMonsterId: monsterRule?.id,
+      beforeCombatSpecialAcknowledged: !needsBeforeCombat,
       potionsConsumedThisTurn: 0,
       bombsConsumedThisTurn: 0,
       lastReactionTriggered: null,
-      fightLog: [`Combate vs ${name}. Mazo: ${combinedCombatDeck.length} cartas.`],
+      fightLog: [`Combate vs ${name}. Mazo: ${combinedCombatDeck.length} cartas. Escudo inicial: ${openingShield}.`],
     });
     addLog(`¡COMBATE contra ${name.toUpperCase()}!`);
+    if (isLegendaryCombat && legendaryEffectiveLife !== undefined) {
+      addLog(
+        `Monstruo Legendario — configura reserva de vida: ${formatLegendaryLifeSummary(automa)}.`
+      );
+      if (legendaryEffectiveLife === 0) {
+        addLog("Vida efectiva 0: el jefe no añade cartas a su reserva (solo cartas base del setup).");
+      }
+    }
+    if (monsterRule) {
+      addLog(`Tabla ataque esp. (${monsterRule.name}): consulta partes en combate.`);
+    }
+  };
+
+  const handleDiscardTopCombatCard = () => {
+    setCombat((prev) => {
+      if (prev.combatDeck.length === 0) {
+        return prev;
+      }
+      const top = prev.combatDeck[0];
+      return {
+        ...prev,
+        combatDeck: prev.combatDeck.slice(1),
+        combatDiscard: [...prev.combatDiscard, top],
+        fightLog: [
+          `⚔ Monstruo esp.: descartada ${top.id} (1ª carta combate, sin barajar).`,
+          ...prev.fightLog,
+        ],
+      };
+    });
+    addLog("Ataque esp. monstruo: 1ª carta del mazo de combate descartada.");
+  };
+
+  const handleAcknowledgeBeforeCombat = () => {
+    setCombat((prev) => ({
+      ...prev,
+      beforeCombatSpecialAcknowledged: true,
+      fightLog: [
+        "⚔ Monstruo esp.: daño previo al combate aplicado.",
+        ...prev.fightLog,
+      ],
+    }));
   };
 
   const resolveAutomaAttack = (
@@ -596,9 +753,16 @@ export default function App() {
     }
 
     const totalDamage = baseDamage + schoolDamageBonus;
-    const totalShield = raiseShieldToMax
+    let totalShield = raiseShieldToMax
       ? baseShield + schoolShieldBonus
       : effectiveCardShield + schoolShieldBonus + defenseShieldBonus;
+    const maxShield = getMaxShieldLevel(automa.attributes.defense);
+    if (totalShield > maxShield) {
+      fightLogs.push(
+        `Escudo limitado por Defensa (máx. ${maxShield}): ${totalShield} → ${maxShield}.`
+      );
+      totalShield = capShieldLevel(totalShield, automa.attributes.defense);
+    }
 
     if (defenseShieldBonus > 0 && !raiseShieldToMax) {
       fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);
@@ -779,14 +943,42 @@ export default function App() {
   };
 
   const handleEndCombat = (automaWon: boolean) => {
-    setChallengeDeck([...combat.combatDeck, ...combat.combatDiscard]);
+    const combined = [...combat.combatDeck, ...combat.combatDiscard];
+    const restoredDeck = combined.length > 0 ? shuffleArray(combined) : [];
+
+    setChallengeDeck(restoredDeck);
     setChallengeDiscard([]);
+
+    const resetShield = getMaxShieldLevel(automa.attributes.defense);
+    setAutoma((p) => ({ ...p, shieldLevel: resetShield }));
+
     setCombat((prev) => ({ ...prev, isActive: false }));
+    addLog(
+      `Fin de combate — mazo Desafío ${restoredDeck.length} carta(s) (barajado). Escudo restaurado a ${resetShield}.`
+    );
+
     if (automaWon) {
       handleAddTrophy();
       addLog("Combate ganado por el Automa.");
+      if (combat.isLegendaryMonsterCombat) {
+        setAutoma((p) => ({ ...p, legendaryMonsterDefeated: true }));
+        addLog("Monstruo Legendario derrotado — las cartas LH irán al descarte.");
+      }
     } else {
-      addLog("Combate perdido por el Automa.");
+      if (combat.isLegendaryMonsterCombat) {
+        const { next, drewFromReserve } = applyLegendaryMonsterLossPenalty(automa);
+        setAutoma(next);
+        addLog(
+          drewFromReserve
+            ? "Derrota vs Monstruo Legendario: mantiene fichas de Destrucción y roba 1 de la reserva."
+            : "Derrota vs Monstruo Legendario: mantiene fichas; reserva de Destrucción vacía en mesa."
+        );
+      }
+      addLog(
+        restoredDeck.length === 0
+          ? "Combate perdido — Automa sin cartas de vida."
+          : "Combate perdido por el Automa."
+      );
     }
     setTurnPhase(3);
   };
@@ -835,9 +1027,12 @@ export default function App() {
           <CombatView
             combat={combat}
             activeSchool={activeSchoolObj}
+            legendaryMonsterId={automa.legendaryMonsterId}
             onAttack={handleAutomaAttackTurn}
             onReceiveDamage={handleReceiveDamage}
             onEndCombat={handleEndCombat}
+            onDiscardTopCombatCard={handleDiscardTopCombatCard}
+            onAcknowledgeBeforeCombat={handleAcknowledgeBeforeCombat}
           />
         ) : (
           <GameBoard
@@ -874,6 +1069,7 @@ export default function App() {
             onEndTurn={handleEndTurn}
             onClearLogs={() => setLogs(["Bitácora reiniciada."])}
             onAdvanceToPhase2={handleAdvanceToPhase2}
+            onCollectDestructionToken={handleCollectDestructionToken}
             onDrawPokerCard={handleDrawPokerCard}
           />
         )}

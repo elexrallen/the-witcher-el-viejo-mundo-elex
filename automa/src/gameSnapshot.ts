@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { GameTab } from "./components/GameBoard";
+import { getMaxShieldLevel } from "./utils/combat";
+import { EMPTY_MEDITATION_TROPHIES } from "./utils/meditation";
+import {
+  DEFAULT_DESTRUCTION_RESERVE,
+  DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
+} from "./utils/legendaryHuntRules";
 import type {
   ActionCard,
   AutomaState,
@@ -78,6 +83,12 @@ export function createDefaultAutomaSnapshot(): AutomaSnapshot {
       weaknesses: 0,
       destructionTokens: 0,
       dagonTrack: 0,
+      legendaryMonsterDefeated: false,
+      legendaryMonsterBaseLife: DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
+      legendaryMonsterId: "ciclope",
+      destructionReserveRemaining: DEFAULT_DESTRUCTION_RESERVE,
+      meditationTrophiesClaimed: { ...EMPTY_MEDITATION_TROPHIES },
+      shieldLevel: 1,
     },
     lockedAttributes: {
       attack: false,
@@ -117,7 +128,27 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
       ...defaults,
       ...parsed,
       useBombs: parsed.useBombs ?? defaults.useBombs,
-      automa: { ...defaults.automa, ...parsed.automa, currentTerrain: parsed.automa?.currentTerrain ?? defaults.automa.currentTerrain },
+      automa: {
+        ...defaults.automa,
+        ...parsed.automa,
+        currentTerrain: parsed.automa?.currentTerrain ?? defaults.automa.currentTerrain,
+        legendaryMonsterDefeated:
+          parsed.automa?.legendaryMonsterDefeated ?? defaults.automa.legendaryMonsterDefeated,
+        legendaryMonsterBaseLife:
+          parsed.automa?.legendaryMonsterBaseLife ?? defaults.automa.legendaryMonsterBaseLife,
+        destructionReserveRemaining:
+          parsed.automa?.destructionReserveRemaining ??
+          defaults.automa.destructionReserveRemaining,
+        legendaryMonsterId:
+          parsed.automa?.legendaryMonsterId ?? defaults.automa.legendaryMonsterId,
+        meditationTrophiesClaimed: {
+          ...defaults.automa.meditationTrophiesClaimed,
+          ...parsed.automa?.meditationTrophiesClaimed,
+        },
+        shieldLevel:
+          parsed.automa?.shieldLevel ??
+          getMaxShieldLevel(parsed.automa?.attributes?.defense ?? defaults.automa.attributes.defense),
+      },
       lockedAttributes: { ...defaults.lockedAttributes, ...parsed.lockedAttributes },
       combat: { ...defaults.combat, ...parsed.combat },
       actionDeck: parsed.actionDeck ?? defaults.actionDeck,

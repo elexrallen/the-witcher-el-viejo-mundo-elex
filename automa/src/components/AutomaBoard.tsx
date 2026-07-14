@@ -1,5 +1,6 @@
 import { WitcherIcon } from "./WitcherIcon";
 import { AutomaState } from "../types";
+import { getMaxShieldLevel } from "../utils/combat";
 import { DEFAULT_CITIES } from "../utils/cities";
 
 type AutomaBoardProps = {
@@ -111,6 +112,11 @@ export default function AutomaBoard({
                         Bloqueado
                       </span>
                     )}
+                    {automa.meditationTrophiesClaimed[attr.key] && (
+                      <span className="text-[9px] bg-amber-900/50 text-amber-300 font-bold px-1.5 py-0.5 rounded uppercase font-mono">
+                        Trofeo med.
+                      </span>
+                    )}
                   </span>
                   <span className="font-mono font-black text-white">{currentVal} / 5</span>
                 </div>
@@ -175,6 +181,12 @@ export default function AutomaBoard({
           <div>
             <span className="text-[10px] text-zinc-500 block font-display font-bold uppercase">Trofeos:</span>
             <span className="text-sm font-black text-orange-400 font-mono">{automa.trophies} / 4</span>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] text-zinc-500 block font-display font-bold uppercase">Escudo:</span>
+            <span className="text-sm font-black text-sky-400 font-mono">
+              {automa.shieldLevel} / {getMaxShieldLevel(automa.attributes.defense)}
+            </span>
           </div>
           <div className="flex gap-1.5">
             <button type="button" onClick={onTrophyDecrease} className="automa-touch-btn p-2 bg-zinc-900 rounded-lg border border-zinc-800 text-zinc-300">

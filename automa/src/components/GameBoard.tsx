@@ -43,6 +43,7 @@ type GameBoardProps = {
   onEndTurn: () => void;
   onClearLogs: () => void;
   onAdvanceToPhase2: () => void;
+  onCollectDestructionToken?: () => void;
   onDrawPokerCard: () => ChallengeCard | null;
 };
 
@@ -117,6 +118,8 @@ export default function GameBoard(props: GameBoardProps) {
               onEndTurn={props.onEndTurn}
               onClearLogs={props.onClearLogs}
               onAdvanceToPhase2={props.onAdvanceToPhase2}
+              useLegendaryHunt={props.useLegendaryHunt}
+              onCollectDestructionToken={props.onCollectDestructionToken}
             />
           )}
 

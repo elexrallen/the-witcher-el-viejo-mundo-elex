@@ -52,6 +52,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             Escuela
           </div>
         )}
+        {actCard.cardSet === 'legendary_hunt' && (
+          <div className="absolute top-3 right-3 text-[9px] uppercase font-mono tracking-wider bg-red-950/80 text-red-400 border border-red-800/50 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+            <WitcherIcon name="legendary" size={12} /> LH
+          </div>
+        )}
         {actCard.imagePath && !compact && (
           <img
             src={actCard.imagePath}
@@ -202,6 +207,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             ))}
           </div>
         </div>
+        {actCard.returnToDeckBottomIfLegendaryAlive && (
+          <p className="text-[9px] text-red-400/90 mt-2 leading-snug border-t border-zinc-800 pt-2">
+            Si el Monstruo Legendario no es derrotado, esta carta va boca abajo al fondo del mazo de Acción.
+          </p>
+        )}
       </div>
     );
   } else {

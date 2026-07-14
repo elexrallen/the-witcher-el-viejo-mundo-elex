@@ -114,7 +114,11 @@ export interface ActionCard {
   phaseIIPriority?: 'meditate_or_monster';
   marketDiscards: number[];
   /** Genérica (mazo común) o específica de escuela. */
-  cardSet?: 'generic' | 'school';
+  cardSet?: 'generic' | 'school' | 'legendary_hunt';
+  /** Fase II: combate con Monstruo Legendario si comparte espacio. */
+  legendaryMonsterCombat?: boolean;
+  /** Si el Monstruo Legendario sigue vivo, la carta va al fondo del mazo de Acción. */
+  returnToDeckBottomIfLegendaryAlive?: boolean;
   /** Ruta a imagen de la carta física (opcional). */
   imagePath?: string;
 }
@@ -196,6 +200,23 @@ export interface AutomaState {
   weaknesses: number; // monster weakness level (0-3)
   destructionTokens: number; // Legendary Hunt
   dagonTrack: number; // Skellige
+  /** Monstruo Legendario derrotado (Cacería Legendaria). */
+  legendaryMonsterDefeated: boolean;
+  /** Vida base del Monstruo Legendario (cartas en reserva física antes de reducción). */
+  legendaryMonsterBaseLife: number;
+  /** Fichas de Destrucción restantes en la reserva general (mesa). */
+  destructionReserveRemaining: number;
+  /** Monstruo Legendario activo en mesa (para tabla de ataques p. 14). */
+  legendaryMonsterId: string;
+  /** Trofeos de meditación reclamados por atributo (manual: un trofeo por columna del tablero). */
+  meditationTrophiesClaimed: {
+    attack: boolean;
+    defense: boolean;
+    alchemy: boolean;
+    special: boolean;
+  };
+  /** Nivel de escudo en el tablero (máx. = Defensa). Se restaura al terminar combate. */
+  shieldLevel: number;
 }
 
 export interface CombatState {
@@ -220,4 +241,12 @@ export interface CombatState {
   pendingAttackDamageBonus?: number;
   /** Ignora el daño del próximo turno de combate del oponente (p. ej. Oso Especial 3). */
   ignoreNextOpponentDamage?: boolean;
+  /** Combate final vs Monstruo Legendario (Cacería Legendaria). */
+  isLegendaryMonsterCombat?: boolean;
+  /** Vida efectiva del jefe al iniciar este combate (base − fichas de Destrucción). */
+  legendaryMonsterEffectiveLife?: number;
+  /** ID del monstruo para tabla de ataques especiales (manual p. 14–15). */
+  opponentMonsterId?: string;
+  /** Efecto «antes del combate» ya aplicado (p. ej. Gigante de Hielo). */
+  beforeCombatSpecialAcknowledged?: boolean;
 }

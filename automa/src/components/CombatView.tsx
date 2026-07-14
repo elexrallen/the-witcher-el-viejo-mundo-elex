@@ -3,22 +3,29 @@ import { WitcherIcon } from "./WitcherIcon";
 import { CombatState, WitcherSchool } from "../types";
 import WitcherCard from "./WitcherCard";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
-import { useIsMobile } from "../hooks/useMediaQuery";
+import MonsterSpecialAttackPanel from "./MonsterSpecialAttackPanel";
+import { findMonsterSpecialAttack } from "../utils/monsterSpecialAttacks";
 
 type CombatViewProps = {
   combat: CombatState;
   activeSchool: WitcherSchool;
+  legendaryMonsterId?: string;
   onAttack: () => void;
   onReceiveDamage: (damage: number) => void;
   onEndCombat: (automaWon: boolean) => void;
+  onDiscardTopCombatCard: () => void;
+  onAcknowledgeBeforeCombat: () => void;
 };
 
 export default function CombatView({
   combat,
   activeSchool,
+  legendaryMonsterId,
   onAttack,
   onReceiveDamage,
   onEndCombat,
+  onDiscardTopCombatCard,
+  onAcknowledgeBeforeCombat,
 }: CombatViewProps) {
   const isMobile = useIsMobile();
   const [damageInput, setDamageInput] = useState("");
@@ -32,6 +39,11 @@ export default function CombatView({
       setDamageInput("");
     }
   };
+
+  const monsterRule =
+    combat.opponentType === "monster"
+      ? findMonsterSpecialAttack(combat.opponentName, legendaryMonsterId)
+      : null;
 
   return (
     <main className="combat-view flex-1 p-4 sm:p-6 max-w-7xl w-full mx-auto" id="combat-view">
@@ -49,6 +61,22 @@ export default function CombatView({
               {combat.opponentType === "monster" ? "Monstruo" : "Brujo"}
             </span>
           </div>
+
+          {combat.isLegendaryMonsterCombat && (
+            <div className="mb-4 p-3 rounded-xl bg-red-950/30 border border-red-900/50 text-xs space-y-1">
+              <p className="font-display font-black text-red-400 uppercase flex items-center gap-1.5">
+                <WitcherIcon name="legendary" size={16} /> Monstruo Legendario
+              </p>
+              <p className="text-zinc-300">
+                Reserva de vida del jefe:{" "}
+                <strong className="text-white">{combat.legendaryMonsterEffectiveLife ?? 0}</strong> cartas
+                (fichas de Destrucción del Automa ya aplicadas).
+              </p>
+              <p className="text-[10px] text-zinc-500">
+                Configura el mazo de vida del monstruo en mesa con ese número antes de combatir.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-2 mb-4">
             <div className="flex justify-between text-xs text-zinc-400">
@@ -127,6 +155,14 @@ export default function CombatView({
                   Anunciado: <strong className="text-zinc-300">{monsterAttack}</strong>. Revela la carta de combate del monstruo en mesa.
                 </p>
               )}
+              <MonsterSpecialAttackPanel
+                rule={monsterRule}
+                monsterAttack={monsterAttack}
+                beforeCombatAcknowledged={combat.beforeCombatSpecialAcknowledged ?? true}
+                onAcknowledgeBeforeCombat={onAcknowledgeBeforeCombat}
+                onDiscardTopCombatCard={onDiscardTopCombatCard}
+                combatDeckLength={combat.combatDeck.length}
+              />
             </div>
           )}
         </div>

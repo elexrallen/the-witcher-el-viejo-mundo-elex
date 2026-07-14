@@ -8,6 +8,7 @@
 
 import { ActionCard, ChallengeCard } from '../types';
 import { MOVEMENT_UNLIMITED } from '../utils/actionCard';
+import { LEGENDARY_HUNT_ACTION_CARDS } from './legendaryHunt';
 
 // ==========================================
 // CARTA #2 — Genérica nivel I (primera del catálogo)
@@ -1102,26 +1103,25 @@ export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [
 ];
 
 export function getCatalogStats() {
-  const schoolChallengeActive = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level !== 3);
-  const schoolChallengeReserve = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level === 3);
   const genericChallengeCount = CHALLENGE_CARDS.length + LEVEL_3_CHALLENGE_RESERVE.length;
   const schoolChallengeCount = SCHOOL_CHALLENGE_CARDS.length;
   const totalActionCount = ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length;
   const totalChallengeCount = genericChallengeCount + schoolChallengeCount;
-  const initialDeckChallengeCount = CHALLENGE_CARDS.length + schoolChallengeActive.length;
-  const reserveCount = LEVEL_3_CHALLENGE_RESERVE.length + schoolChallengeReserve.length;
 
   return {
     /** Total cartas de Acción catalogadas (genéricas + escuela). */
     actionCount: totalActionCount,
+    /** Cartas LH disponibles (se añaden al pool niv. III según dificultad). */
+    legendaryHuntActionCount: LEGENDARY_HUNT_ACTION_CARDS.length,
     /** Total cartas de Desafío catalogadas (genéricas + escuela, incluida reserva). */
     challengeCount: totalChallengeCount,
     genericActionCount: ACTION_CARDS.length,
     genericChallengeCount,
     schoolActionCount: SCHOOL_ACTION_CARDS.length,
     schoolChallengeCount,
-    /** Cartas de Desafío que entran en el mazo inicial al empezar partida. */
-    initialDeckChallengeCount,
-    reserveCount,
+    /** Cartas Lvl III genéricas disponibles para mazo/reserva de trofeos. */
+    genericChallengeL3PoolCount: LEVEL_3_CHALLENGE_RESERVE.length,
+    /** Reserva de trofeos al iniciar partida (manual). */
+    trophyReserveCount: 3,
   };
 }

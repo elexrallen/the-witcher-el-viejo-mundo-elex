@@ -30,18 +30,30 @@ type SetupWizardProps = {
 const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
 
 import { getCatalogStats } from "../data/cards";
+import {
+  getManualDeckTotals,
+  TROPHY_RESERVE_COUNT,
+} from "../utils/deckBuilder";
 
-function DeckTable() {
+function DeckTable({
+  useLegendaryHunt = false,
+  difficulty = "intermediate",
+}: {
+  useLegendaryHunt?: boolean;
+  difficulty?: Difficulty;
+}) {
   const {
     actionCount,
     challengeCount,
-    reserveCount,
-    initialDeckChallengeCount,
     genericActionCount,
     genericChallengeCount,
     schoolActionCount,
     schoolChallengeCount,
   } = getCatalogStats();
+
+  const lhInDeck =
+    difficulty === "easy" ? 1 : difficulty === "difficult" ? 3 : 2;
+  const manual = getManualDeckTotals(difficulty);
 
   return (
     <div className="setup-deck-table grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -50,22 +62,31 @@ function DeckTable() {
         <ul className="space-y-0.5 text-zinc-400">
           <li>Total catalogadas: <strong className="text-zinc-200">{actionCount}</strong></li>
           <li>Genéricas: {genericActionCount} · Escuela: {schoolActionCount}</li>
-          <li>Manual V1.4: 13 cartas por partida (cuando el catálogo esté completo)</li>
+          <li>
+            Partida ({difficulty}):{" "}
+            <strong className="text-zinc-200">{manual.actionTotal}</strong> cartas
+            {useLegendaryHunt && (
+              <span className="text-red-400"> (+{lhInDeck} LH en niv. III)</span>
+            )}
+          </li>
+          <li className="text-[10px]">
+            Apilado: niv. III abajo → II → I arriba (roba desde I)
+          </li>
         </ul>
-        <p className="text-[10px] text-orange-400/80 mt-2">
-          Por ahora se usa todo el catálogo disponible, barajado.
-        </p>
       </div>
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
         <span className="text-zinc-200 font-bold block mb-2">Mazo de DESAFÍO</span>
         <ul className="space-y-0.5 text-zinc-400">
           <li>Total catalogadas: <strong className="text-zinc-200">{challengeCount}</strong></li>
           <li>Genéricas: {genericChallengeCount} · Escuela: {schoolChallengeCount}</li>
-          <li>En mazo inicial: {initialDeckChallengeCount} · Reserva niv. III: {reserveCount}</li>
-          <li>Manual V1.4: 11–12 cartas por partida (cuando el catálogo esté completo)</li>
+          <li>
+            Partida ({difficulty}):{" "}
+            <strong className="text-zinc-200">{manual.challengeTotal}</strong> en mazo ·{" "}
+            <strong className="text-zinc-200">{TROPHY_RESERVE_COUNT}</strong> reserva trofeos
+          </li>
         </ul>
         <p className="text-[10px] text-orange-400/80 mt-2">
-          Las de nivel III en reserva se añaden al meditar o ganar trofeos.
+          Reserva: cartas Lvl III apartadas; se añaden al meditar o ganar trofeos.
         </p>
       </div>
     </div>
@@ -203,7 +224,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                     </button>
                   ))}
                 </div>
-                <DeckTable />
+                <DeckTable useLegendaryHunt={useLegendaryHunt} difficulty={difficulty} />
               </div>
             )}
 

@@ -35,19 +35,19 @@ const INSTRUCTIONS = {
   },
   read: {
     title: "Paso 2 — Leer",
-    body: "Usa la barra sobre la carta para ir revelando el texto de arriba a abajo. Para antes de los resultados.",
+    body: "Usa la barra para revelar de arriba a abajo. Para antes de los resultados de las opciones.",
   },
   choose: {
     title: "Paso 3 — Elegir",
-    body: "El jugador activo elige A o B. Sigue deslizando solo si necesitas ver más de la carta.",
+    body: "El jugador activo elige A o B. Pulsa ↑ en la barra lateral para revelar desde abajo (opción B).",
   },
   outcomeA: {
     title: "Paso 4 — Resultado A",
-    body: "Desliza hasta el resultado de la opción A y léelo en voz alta. No muestres la opción B.",
+    body: "Sigue revelando de arriba a abajo hasta leer la opción A. La opción B puede quedar oculta.",
   },
   outcomeB: {
     title: "Paso 4 — Resultado B",
-    body: "Desliza hasta el resultado de la opción B y léelo en voz alta. No muestres la opción A.",
+    body: "Revela de abajo arriba (botón ↑ activo) para leer la opción B sin desvelar la A.",
   },
   narrative: {
     title: "Carta de exploración",
@@ -108,6 +108,7 @@ const els = {
   cardRevealSlider: document.getElementById("card-reveal-slider"),
   cardRevealHint: document.getElementById("card-reveal-hint"),
   btnRevealReset: document.getElementById("btn-reveal-reset"),
+  btnRevealDirection: document.getElementById("btn-reveal-direction"),
   cardCaption: document.getElementById("card-caption"),
   choices: document.getElementById("choices"),
   choiceA: document.getElementById("choice-a"),
@@ -139,6 +140,7 @@ async function init() {
     slider: els.cardRevealSlider,
     hint: els.cardRevealHint,
     resetButton: els.btnRevealReset,
+    directionButton: els.btnRevealDirection,
     zoomImage: els.zoomImage,
   });
   loadPersistedState();
@@ -422,6 +424,9 @@ function hideCardImage() {
 function openZoom() {
   if (!state.currentCard || !cardReveal?.isVisible()) {
     return;
+  }
+  if (els.zoomImage) {
+    els.zoomImage.style.clipPath = cardReveal.getClipPath();
   }
   els.zoomDialog.showModal();
 }
@@ -732,6 +737,12 @@ function revealOutcome(choice) {
   updatePhaseSteps(true);
   els.choices.hidden = true;
   showCardImage();
+  if (choice === "B") {
+    cardReveal?.setDirection("up");
+    cardReveal?.reset();
+  } else {
+    cardReveal?.setDirection("down");
+  }
   refreshPlayBarHeight();
   els.btnNext.hidden = false;
   els.btnNext.textContent = "Siguiente carta";

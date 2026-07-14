@@ -26,11 +26,10 @@ export default function RulesReference() {
         "Tablero de Brujo: Elige una Escuela para el Automa, coloca sus marcadores de Atributo (Ataque, Defensa, Alquimia y Especial) en el nivel 1. Coloca su miniatura en el mapa.",
         "Distribución de Monstruos: Coloca los monstruos aleatoriamente por el mapa de forma habitual.",
         "Cartas del Automa: El Automa utiliza dos mazos propios: Mazo de Acción y Mazo de Desafío.",
-        "Catálogo en la app: Las cartas se incorporan una a una desde las físicas. Por ahora solo están las verificadas; al completar el catálogo se aplicará la selección por dificultad del manual.",
-        "Dificultad Fácil (manual): 4 cartas Genéricas + 4 cartas de Nivel 1 en cada mazo.",
-        "Dificultad Intermedio (manual): 4 cartas Genéricas + 4 cartas de Nivel 2 en cada mazo.",
-        "Dificultad Difícil (manual): 4 cartas Genéricas + 4 cartas de Nivel 3 en cada mazo.",
-        "Ambos mazos se barajan por separado al comenzar el juego."
+        "Catálogo en la app: cartas verificadas desde las físicas. Al iniciar partida se aplican las tablas de dificultad del manual (Fácil / Medio / Difícil): selección aleatoria por nivel y apilado Acción (III abajo, II, I arriba).",
+        "Mazo de Acción al iniciar: baraja niv. III, encima niv. II barajadas, encima niv. I barajadas. El Automa roba desde arriba (niv. I primero).",
+        "Mazo de Acción vacío: forma un nuevo mazo solo con las cartas de niv. III del descarte y barájalo; las de niv. I y II permanecen en el descarte.",
+        "Mazo de Desafío: todas las cartas barajadas juntas al inicio. Tres cartas genéricas niv. III apartadas para trofeos.",
       ],
       tips: "Recuerda que las cartas sobrantes de nivel 3 que queden fuera se colocan cerca; las ganarás cuando el Automa medite o consiga trofeos."
     },
@@ -41,7 +40,7 @@ export default function RulesReference() {
         "Gestión de Oro: El Automa no gana, gasta ni almacena monedas de oro. Cualquier ganancia o pérdida de oro se ignora.",
         "Desarrollo de Atributos: Al subir un atributo, avanza el marcador en su tablero de Escuela. El Automa nunca roba cartas por subir atributos.",
         "Límite y Bloqueo: Cuando un atributo llega a nivel 5 (máximo), queda bloqueado. Ningún efecto perjudicial puede volver a bajar ese atributo de 5.",
-        "Ganancia de Trofeos y Meditación: Al ganar un trofeo, no sufre descarte ni fatiga. Busca una carta de Desafío de Nivel 3 fuera del mazo y añádela directamente a su mazo de Desafío/Combate para simular su progresión.",
+        "Ganancia de Trofeos y Meditación: Al ganar un trofeo de combate, no sufre descarte ni fatiga; añade una carta Desafío niv. III de la reserva. Meditar: atributo en nivel 5 + trofeo de meditación de ese atributo libre; si hay varios, elige el primero de izquierda a derecha (Ataque → Defensa → Alquimia → Especial).",
         "Rastros de Monstruos: Puede obtener fichas de rastro de monstruo mediante los iconos de sus cartas de Acción de forma inmediata."
       ],
       tips: "El bloqueo en nivel 5 es un cambio clave. Te obliga a enfrentarte a un Automa muy fuerte al final de la partida."
@@ -52,8 +51,8 @@ export default function RulesReference() {
       content: [
         "FASE I: Movimiento y Acciones. Roba la carta superior de Acción. Se desplaza hacia el destino indicado (si no indica ninguno, va hacia el monstruo de nivel más bajo en el mapa). Usa la ruta más corta. Al llegar, ejecuta los iconos de bonificación: Subir atributo, coger poción o bomba, o rastro de monstruo.",
         "FASE II: Fase Principal. Elige SOLO una opción en estricto orden de prioridad:",
-        "  - Opción A (Meditar): Si tiene un atributo en nivel 5 y el espacio de trofeo correspondiente está libre, medita. Gana un trofeo y añade una carta de Desafío de Nivel 3 a su mazo.",
-        "  - Opción B (Combatir): Si en su localización hay un Monstruo o el Brujo jugador, y cumple los requisitos de la carta de Acción (ej. '≥ 1 Trofeo'), se inicia combate.",
+        "  - Opción A (Meditar): Si tiene un atributo en nivel 5 y el trofeo de meditación de ese atributo está libre, medita (orden tablero izq. → der.). Gana un trofeo y añade carta Desafío niv. III.",
+        "  - Opción B (Combatir): Opciones excluyentes ( / ): intenta la izquierda primero. Prioridad brujo → monstruo si no hay brujo y cumple trofeos.",
         "  - Opción C (Explorar): Si no medita ni combate, explora de forma pasiva. No ocurre nada (no roba cartas de evento) y pasa a Fase III.",
         "FASE III: Mantenimiento del Mercado. Retira las cartas del mercado de acción correspondientes a las posiciones numéricas impresas en la carta de Acción del Automa (contando de izquierda a derecha, baratas a caras, 1 a 6). Desplaza el resto y repón."
       ],
@@ -64,6 +63,8 @@ export default function RulesReference() {
       category: "Combate",
       content: [
         "Vida del Automa: Su mazo completo de Desafío (junto a sus descartes de Desafío barajados) representa sus puntos de vida. Si el mazo se vacía, cae derrotado.",
+        "Escudo: no puede superar el nivel de Defensa. Al terminar combate, baraja descarte + mazo combate → mazo Desafío y restaura escudo al máximo permitido por Defensa.",
+        "Ataques especiales de monstruos: consulta tablas p. 14 (legendarios) y p. 15 (regulares). Anuncia Mordisco/Embestida, revela la carta del monstruo y aplica cada parte. «Ignora habilidad» = descarta 1ª carta del mazo de combate del Automa. «Ignora Nª parte» = no apliques esa parte del ataque.",
         "Turno de Ataque: Revela la carta superior del mazo. Suma su daño base y añade los escudos indicados.",
         "Bonos: Si revela el símbolo de Escuela, activa su habilidad especial (ej: Wolf da daño extra, Bear da escudos). Si tiene pociones o bombas y la carta muestra el icono de consumible, consume una para potenciar el daño.",
         "Recibir Daño y Reacciones: Cuando tú o un monstruo infligís daño al Automa, reduce el daño con sus escudos activos. Descarta cartas del mazo de Combate igual al daño restante. Revisa boca arriba CADA carta descartada:",
@@ -89,7 +90,7 @@ export default function RulesReference() {
         "Mutágenos: Si juegas con mutágenos, el Automa los adquiere mediante cartas avanzadas. En combate, si revela una carta del color de su mutágeno, activa bonificadores adicionales.",
         "Fichas de Debilidad: Los rastros de monstruo se convierten en fichas de debilidad al combatir. Al iniciar pelea, descarta estas fichas para reducir el tamaño del mazo de vida del monstruo de forma permanente antes de empezar.",
         "Skellige: Las cartas de Acción le indican viajar a las tres islas. Se moverá al puerto más cercano y tomará un barco. Avanza el marcador de Dagon si la carta muestra el icono de ancla/peligro.",
-        "Legendary Hunt (Cacería Legendaria): El Automa se mueve a las zonas destruidas por el monstruo legendario para recolectar fichas de Destrucción. Cada ficha recolectada restará vida inicial de forma permanente al monstruo legendario antes del combate final."
+        "Legendary Hunt (Cacería Legendaria): Tras Fase I en casilla destruida, recoge ficha de Destrucción (sin beneficio del reverso). Cada ficha reduce 1 carta de la reserva de vida del Monstruo Legendario. Tabla de ataques especiales de legendarios en p. 14.",
       ],
       tips: "Todos estos módulos son compatibles simultáneamente. ¡Usa los selectores en la barra superior para activar sus interfaces dedicadas!"
     }
