@@ -917,6 +917,162 @@ const CHA_23: ChallengeCard = {
   imagePath: '/cards/cha-23.png',
 };
 
+// ==========================================
+// CARTAS ESPECÍFICAS DE ESCUELA — Nivel II (#24)
+// ==========================================
+
+const ACT_24: ActionCard = {
+  id: 'act-24',
+  level: 2,
+  cardNumber: 24,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'up',
+  attributeBonus: null,
+  potionBonus: true,
+  bombBonus: true,
+  bombRequiresModule: true,
+  trailBonus: true,
+  trailType: 'terrain',
+  combatRequirement: 'Combatir monstruo en la localización si tienes ≤ 2 trofeos',
+  combatCondition: { type: 'trophies_lte', value: 2 },
+  marketDiscards: [2],
+  imagePath: '/cards/act-24.png',
+};
+
+const CHA_24: ChallengeCard = {
+  id: 'cha-24',
+  level: 2,
+  cardNumber: 24,
+  cardSet: 'school',
+  damage: 2,
+  shields: 2,
+  consumableSlot: false,
+  attackExtraCombo: true,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'green'],
+  pokerKeepValues: [3, 1, 1, 6, 6],
+  pokerPattern: 'Conservar 3, 1, 1, 6 y 6.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-24.png',
+};
+
+// ==========================================
+// CARTAS ESPECÍFICAS DE ESCUELA — Nivel III (#26, #27, #29)
+// ==========================================
+
+const ACT_29: ActionCard = {
+  id: 'act-29',
+  level: 3,
+  cardNumber: 29,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'down',
+  attributeBonus: 'highest',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: true,
+  trailType: 'terrain',
+  combatRequirement: 'Combatir monstruo en la localización',
+  combatCondition: { type: 'always' },
+  marketDiscards: [4],
+  imagePath: '/cards/act-29.png',
+};
+
+const CHA_29: ChallengeCard = {
+  id: 'cha-29',
+  level: 3,
+  cardNumber: 29,
+  cardSet: 'school',
+  damage: 0,
+  shields: 0,
+  consumableSlot: false,
+  schoolSpecialEffect: 1,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['red', 'green'],
+  pokerKeepValues: [2, 3, 4, 5, 6],
+  pokerPattern: 'Conservar 2, 3, 4, 5 y 6.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-29.png',
+};
+
+const ACT_26: ActionCard = {
+  id: 'act-26',
+  level: 3,
+  cardNumber: 26,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'up',
+  attributeBonus: 'special_alchemy',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización',
+  combatCondition: { type: 'always' },
+  marketDiscards: [3],
+  imagePath: '/cards/act-26.png',
+};
+
+const CHA_26: ChallengeCard = {
+  id: 'cha-26',
+  level: 3,
+  cardNumber: 26,
+  cardSet: 'school',
+  damage: 0,
+  shields: 0,
+  consumableSlot: false,
+  schoolSpecialEffect: 2,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'green'],
+  pokerKeepValues: [5, 5, 6, 6, 6],
+  pokerPattern: 'Conservar 5, 5, 6, 6 y 6.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-26.png',
+};
+
+const ACT_27: ActionCard = {
+  id: 'act-27',
+  level: 3,
+  cardNumber: 27,
+  cardSet: 'school',
+  movement: MOVEMENT_UNLIMITED,
+  destination: 'Monstruo de nivel más bajo',
+  tieBreakDirection: 'down',
+  attributeBonus: null,
+  potionBonus: true,
+  bombBonus: true,
+  bombRequiresModule: true,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización',
+  combatCondition: { type: 'always' },
+  marketDiscards: [1, 2],
+  imagePath: '/cards/act-27.png',
+};
+
+const CHA_27: ChallengeCard = {
+  id: 'cha-27',
+  level: 3,
+  cardNumber: 27,
+  cardSet: 'school',
+  damage: 0,
+  shields: 0,
+  consumableSlot: false,
+  schoolSpecialEffect: 3,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'red'],
+  pokerKeepValues: [4, 6, 6, 6, 6],
+  pokerPattern: 'Conservar 4, 6, 6, 6 y 6.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-27.png',
+};
+
 /** Cartas de Acción genéricas (mazo común). */
 export const ACTION_CARDS: ActionCard[] = [
   ACT_1, ACT_2, ACT_3, ACT_4, ACT_5, ACT_6, ACT_7, ACT_8, ACT_9, ACT_10, ACT_11, ACT_12, ACT_13, ACT_14, ACT_15, ACT_16, ACT_17, ACT_18,
@@ -924,7 +1080,7 @@ export const ACTION_CARDS: ActionCard[] = [
 
 /** Cartas de Acción específicas de escuela (compartidas por todas las escuelas). */
 export const SCHOOL_ACTION_CARDS: ActionCard[] = [
-  ACT_19, ACT_20, ACT_21, ACT_22, ACT_23,
+  ACT_19, ACT_20, ACT_21, ACT_22, ACT_23, ACT_24, ACT_26, ACT_27, ACT_29,
 ];
 
 /** Cartas de Desafío genéricas catalogadas (orden de inserción). */
@@ -932,9 +1088,9 @@ export const CHALLENGE_CARDS: ChallengeCard[] = [
   CHA_1, CHA_2, CHA_5, CHA_6, CHA_8, CHA_10, CHA_11, CHA_12, CHA_13, CHA_15, CHA_16, CHA_18,
 ];
 
-/** Cartas de Desafío específicas de escuela. */
+/** Cartas de Desafío específicas de escuela (nivel III van a reserva vía deckBuilder). */
 export const SCHOOL_CHALLENGE_CARDS: ChallengeCard[] = [
-  CHA_19, CHA_20, CHA_21, CHA_22, CHA_23,
+  CHA_19, CHA_20, CHA_21, CHA_22, CHA_23, CHA_24, CHA_26, CHA_27, CHA_29,
 ];
 
 /**
@@ -946,11 +1102,26 @@ export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [
 ];
 
 export function getCatalogStats() {
+  const schoolChallengeActive = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level !== 3);
+  const schoolChallengeReserve = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level === 3);
+  const genericChallengeCount = CHALLENGE_CARDS.length + LEVEL_3_CHALLENGE_RESERVE.length;
+  const schoolChallengeCount = SCHOOL_CHALLENGE_CARDS.length;
+  const totalActionCount = ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length;
+  const totalChallengeCount = genericChallengeCount + schoolChallengeCount;
+  const initialDeckChallengeCount = CHALLENGE_CARDS.length + schoolChallengeActive.length;
+  const reserveCount = LEVEL_3_CHALLENGE_RESERVE.length + schoolChallengeReserve.length;
+
   return {
-    actionCount: ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length,
-    challengeCount: CHALLENGE_CARDS.length + SCHOOL_CHALLENGE_CARDS.length,
+    /** Total cartas de Acción catalogadas (genéricas + escuela). */
+    actionCount: totalActionCount,
+    /** Total cartas de Desafío catalogadas (genéricas + escuela, incluida reserva). */
+    challengeCount: totalChallengeCount,
     genericActionCount: ACTION_CARDS.length,
+    genericChallengeCount,
     schoolActionCount: SCHOOL_ACTION_CARDS.length,
-    reserveCount: LEVEL_3_CHALLENGE_RESERVE.length,
+    schoolChallengeCount,
+    /** Cartas de Desafío que entran en el mazo inicial al empezar partida. */
+    initialDeckChallengeCount,
+    reserveCount,
   };
 }

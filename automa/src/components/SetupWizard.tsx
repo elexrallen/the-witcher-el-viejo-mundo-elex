@@ -32,14 +32,24 @@ const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
 import { getCatalogStats } from "../data/cards";
 
 function DeckTable() {
-  const { actionCount, challengeCount, reserveCount, genericActionCount, schoolActionCount } = getCatalogStats();
+  const {
+    actionCount,
+    challengeCount,
+    reserveCount,
+    initialDeckChallengeCount,
+    genericActionCount,
+    genericChallengeCount,
+    schoolActionCount,
+    schoolChallengeCount,
+  } = getCatalogStats();
 
   return (
     <div className="setup-deck-table grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
         <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN</span>
         <ul className="space-y-0.5 text-zinc-400">
-          <li>Cartas catalogadas: {actionCount} ({genericActionCount} gen. + {schoolActionCount} escuela)</li>
+          <li>Total catalogadas: <strong className="text-zinc-200">{actionCount}</strong></li>
+          <li>Genéricas: {genericActionCount} · Escuela: {schoolActionCount}</li>
           <li>Manual V1.4: 13 cartas por partida (cuando el catálogo esté completo)</li>
         </ul>
         <p className="text-[10px] text-orange-400/80 mt-2">
@@ -49,12 +59,13 @@ function DeckTable() {
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
         <span className="text-zinc-200 font-bold block mb-2">Mazo de DESAFÍO</span>
         <ul className="space-y-0.5 text-zinc-400">
-          <li>Cartas catalogadas: {challengeCount}</li>
-          <li>Reserva nivel 3: {reserveCount}</li>
+          <li>Total catalogadas: <strong className="text-zinc-200">{challengeCount}</strong></li>
+          <li>Genéricas: {genericChallengeCount} · Escuela: {schoolChallengeCount}</li>
+          <li>En mazo inicial: {initialDeckChallengeCount} · Reserva niv. III: {reserveCount}</li>
           <li>Manual V1.4: 11–12 cartas por partida (cuando el catálogo esté completo)</li>
         </ul>
         <p className="text-[10px] text-orange-400/80 mt-2">
-          Las cartas se añaden una a una desde las físicas.
+          Las de nivel III en reserva se añaden al meditar o ganar trofeos.
         </p>
       </div>
     </div>

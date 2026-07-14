@@ -10,6 +10,30 @@ export interface SchoolSpecialEffect {
   shields: number;
   description: string;
   effectDetail?: string;
+  /** Baraja la carta superior del descarte en el mazo de combate. */
+  shuffleDiscardTop?: boolean;
+  /** Baraja la carta superior del descarte N veces. */
+  shuffleDiscardTopCount?: number;
+  /** Añade pociones al inventario del Automa. */
+  gainPotions?: number;
+  /** Gasta 1 poción para infligir este daño adicional. */
+  spendPotionForDamage?: number;
+  /** Tras resolver, el Automa juega N combos adicionales inmediatamente. */
+  attackExtraComboCount?: number;
+  /** Sube los escudos activos al máximo (nivel Defensa). */
+  raiseShieldToMax?: boolean;
+  /** Ignora todo el daño del próximo turno de combate del oponente. */
+  ignoreNextOpponentDamage?: boolean;
+  /** El próximo ataque del Automa recibe este bonus de daño. */
+  nextAttackDamageBonus?: number;
+}
+
+export interface SchoolMutagenCombatBonus {
+  damage?: number;
+  shields?: number;
+  shuffleDiscardTop?: boolean;
+  shuffleDiscardTopCount?: number;
+  gainPotions?: number;
 }
 
 export interface SchoolSpecialCard {
@@ -21,6 +45,13 @@ export interface SchoolSpecialCard {
     red: string;
     green: string;
   };
+  /** Efectos mecánicos de mutágenos en combate (si el Automa los ha adquirido). */
+  mutagenCombat?: {
+    blue?: SchoolMutagenCombatBonus;
+    red?: SchoolMutagenCombatBonus;
+    green?: SchoolMutagenCombatBonus;
+  };
+  imagePath?: string;
 }
 
 export interface WitcherSchool {
@@ -36,6 +67,8 @@ export interface WitcherSchool {
     potions: number;
   };
   specialCard?: SchoolSpecialCard;
+  /** Imagen de la carta de habilidades especiales de la escuela. */
+  specialCardImagePath?: string;
 }
 
 export type TieBreakDirection = 'up' | 'down' | 'left' | 'right';
@@ -103,6 +136,10 @@ export interface ChallengeCard {
   attackBombDiscardTopDamage?: number;
   /** Gasta 1 bomba: tras resolver, juega otro combo de inmediato. */
   attackBombExtraCombo?: boolean;
+  /** Tras resolver, juega otro combo de inmediato (sin gastar bomba). */
+  attackExtraCombo?: boolean;
+  /** Al atacar, aplica el efecto Especial 1/2/3 de la carta de habilidad de la escuela. */
+  schoolSpecialEffect?: 1 | 2 | 3;
   /** Gasta 1 poción: baraja la carta superior del descarte en el mazo de combate. */
   attackPotionShuffleDiscardTop?: boolean;
   /** Gasta 1 poción: el oponente sufre daño igual a los escudos activos del Automa. */
@@ -179,4 +216,8 @@ export interface CombatState {
   fightLog: string[];
   /** Daño extra infligido al oponente por efectos de carta (p. ej. poción → escudos). */
   bonusOpponentDamageThisTurn?: number;
+  /** Bono de daño pendiente para el próximo ataque (p. ej. Víbora Especial 1). */
+  pendingAttackDamageBonus?: number;
+  /** Ignora el daño del próximo turno de combate del oponente (p. ej. Oso Especial 3). */
+  ignoreNextOpponentDamage?: boolean;
 }

@@ -19,10 +19,14 @@ export type BuiltDecks = {
  * La selección por dificultad se aplicará cuando el catálogo esté completo.
  */
 export function buildDecksFromCatalog(): BuiltDecks {
+  const schoolChallengeActive = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level !== 3);
+  const schoolChallengeReserve = SCHOOL_CHALLENGE_CARDS.filter((c) => c.level === 3);
   const allAction = [...ACTION_CARDS, ...SCHOOL_ACTION_CARDS];
-  const allChallenge = [...CHALLENGE_CARDS, ...SCHOOL_CHALLENGE_CARDS];
+  const allChallenge = [...CHALLENGE_CARDS, ...schoolChallengeActive];
   const activeChallengeIds = new Set(allChallenge.map((c) => c.id));
-  const reserve = LEVEL_3_CHALLENGE_RESERVE.filter((c) => !activeChallengeIds.has(c.id));
+  const reserve = [...LEVEL_3_CHALLENGE_RESERVE, ...schoolChallengeReserve].filter(
+    (c) => !activeChallengeIds.has(c.id)
+  );
 
   return {
     actionDeck: shuffleArray(allAction),

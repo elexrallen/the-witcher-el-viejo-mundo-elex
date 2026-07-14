@@ -34,15 +34,23 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
       special3: {
         damage: 3,
         shields: 1,
-        description: 'Inflige 3 de Daño, gana 1 de Escudo y obliga al oponente a descartar 1 carta de su mano.',
-        effectDetail: '3 ⚔️ | 1 🛡️ | 🎴↓'
+        shuffleDiscardTop: true,
+        description: 'Inflige 3 de Daño, gana 1 de Escudo y baraja la carta superior del descarte en el mazo de combate.',
+        effectDetail: '3 ⚔️ | 1 🛡️ | 🔀 descarte→mazo',
       },
       mutagenBonuses: {
-        blue: '+1 Daño extra en ataques base.',
-        red: '+1 Escudo activo extra.',
-        green: 'El oponente descarta 1 carta de combate.'
-      }
-    }
+        blue: '+1 Daño',
+        red: '+1 Escudo',
+        green: 'Baraja la carta superior del descarte en el mazo de combate.',
+      },
+      mutagenCombat: {
+        blue: { damage: 1 },
+        red: { shields: 1 },
+        green: { shuffleDiscardTop: true },
+      },
+      imagePath: '/schools/wolf-special.png',
+    },
+    specialCardImagePath: '/schools/wolf-special.png',
   },
   {
     id: 'cat',
@@ -60,27 +68,37 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
       special1: {
         damage: 1,
         shields: 1,
-        description: 'Inflige 1 de Daño, gana 1 de Escudo, roba 1 carta de combate y obliga al oponente a descartar 1 carta.',
-        effectDetail: '1 ⚔️ | 1 🛡️ | 🎴+ | 🎴↓'
+        attackExtraComboCount: 2,
+        description: 'Inflige 1 de Daño, gana 1 de Escudo y juega 2 combos adicionales inmediatamente.',
+        effectDetail: '1 ⚔️ | 1 🛡️ | 🎴×2',
       },
       special2: {
         damage: 2,
         shields: 1,
-        description: 'Inflige 2 de Daño, gana 1 de Escudo y roba 1 carta de combate.',
-        effectDetail: '2 ⚔️ | 1 🛡️ | 🎴+'
+        attackExtraComboCount: 1,
+        description: 'Inflige 2 de Daño, gana 1 de Escudo y juega otro combo inmediatamente.',
+        effectDetail: '2 ⚔️ | 1 🛡️ | 🎴+',
       },
       special3: {
         damage: 1,
         shields: 2,
-        description: 'Inflige 1 de Daño, gana 2 de Escudos y roba 1 carta de combate.',
-        effectDetail: '1 ⚔️ | 2 🛡️ | 🎴+'
+        attackExtraComboCount: 1,
+        description: 'Inflige 1 de Daño, gana 2 de Escudos y juega otro combo inmediatamente.',
+        effectDetail: '1 ⚔️ | 2 🛡️ | 🎴+',
       },
       mutagenBonuses: {
-        blue: '+2 Daño en ataques base.',
-        red: '+1 Daño en ataques base.',
-        green: '+1 Escudo activo extra.'
-      }
-    }
+        blue: '+2 Daño',
+        red: '+1 Daño',
+        green: '+1 Escudo',
+      },
+      mutagenCombat: {
+        blue: { damage: 2 },
+        red: { damage: 1 },
+        green: { shields: 1 },
+      },
+      imagePath: '/schools/cat-special.png',
+    },
+    specialCardImagePath: '/schools/cat-special.png',
   },
   {
     id: 'griffin',
@@ -98,27 +116,37 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
       special1: {
         damage: 2,
         shields: 1,
-        description: 'Inflige 2 de Daño, gana 1 de Escudo y obliga al oponente a descartar 2 cartas de su mano.',
-        effectDetail: '2 ⚔️ | 1 🛡️ | 🎴↓↓'
+        shuffleDiscardTopCount: 2,
+        description: 'Inflige 2 de Daño, gana 1 de Escudo y baraja la carta superior del descarte en el mazo de combate (2 veces).',
+        effectDetail: '2 ⚔️ | 1 🛡️ | 🔀×2',
       },
       special2: {
         damage: 3,
         shields: 0,
-        description: 'Inflige 3 de Daño y obliga al oponente a descartar 2 cartas de su mano.',
-        effectDetail: '3 ⚔️ | 🎴↓↓'
+        shuffleDiscardTopCount: 2,
+        description: 'Inflige 3 de Daño y baraja la carta superior del descarte en el mazo de combate (2 veces).',
+        effectDetail: '3 ⚔️ | 🔀×2',
       },
       special3: {
         damage: 3,
         shields: 0,
-        description: 'Inflige 3 de Daño y obliga al oponente a descartar 3 cartas de su mano.',
-        effectDetail: '3 ⚔️ | 🎴↓↓↓'
+        shuffleDiscardTopCount: 3,
+        description: 'Inflige 3 de Daño y baraja la carta superior del descarte en el mazo de combate (3 veces).',
+        effectDetail: '3 ⚔️ | 🔀×3',
       },
       mutagenBonuses: {
-        blue: 'El oponente descarta 1 carta.',
-        red: '+1 Daño en ataques base.',
-        green: 'El oponente descarta 1 carta de combate.'
-      }
-    }
+        blue: 'Baraja descarte → mazo de combate',
+        red: '+1 Daño',
+        green: 'Baraja descarte → mazo de combate',
+      },
+      mutagenCombat: {
+        blue: { shuffleDiscardTop: true },
+        red: { damage: 1 },
+        green: { shuffleDiscardTop: true },
+      },
+      imagePath: '/schools/griffin-special.png',
+    },
+    specialCardImagePath: '/schools/griffin-special.png',
   },
   {
     id: 'bear',
@@ -135,28 +163,37 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
     specialCard: {
       special1: {
         damage: 2,
-        shields: 5, // Maximizes shields
-        description: 'Inflige 2 de Daño y aumenta tus escudos al máximo permitido (5 escudos activos).',
-        effectDetail: '2 ⚔️ | 🛡️ Al Máximo (5)'
+        shields: 0,
+        raiseShieldToMax: true,
+        description: 'Inflige 2 de Daño y aumenta tus escudos al máximo.',
+        effectDetail: '2 ⚔️ | 🛡️ Máx',
       },
       special2: {
         damage: 2,
         shields: 3,
-        description: 'Inflige 2 de Daño y gana 3 de Escudos activos.',
-        effectDetail: '2 ⚔️ | 3 🛡️'
+        description: 'Inflige 2 de Daño y gana 3 de Escudos.',
+        effectDetail: '2 ⚔️ | 3 🛡️',
       },
       special3: {
         damage: 0,
         shields: 0,
-        description: 'Efecto Oso Legendario: Ignora por completo todo el daño recibido en el próximo turno de combate del oponente.',
-        effectDetail: '🛡️ Ignora Siguiente Daño'
+        ignoreNextOpponentDamage: true,
+        description: 'Ignora todo el daño recibido del próximo turno de combate del oponente.',
+        effectDetail: '🛡️ Ignora daño rival',
       },
       mutagenBonuses: {
-        blue: '+1 Escudo activo extra.',
-        red: '+1 Escudo activo extra.',
-        green: '+1 Escudo activo extra.'
-      }
-    }
+        blue: '+1 Escudo',
+        red: '+1 Escudo',
+        green: '+1 Escudo',
+      },
+      mutagenCombat: {
+        blue: { shields: 1 },
+        red: { shields: 1 },
+        green: { shields: 1 },
+      },
+      imagePath: '/schools/bear-special.png',
+    },
+    specialCardImagePath: '/schools/bear-special.png',
   },
   {
     id: 'viper',
@@ -172,29 +209,38 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
     },
     specialCard: {
       special1: {
-        damage: 4, // 2 base + 2 on next (we can resolve as 4 or 2 and apply +2 to the next)
+        damage: 2,
         shields: 0,
-        description: 'Inflige 2 de Daño y el siguiente ataque del Automa gana +2 de Daño (Simulado como 4 de Daño directo de veneno).',
-        effectDetail: '2 ⚔️ (+2 de Daño extra continuado)'
+        nextAttackDamageBonus: 2,
+        description: 'Inflige 2 de Daño y el siguiente ataque gana +2 de Daño.',
+        effectDetail: '2 ⚔️ | +2 ⚔️ siguiente',
       },
       special2: {
         damage: 3,
         shields: 0,
-        description: 'Inflige 3 de Daño de escaramuza y roba 1 carta de combate.',
-        effectDetail: '3 ⚔️ | 🎴+'
+        attackExtraComboCount: 1,
+        description: 'Inflige 3 de Daño y juega otro combo inmediatamente.',
+        effectDetail: '3 ⚔️ | 🎴+',
       },
       special3: {
         damage: 5,
         shields: 0,
-        description: 'Ataque Fulminante de Veneno: Inflige 5 de Daño directo masivo.',
-        effectDetail: '5 ⚔️'
+        description: 'Inflige 5 de Daño.',
+        effectDetail: '5 ⚔️',
       },
       mutagenBonuses: {
-        blue: '+1 Daño de veneno extra.',
-        red: '+2 Daño de contraataque extra.',
-        green: '+1 Daño continuado.'
-      }
-    }
+        blue: '+1 Daño',
+        red: '+2 Daño',
+        green: '+1 Daño',
+      },
+      mutagenCombat: {
+        blue: { damage: 1 },
+        red: { damage: 2 },
+        green: { damage: 1 },
+      },
+      imagePath: '/schools/viper-special.png',
+    },
+    specialCardImagePath: '/schools/viper-special.png',
   },
   {
     id: 'manticore',
@@ -212,26 +258,36 @@ export const WITCHER_SCHOOLS: WitcherSchool[] = [
       special1: {
         damage: 2,
         shields: 1,
-        description: 'Inflige 2 de Daño, gana 1 de Escudo y añade 1 Poción gratis al inventario del Automa.',
-        effectDetail: '2 ⚔️ | 1 🛡️ | 🧪+'
+        gainPotions: 1,
+        description: 'Inflige 2 de Daño, gana 1 de Escudo y gana 1 Poción.',
+        effectDetail: '2 ⚔️ | 1 🛡️ | 🧪+',
       },
       special2: {
         damage: 2,
         shields: 1,
-        description: 'Inflige 2 de Daño, gana 1 de Escudo y añade 2 Pociones al inventario del Automa.',
-        effectDetail: '2 ⚔️ | 1 🛡️ | 🧪🧪++'
+        gainPotions: 2,
+        description: 'Inflige 2 de Daño, gana 1 de Escudo y gana 2 Pociones.',
+        effectDetail: '2 ⚔️ | 1 🛡️ | 🧪🧪++',
       },
       special3: {
-        damage: 6, // If consuming a potion
+        damage: 0,
         shields: 2,
-        description: 'Gana 2 de Escudo. Consume/descarta 1 Poción de inmediato para desatar un impacto colosal de 6 de Daño directo.',
-        effectDetail: '2 🛡️ | Gasta 1 🧪 para infligir 6 ⚔️'
+        spendPotionForDamage: 5,
+        description: 'Gana 2 de Escudo, gasta 1 Poción e inflige 5 de Daño.',
+        effectDetail: '2 🛡️ | Gasta 1 🧪 → 5 ⚔️',
       },
       mutagenBonuses: {
-        blue: '+1 Poción gratis al inventario.',
-        red: '+1 Daño por nivel de toxicidad.',
-        green: '+1 Poción gratis al inventario.'
-      }
-    }
-  }
+        blue: '+1 Poción',
+        red: '+1 Daño',
+        green: '+1 Poción',
+      },
+      mutagenCombat: {
+        blue: { gainPotions: 1 },
+        red: { damage: 1 },
+        green: { gainPotions: 1 },
+      },
+      imagePath: '/schools/manticore-special.png',
+    },
+    specialCardImagePath: '/schools/manticore-special.png',
+  },
 ];

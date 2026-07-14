@@ -12,6 +12,52 @@ interface SpecialSchoolCardComponentProps {
   activeSpecialIndex?: 1 | 2 | 3 | null;
 }
 
+function ShuffleDiscardBadge({ count = 1, className = 'text-emerald-700' }: { count?: number; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title={`Barajar descarte → mazo${count > 1 ? ` (×${count})` : ''}`}>
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} className="inline-flex items-center gap-px">
+          <WitcherIcon name="cards" size={13} />
+          <WitcherIcon name="arrow-right" size={9} />
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function ExtraComboBadge({ count = 1, className = 'text-emerald-700' }: { count?: number; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title={`${count} combo(s) extra`}>
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} className="inline-flex items-center gap-px">
+          <WitcherIcon name="play" size={13} />
+          <WitcherIcon name="cards" size={11} />
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function NextAttackBonusBadge({ bonus = 2, className = 'text-red-600' }: { bonus?: number; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-px ${className}`} title={`Siguiente ataque +${bonus} daño`}>
+      <WitcherIcon name="arrow-right" size={9} />
+      {Array.from({ length: bonus }).map((_, i) => (
+        <WitcherIcon key={i} name="sword" size={14} className="text-red-600 shrink-0 inline" />
+      ))}
+    </span>
+  );
+}
+
+function IgnoreDamageBadge({ className = 'text-amber-800' }: { className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-0.5 text-[9px] font-black ${className}`} title="Ignora daño del próximo turno rival">
+      <WitcherIcon name="shield" size={14} className="text-amber-700 shrink-0" />
+      <span>0 dmg</span>
+    </span>
+  );
+}
+
 function CardDrawBadge({ className = 'text-orange-600' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-px ${className}`} title="Robar carta">
@@ -116,6 +162,14 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
       {/* Aesthetic Border Linework */}
       <div className="absolute inset-2 border border-[#8b6e4e]/20 rounded-lg pointer-events-none" />
 
+      {(school.specialCardImagePath ?? spec.imagePath) && (
+        <img
+          src={school.specialCardImagePath ?? spec.imagePath}
+          alt={`Carta de habilidades — ${school.name}`}
+          className="w-full rounded-lg mb-3 border border-[#8b6e4e]/40 object-cover max-h-36 -mt-1"
+        />
+      )}
+
       {/* Card Header with Medallion and School name */}
       <div className="flex justify-between items-start pb-3 border-b-2 border-[#8b6e4e]/30 z-10">
         <div>
@@ -166,8 +220,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(1)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <CardDrawBadge />
-                  <CardDiscardBadge count={1} className="text-zinc-600" />
+                  <ExtraComboBadge count={2} />
                 </>
               )}
               {school.id === 'griffin' && (
@@ -175,7 +228,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <CardDiscardBadge count={2} />
+                  <ShuffleDiscardBadge count={2} />
                 </>
               )}
               {school.id === 'bear' && (
@@ -188,10 +241,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
               {school.id === 'viper' && (
                 <>
                   {renderSwords(2)}
-                  <span className="inline-flex items-center gap-px text-red-600">
-                    <WitcherIcon name="plus" size={9} />
-                    {renderSwords(2)}
-                  </span>
+                  <NextAttackBonusBadge bonus={2} />
                 </>
               )}
               {school.id === 'manticore' && (
@@ -239,14 +289,13 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(2)}
                   <span className="mx-0.5">/</span>
                   {renderShields(1)}
-                  <CardDrawBadge />
+                  <ExtraComboBadge count={1} />
                 </>
               )}
               {school.id === 'griffin' && (
                 <>
                   {renderSwords(3)}
-                  <span className="mx-0.5">/</span>
-                  <CardDiscardBadge count={2} />
+                  <ShuffleDiscardBadge count={2} />
                 </>
               )}
               {school.id === 'bear' && (
@@ -259,8 +308,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
               {school.id === 'viper' && (
                 <>
                   {renderSwords(3)}
-                  <span className="mx-0.5">/</span>
-                  <CardDrawBadge />
+                  <ExtraComboBadge count={1} />
                 </>
               )}
               {school.id === 'manticore' && (
@@ -302,7 +350,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   <span className="mx-1">/</span>
                   {renderShields(1)}
                   <span className="mx-1">/</span>
-                  <CardDiscardBadge count={1} className="text-zinc-600" />
+                  <ShuffleDiscardBadge />
                 </>
               )}
               {school.id === 'cat' && (
@@ -310,18 +358,17 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                   {renderSwords(1)}
                   <span className="mx-0.5">/</span>
                   {renderShields(2)}
-                  <CardDrawBadge />
+                  <ExtraComboBadge count={1} />
                 </>
               )}
               {school.id === 'griffin' && (
                 <>
                   {renderSwords(3)}
-                  <span className="mx-1">/</span>
-                  <CardDiscardBadge count={3} />
+                  <ShuffleDiscardBadge count={3} />
                 </>
               )}
               {school.id === 'bear' && (
-                <ShieldMaxBadge label="Bloquea Siguiente Turno" className="text-red-700" />
+                <IgnoreDamageBadge />
               )}
               {school.id === 'viper' && (
                 <>{renderSwords(5)}</>
@@ -334,7 +381,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
                     <WitcherIcon name="potion" size={13} className="text-cyan-700" />
                     <WitcherIcon name="arrow-down" size={9} />
                     <WitcherIcon name="arrow-right" size={9} />
-                    {renderSwords(6)}
+                    {renderSwords(5)}
                   </span>
                 </>
               )}

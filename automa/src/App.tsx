@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ACTION_CARDS, CHALLENGE_CARDS, SCHOOL_ACTION_CARDS, SCHOOL_CHALLENGE_CARDS } from "./data/cards";
+import { ACTION_CARDS, CHALLENGE_CARDS, getCatalogStats } from "./data/cards";
 import { WITCHER_SCHOOLS } from "./data/schools";
 import {
   WitcherSchoolId,
@@ -12,6 +12,10 @@ import { shuffleArray } from "./utils/shuffle";
 import { buildDecksFromCatalog } from "./utils/deckBuilder";
 import { getMaxShieldLevel } from "./utils/combat";
 import { getCardMutagens, formatMutagenList } from "./utils/mutagens";
+import {
+  applySchoolMutagenCombatBonuses,
+  shuffleTopDiscardIntoDeck,
+} from "./utils/schoolMutagens";
 import { formatMovementGuide, formatDestination } from "./utils/actionCard";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
@@ -195,8 +199,9 @@ export default function App() {
     setSetupMode(false);
     setCurrentTab("turn");
     setCombat((prev) => ({ ...prev, isActive: false }));
+    const stats = getCatalogStats();
     addLog(
-      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${ACTION_CARDS.length + SCHOOL_ACTION_CARDS.length} acción, ${CHALLENGE_CARDS.length + SCHOOL_CHALLENGE_CARDS.length} desafío.`
+      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${stats.actionCount} acción (${stats.genericActionCount} gen. + ${stats.schoolActionCount} esc.), ${stats.challengeCount} desafío (${stats.initialDeckChallengeCount} en mazo + ${stats.reserveCount} reserva).`
     );
   };
 
@@ -276,6 +281,10 @@ export default function App() {
     else if (bonus === "alchemy_attack") {
       handleUpdateAttribute("alchemy", 1);
       handleUpdateAttribute("attack", 1);
+    }
+    else if (bonus === "special_alchemy") {
+      handleUpdateAttribute("special", 1);
+      handleUpdateAttribute("alchemy", 1);
     }
 
     if (activeActionCard.potionBonus) {
@@ -378,19 +387,25 @@ export default function App() {
     deck: ChallengeCard[],
     discard: ChallengeCard[],
     card: ChallengeCard,
-    consumables: { potions: number; bombs: number }
+    consumables: { potions: number; bombs: number },
+    combatEffects: {
+      pendingAttackDamageBonus: number;
+      ignoreNextOpponentDamage: boolean;
+    }
   ): {
     deck: ChallengeCard[];
     discard: ChallengeCard[];
     totalDamage: number;
     totalShield: number;
     fightLogs: string[];
-    extraCombo: boolean;
+    extraComboAttacks: number;
     bonusOpponentDamage: number;
   } => {
     let workingDeck = deck;
     const fightLogs: string[] = [];
     const extraDiscard: ChallengeCard[] = [];
+    let raiseShieldToMax = false;
+    let schoolExtraCombos = 0;
 
     if (card.attackDiscardTopCard && workingDeck.length > 0) {
       const discardedTop = workingDeck[0];
@@ -403,6 +418,14 @@ export default function App() {
     let baseShield = card.shields;
     let schoolDamageBonus = 0;
     let schoolShieldBonus = 0;
+
+    if (combatEffects.pendingAttackDamageBonus > 0) {
+      baseDamage += combatEffects.pendingAttackDamageBonus;
+      fightLogs.push(
+        `Bono de ataque anterior: +${combatEffects.pendingAttackDamageBonus} daño.`
+      );
+      combatEffects.pendingAttackDamageBonus = 0;
+    }
 
     if (card.attackBombDiscardTopDamage && useBombs && consumables.bombs > 0) {
       consumables.bombs -= 1;
@@ -442,19 +465,72 @@ export default function App() {
       }
     }
 
-    if (card.id === "cha-25" && activeSchoolObj.specialCard) {
-      baseDamage = activeSchoolObj.specialCard.special1.damage;
-      baseShield = activeSchoolObj.specialCard.special1.shields;
-    } else if (card.id === "cha-26" && activeSchoolObj.specialCard) {
-      baseDamage = activeSchoolObj.specialCard.special2.damage;
-      baseShield = activeSchoolObj.specialCard.special2.shields;
-    } else if (card.id === "cha-27" && activeSchoolObj.specialCard) {
-      baseDamage = activeSchoolObj.specialCard.special3.damage;
-      baseShield = activeSchoolObj.specialCard.special3.shields;
-      if (automa.schoolId === "manticore" && consumables.potions > 0) {
-        consumables.potions -= 1;
-        baseDamage = 6;
-        fightLogs.push("Mantícora: poción consumida, 6 daño.");
+    if (card.schoolSpecialEffect && activeSchoolObj.specialCard) {
+      const spec =
+        card.schoolSpecialEffect === 1
+          ? activeSchoolObj.specialCard.special1
+          : card.schoolSpecialEffect === 2
+            ? activeSchoolObj.specialCard.special2
+            : activeSchoolObj.specialCard.special3;
+      baseDamage = spec.damage;
+      baseShield = spec.shields;
+      fightLogs.push(
+        `Especial ${card.schoolSpecialEffect} (${activeSchoolObj.name}): ${spec.description}`
+      );
+      if (spec.raiseShieldToMax) {
+        raiseShieldToMax = true;
+        baseShield = getMaxShieldLevel(automa.attributes.defense);
+        fightLogs.push(
+          `Escudo al máximo (Defensa ${automa.attributes.defense}): ${baseShield}.`
+        );
+      }
+      if (spec.nextAttackDamageBonus) {
+        combatEffects.pendingAttackDamageBonus = spec.nextAttackDamageBonus;
+        fightLogs.push(
+          `Próximo ataque: +${spec.nextAttackDamageBonus} daño.`
+        );
+      }
+      if (spec.ignoreNextOpponentDamage) {
+        combatEffects.ignoreNextOpponentDamage = true;
+        fightLogs.push(
+          "Ignorará todo el daño del próximo turno de combate del oponente."
+        );
+      }
+      if (spec.attackExtraComboCount) {
+        schoolExtraCombos = spec.attackExtraComboCount;
+        fightLogs.push(
+          `Especial: juega ${spec.attackExtraComboCount} combo(s) adicional(es) inmediatamente.`
+        );
+      }
+      const shuffleCount =
+        spec.shuffleDiscardTopCount ?? (spec.shuffleDiscardTop ? 1 : 0);
+      if (shuffleCount > 0) {
+        const shuffleCtx = { deck: workingDeck, discard, fightLogs };
+        for (let i = 0; i < shuffleCount; i++) {
+          shuffleTopDiscardIntoDeck(
+            shuffleCtx,
+            shuffleCount > 1
+              ? `Especial ${card.schoolSpecialEffect} (${i + 1}/${shuffleCount})`
+              : `Especial ${card.schoolSpecialEffect}`
+          );
+        }
+        workingDeck = shuffleCtx.deck;
+        discard = shuffleCtx.discard;
+      }
+      if (spec.gainPotions) {
+        consumables.potions = Math.min(4, consumables.potions + spec.gainPotions);
+        fightLogs.push(`Gana ${spec.gainPotions} poción(es).`);
+      }
+      if (spec.spendPotionForDamage) {
+        if (consumables.potions > 0) {
+          consumables.potions -= 1;
+          baseDamage += spec.spendPotionForDamage;
+          fightLogs.push(
+            `Poción consumida: ${spec.spendPotionForDamage} daño.`
+          );
+        } else {
+          fightLogs.push("Sin pociones: no se aplica el daño de poción.");
+        }
       }
     }
 
@@ -488,6 +564,20 @@ export default function App() {
       const active = cardMutagens.filter((m) => automa.mutagens.includes(m));
       if (active.length > 0) {
         fightLogs.push(`Mutágeno(s) activo(s): ${formatMutagenList(active)}.`);
+        if (activeSchoolObj.specialCard?.mutagenCombat) {
+          const mutagenCtx = { deck: workingDeck, discard, fightLogs };
+          const updated = applySchoolMutagenCombatBonuses(
+            activeSchoolObj,
+            active,
+            mutagenCtx,
+            { damage: baseDamage, shields: baseShield },
+            consumables
+          );
+          baseDamage = updated.damage;
+          baseShield = updated.shields;
+          workingDeck = mutagenCtx.deck;
+          discard = mutagenCtx.discard;
+        }
       } else {
         fightLogs.push(`Carta con mutágeno(s) ${formatMutagenList(cardMutagens)} (sin adquirir aún).`);
       }
@@ -506,9 +596,11 @@ export default function App() {
     }
 
     const totalDamage = baseDamage + schoolDamageBonus;
-    const totalShield = effectiveCardShield + schoolShieldBonus + defenseShieldBonus;
+    const totalShield = raiseShieldToMax
+      ? baseShield + schoolShieldBonus
+      : effectiveCardShield + schoolShieldBonus + defenseShieldBonus;
 
-    if (defenseShieldBonus > 0) {
+    if (defenseShieldBonus > 0 && !raiseShieldToMax) {
       fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);
     }
 
@@ -519,12 +611,17 @@ export default function App() {
       fightLogs.push(`Poción consumida: oponente sufre ${bonusOpponentDamage} daños (escudos actuales del Automa).`);
     }
 
-    const extraCombo =
+    const bombExtraCombo =
       Boolean(card.attackBombExtraCombo && useBombs && consumables.bombs > 0);
+    let extraComboAttacks = schoolExtraCombos;
 
-    if (extraCombo) {
+    if (bombExtraCombo) {
       consumables.bombs -= 1;
+      extraComboAttacks += 1;
       fightLogs.push("Bomba consumida: juega otro combo inmediatamente.");
+    } else if (card.attackExtraCombo) {
+      extraComboAttacks += 1;
+      fightLogs.push("Tras resolver: juega otro combo inmediatamente.");
     }
 
     return {
@@ -533,7 +630,7 @@ export default function App() {
       totalDamage,
       totalShield,
       fightLogs,
-      extraCombo,
+      extraComboAttacks,
       bonusOpponentDamage,
     };
   };
@@ -553,11 +650,17 @@ export default function App() {
     let lastBonusOpponentDamage = 0;
     let lastCard: ChallengeCard | null = null;
 
+    const combatEffects = {
+      pendingAttackDamageBonus: combat.pendingAttackDamageBonus ?? 0,
+      ignoreNextOpponentDamage: combat.ignoreNextOpponentDamage ?? false,
+    };
+    let chainRemaining = 0;
+
     const runAttack = () => {
-      if (deck.length === 0) return false;
+      if (deck.length === 0) return;
       const card = deck[0];
       deck = deck.slice(1);
-      const result = resolveAutomaAttack(deck, discard, card, consumables);
+      const result = resolveAutomaAttack(deck, discard, card, consumables, combatEffects);
       deck = result.deck;
       discard = result.discard;
       lastDamage = result.totalDamage;
@@ -568,16 +671,17 @@ export default function App() {
         `Ataque (${card.id}): ${result.totalDamage} daño, ${result.totalShield} escudo. Restan ${deck.length}.`,
         ...result.fightLogs
       );
-      if (result.extraCombo && deck.length > 0) {
-        allFightLogs.push("--- Combo adicional ---");
-        return true;
+      if (chainRemaining > 0) {
+        chainRemaining -= 1;
+      } else if (result.extraComboAttacks > 0) {
+        chainRemaining = result.extraComboAttacks;
       }
-      return false;
     };
 
-    let continueCombo = runAttack();
-    while (continueCombo) {
-      continueCombo = runAttack();
+    runAttack();
+    while (chainRemaining > 0 && deck.length > 0) {
+      allFightLogs.push("--- Combo adicional ---");
+      runAttack();
     }
 
     if (!lastCard) return;
@@ -596,6 +700,8 @@ export default function App() {
       damageInflictedThisTurn: lastDamage,
       shieldsActiveThisTurn: lastShield,
       bonusOpponentDamageThisTurn: lastBonusOpponentDamage,
+      pendingAttackDamageBonus: combatEffects.pendingAttackDamageBonus,
+      ignoreNextOpponentDamage: combatEffects.ignoreNextOpponentDamage,
       fightLog: [...allFightLogs, ...prev.fightLog],
     }));
   };
@@ -603,6 +709,20 @@ export default function App() {
   const handleReceiveDamage = (damageInput: number) => {
     const rawDamage = Math.max(0, damageInput);
     if (rawDamage === 0) return;
+
+    if (combat.ignoreNextOpponentDamage) {
+      setCombat((prev) => ({
+        ...prev,
+        ignoreNextOpponentDamage: false,
+        fightLog: [
+          `🛡️ Oso Especial 3: daño ignorado (${rawDamage} bloqueado).`,
+          ...prev.fightLog,
+        ],
+      }));
+      addLog(`Oponente atacó ${rawDamage} — ignorado (Oso Especial 3).`);
+      return;
+    }
+
     const shieldReduction = combat.shieldsActiveThisTurn;
     const effectiveDamage = Math.max(0, rawDamage - shieldReduction);
     let remainingDamageToDiscard = effectiveDamage;

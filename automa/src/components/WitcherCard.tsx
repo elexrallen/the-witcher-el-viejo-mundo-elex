@@ -121,6 +121,7 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                     case 'defense_attack': return 'Defensa +1 y Ataque +1';
                     case 'defense_special_trail': return 'Defensa +1, Especial +1 y Rastro';
                     case 'alchemy_attack': return 'Alquimia +1 y Ataque +1';
+                    case 'special_alchemy': return 'Especial +1 y Alquimia +1';
                     case 'alchemy_any': return 'Alquimia y Elegir +1';
                     default: return `Subir ${actCard.attributeBonus}`;
                   }
@@ -290,9 +291,11 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           chaCard.attackDiscardTopCard ||
           chaCard.attackBombDiscardTopDamage ||
           chaCard.attackBombExtraCombo ||
+          chaCard.attackExtraCombo ||
           chaCard.attackPotionShuffleDiscardTop ||
           chaCard.attackPotionOpponentShieldDamage ||
-          chaCard.attackShuffleDiscardTopCount) && (
+          chaCard.attackShuffleDiscardTopCount ||
+          chaCard.schoolSpecialEffect) && (
           <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 mb-3 text-xs font-sans text-amber-200/90 space-y-1">
             <div className="text-[9px] uppercase font-mono tracking-wider text-amber-400 font-bold">Efecto de ataque</div>
             {chaCard.attackPotionForDamage && (
@@ -306,6 +309,12 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             )}
             {chaCard.attackBombExtraCombo && (
               <p>Si tiene bomba: tras resolver esta carta, juega otro combo inmediatamente.</p>
+            )}
+            {chaCard.attackExtraCombo && (
+              <p>Tras resolver esta carta, juega otro combo inmediatamente.</p>
+            )}
+            {chaCard.schoolSpecialEffect && (
+              <p>Aplica el efecto <strong>Especial {chaCard.schoolSpecialEffect}</strong> de la carta de habilidad de la escuela del Automa.</p>
             )}
             {chaCard.attackPotionShuffleDiscardTop && (
               <p>Si tiene poción: gasta 1 y baraja la carta superior del descarte en el mazo de combate.</p>

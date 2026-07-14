@@ -203,9 +203,7 @@ export default function CombatView({
             )}
             <SpecialSchoolCardComponent
               school={activeSchool}
-              activeSpecialIndex={
-                combat.revealedCard?.id === "cha-25" ? 1 : combat.revealedCard?.id === "cha-26" ? 2 : combat.revealedCard?.id === "cha-27" ? 3 : null
-              }
+              activeSpecialIndex={combat.revealedCard?.schoolSpecialEffect ?? null}
             />
           </div>
         )}
