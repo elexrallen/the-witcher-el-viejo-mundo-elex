@@ -11,6 +11,7 @@ import {
 import { shuffleArray } from "./utils/shuffle";
 import { buildDecksFromCatalog } from "./utils/deckBuilder";
 import { getMaxShieldLevel } from "./utils/combat";
+import { getCardMutagens, formatMutagenList } from "./utils/mutagens";
 import { formatMovementGuide, formatDestination } from "./utils/actionCard";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
@@ -341,13 +342,24 @@ export default function App() {
       addLog("Automa derrotado — sin cartas.");
       return;
     }
-    const card = combat.combatDeck[0];
-    const remainingDeck = combat.combatDeck.slice(1);
+
+    let deck = [...combat.combatDeck];
+    const card = deck[0];
+    deck = deck.slice(1);
+    const fightLogs: string[] = [];
+    const extraDiscard: ChallengeCard[] = [];
+
+    if (card.attackDiscardTopCard && deck.length > 0) {
+      const discardedTop = deck[0];
+      deck = deck.slice(1);
+      extraDiscard.push(discardedTop);
+      fightLogs.push(`Efecto de ataque (${card.id}): descarta ${discardedTop.id} sin barajar.`);
+    }
+
     let baseDamage = card.damage;
     let baseShield = card.shields;
     let schoolDamageBonus = 0;
     let schoolShieldBonus = 0;
-    const fightLogs: string[] = [];
 
     if (card.id === "cha-25" && activeSchoolObj.specialCard) {
       baseDamage = activeSchoolObj.specialCard.special1.damage;
@@ -370,6 +382,12 @@ export default function App() {
       schoolShieldBonus = activeSchoolObj.combatBonus.shields;
     }
 
+    if (card.attackPotionForDamage && automa.potions > 0) {
+      setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
+      baseDamage += card.attackPotionForDamage;
+      fightLogs.push(`Poción consumida en ataque: +${card.attackPotionForDamage} daño.`);
+    }
+
     if (card.consumableSlot) {
       if (automa.potions > 0) {
         setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
@@ -384,16 +402,14 @@ export default function App() {
       }
     }
 
-    if (useMutagens && card.redMutagen && automa.mutagens.includes("red")) {
-      fightLogs.push("Mutágeno rojo activo en esta carta.");
-    } else if (useMutagens && card.redMutagen) {
-      fightLogs.push("Carta con icono de mutágeno rojo (sin mutágeno adquirido aún).");
-    }
-
-    if (useMutagens && card.greenMutagen && automa.mutagens.includes("green")) {
-      fightLogs.push("Mutágeno verde activo en esta carta.");
-    } else if (useMutagens && card.greenMutagen) {
-      fightLogs.push("Carta con icono de mutágeno verde (sin mutágeno adquirido aún).");
+    const cardMutagens = getCardMutagens(card);
+    if (useMutagens && cardMutagens.length > 0) {
+      const active = cardMutagens.filter((m) => automa.mutagens.includes(m));
+      if (active.length > 0) {
+        fightLogs.push(`Mutágeno(s) activo(s): ${formatMutagenList(active)}.`);
+      } else {
+        fightLogs.push(`Carta con mutágeno(s) ${formatMutagenList(cardMutagens)} (sin adquirir aún).`);
+      }
     }
 
     const defenseShieldBonus = automa.attributes.defense;
@@ -419,12 +435,12 @@ export default function App() {
 
     setCombat((prev) => ({
       ...prev,
-      combatDeck: remainingDeck,
-      combatDiscard: [...prev.combatDiscard, card],
+      combatDeck: deck,
+      combatDiscard: [...prev.combatDiscard, ...extraDiscard, card],
       revealedCard: card,
       damageInflictedThisTurn: totalDamage,
       shieldsActiveThisTurn: totalShield,
-      fightLog: [`Ataque: ${totalDamage} daño, ${totalShield} escudo. Restan ${remainingDeck.length}.`, ...fightLogs, ...prev.fightLog],
+      fightLog: [`Ataque: ${totalDamage} daño, ${totalShield} escudo. Restan ${deck.length}.`, ...fightLogs, ...prev.fightLog],
     }));
   };
 

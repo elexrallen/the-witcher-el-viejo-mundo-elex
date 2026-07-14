@@ -6,6 +6,7 @@
 import React from 'react';
 import { ActionCard, ChallengeCard, WitcherSchool } from '../types';
 import { formatMovementPM, formatDestination } from '../utils/actionCard';
+import { getCardMutagens, formatMutagenList } from '../utils/mutagens';
 import { WitcherIcon, SchoolIcon } from './WitcherIcon';
 
 interface WitcherCardProps {
@@ -263,6 +264,18 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           </div>
         </div>
 
+        {(chaCard.attackPotionForDamage || chaCard.attackDiscardTopCard) && (
+          <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 mb-3 text-xs font-sans text-amber-200/90 space-y-1">
+            <div className="text-[9px] uppercase font-mono tracking-wider text-amber-400 font-bold">Efecto de ataque</div>
+            {chaCard.attackPotionForDamage && (
+              <p>Si tiene poción: descarta 1 → +{chaCard.attackPotionForDamage} daño.</p>
+            )}
+            {chaCard.attackDiscardTopCard && (
+              <p>Descarta la carta superior del mazo de combate sin barajar.</p>
+            )}
+          </div>
+        )}
+
         {/* Defensive Reaction / Damage Counter */}
         {chaCard.reaction ? (
           <div className="bg-red-950/25 border border-red-900/30 rounded-xl p-3 mb-3 relative overflow-hidden">
@@ -285,12 +298,20 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
 
         {/* Poker pattern */}
         <div className="border-t border-zinc-800 pt-2.5 text-center text-[10px] mt-auto space-y-1">
-          {chaCard.redMutagen && (
-            <div className="text-red-400 font-mono uppercase text-[8px] tracking-wider font-bold">Mutágeno rojo en combate</div>
-          )}
-          {chaCard.greenMutagen && (
-            <div className="text-emerald-400 font-mono uppercase text-[8px] tracking-wider font-bold">Mutágeno verde en combate</div>
-          )}
+          {(() => {
+            const mutagens = getCardMutagens(chaCard);
+            if (mutagens.length === 0) return null;
+            const colors: Record<string, string> = {
+              red: 'text-red-400',
+              blue: 'text-sky-400',
+              green: 'text-emerald-400',
+            };
+            return (
+              <div className={`font-mono uppercase text-[8px] tracking-wider font-bold ${colors[mutagens[0]] ?? 'text-zinc-400'}`}>
+                Mutágeno(s): {formatMutagenList(mutagens)}
+              </div>
+            );
+          })()}
           {chaCard.playerMonsterAttack && (
             <div className="text-sky-400 font-mono uppercase text-[8px] tracking-wider font-bold">
               Monstruo ataca: {chaCard.playerMonsterAttack}

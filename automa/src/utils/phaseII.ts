@@ -25,6 +25,9 @@ export function getPhaseIIHint(card: ActionCard, automa: AutomaState): string {
   }
 
   if (meetsCombatRequirement(card, automa)) {
+    if (card.combatPriority === "witcher_then_monster") {
+      return `Prioridad: combatir brujo/automa en la localización; si no hay, monstruo si ${formatCombatCondition(card).toLowerCase()}.`;
+    }
     return `Condición de combate cumplida: ${formatCombatCondition(card)}. Si hay monstruo o brujo en la localización, combatir.`;
   }
 

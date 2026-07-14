@@ -33,6 +33,10 @@ export function resolveCombatCondition(card: ActionCard): CombatCondition {
 }
 
 export function meetsCombatRequirement(card: ActionCard, automa: AutomaState): boolean {
+  if (card.combatPriority === "witcher_then_monster") {
+    return true;
+  }
+
   const condition = resolveCombatCondition(card);
 
   switch (condition.type) {

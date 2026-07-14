@@ -48,6 +48,8 @@ export type CombatCondition =
   | { type: 'trophies_lte'; value: number }
   | { type: 'trophies_lt'; value: number };
 
+export type CombatPriority = 'monster' | 'witcher_then_monster';
+
 export interface ActionCard {
   id: string;
   level: 'generic' | 1 | 2 | 3;
@@ -71,6 +73,8 @@ export interface ActionCard {
   trailType?: TrailType;
   combatRequirement: string;
   combatCondition?: CombatCondition;
+  /** Prioridad en Fase II: brujo/automa antes que monstruo. */
+  combatPriority?: CombatPriority;
   marketDiscards: number[];
   /** Ruta a imagen de la carta física (opcional). */
   imagePath?: string;
@@ -85,6 +89,10 @@ export interface ChallengeCard {
   consumableSlot: boolean; // Triggers potion/bomb use
   /** Daño extra al consumir poción con consumableSlot (por defecto +2, o +4 Mantícora). */
   potionDamageBonus?: number;
+  /** Daño extra al consumir poción en el ataque (p. ej. descartar poción → +2). */
+  attackPotionForDamage?: number;
+  /** Descarta la carta superior del mazo de combate (sin barajar) al atacar con esta carta. */
+  attackDiscardTopCard?: boolean;
   schoolSymbol: boolean;   // Triggers School Bonus
   reaction: {
     type: 'shield' | 'damage' | 'shield_damage' | 'none';
@@ -96,7 +104,9 @@ export interface ChallengeCard {
   pokerPattern: string;
   /** Valores concretos a conservar en el póker (p. ej. [1,2,3,4,4]). */
   pokerKeepValues?: number[];
-  /** Mutágeno rojo impreso en el margen de la carta. */
+  /** Mutágenos impresos en el margen de la carta. */
+  mutagens?: ('red' | 'blue' | 'green')[];
+  /** @deprecated Usar mutagens. */
   redMutagen?: boolean;
   /** Mutágeno verde impreso en el margen de la carta. */
   greenMutagen?: boolean;
