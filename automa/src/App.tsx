@@ -244,6 +244,21 @@ export default function App() {
     }
     else if (bonus === "highest_special") { handleAutoImproveAttribute("highest"); handleUpdateAttribute("special", 1); }
     else if (bonus === "alchemy_any") { handleUpdateAttribute("alchemy", 1); handleAutoImproveAttribute("lowest"); }
+    else if (bonus === "defense_highest") {
+      handleUpdateAttribute("defense", 1);
+      if (activeActionCard.defenseBonusRaisesShield) {
+        addLog(`Defensa +1 (nivel ${Math.min(5, automa.attributes.defense + 1)}): el escudo en combate suma el nivel de Defensa del tablero.`);
+      }
+      handleAutoImproveAttribute("highest");
+    }
+    else if (bonus === "attack_highest") {
+      handleUpdateAttribute("attack", 1);
+      handleAutoImproveAttribute("highest");
+    }
+    else if (bonus === "special_highest") {
+      handleUpdateAttribute("special", 1);
+      handleAutoImproveAttribute("highest");
+    }
 
     if (activeActionCard.potionBonus) {
       const count = activeActionCard.potionBonusCount ?? 1;
@@ -353,6 +368,7 @@ export default function App() {
     totalShield: number;
     fightLogs: string[];
     extraCombo: boolean;
+    bonusOpponentDamage: number;
   } => {
     let workingDeck = deck;
     const fightLogs: string[] = [];
@@ -464,6 +480,13 @@ export default function App() {
       fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);
     }
 
+    let bonusOpponentDamage = 0;
+    if (card.attackPotionOpponentShieldDamage && consumables.potions > 0) {
+      consumables.potions -= 1;
+      bonusOpponentDamage = totalShield;
+      fightLogs.push(`Poción consumida: oponente sufre ${bonusOpponentDamage} daños (escudos actuales del Automa).`);
+    }
+
     const extraCombo =
       Boolean(card.attackBombExtraCombo && useBombs && consumables.bombs > 0);
 
@@ -479,6 +502,7 @@ export default function App() {
       totalShield,
       fightLogs,
       extraCombo,
+      bonusOpponentDamage,
     };
   };
 
@@ -494,6 +518,7 @@ export default function App() {
     const allFightLogs: string[] = [];
     let lastDamage = 0;
     let lastShield = 0;
+    let lastBonusOpponentDamage = 0;
     let lastCard: ChallengeCard | null = null;
 
     const runAttack = () => {
@@ -505,6 +530,7 @@ export default function App() {
       discard = result.discard;
       lastDamage = result.totalDamage;
       lastShield = result.totalShield;
+      lastBonusOpponentDamage += result.bonusOpponentDamage;
       lastCard = card;
       allFightLogs.push(
         `Ataque (${card.id}): ${result.totalDamage} daño, ${result.totalShield} escudo. Restan ${deck.length}.`,
@@ -537,6 +563,7 @@ export default function App() {
       revealedCard: lastCard,
       damageInflictedThisTurn: lastDamage,
       shieldsActiveThisTurn: lastShield,
+      bonusOpponentDamageThisTurn: lastBonusOpponentDamage,
       fightLog: [...allFightLogs, ...prev.fightLog],
     }));
   };

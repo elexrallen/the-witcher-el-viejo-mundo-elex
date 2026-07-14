@@ -559,9 +559,169 @@ const CHA_14: ChallengeCard = {
   imagePath: '/cards/cha-14.png',
 };
 
+// ==========================================
+// CARTA #9 — Nivel III
+// ==========================================
+
+const ACT_9: ActionCard = {
+  id: 'act-9',
+  level: 3,
+  cardNumber: 9,
+  movement: 1,
+  destination: 'Casilla 9',
+  destinationSlot: 9,
+  tieBreakDirection: 'up',
+  attributeBonus: 'defense_highest',
+  defenseBonusRaisesShield: true,
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  phaseIIPriority: 'meditate_or_monster',
+  combatRequirement: 'Meditar si puede; si no, monstruo si tienes < 3 trofeos',
+  combatCondition: { type: 'trophies_lt', value: 3 },
+  marketDiscards: [3, 5],
+  imagePath: '/cards/act-9.png',
+};
+
+const CHA_9: ChallengeCard = {
+  id: 'cha-9',
+  level: 3,
+  cardNumber: 9,
+  damage: 3,
+  shields: 1,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'red', 'green'],
+  pokerKeepValues: [3, 1, 1, 6, 6],
+  pokerPattern: 'Conservar 3, 1, 1, 6 y 6.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-9.png',
+};
+
+// ==========================================
+// CARTA #17 — Nivel III
+// ==========================================
+
+const ACT_17: ActionCard = {
+  id: 'act-17',
+  level: 3,
+  cardNumber: 17,
+  movement: 4,
+  destination: 'Casilla 17',
+  destinationSlot: 17,
+  tieBreakDirection: 'down',
+  attributeBonus: 'attack_highest',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  phaseIIPriority: 'meditate_or_monster',
+  combatRequirement: 'Meditar si puede; si no, monstruo si tienes < 3 trofeos',
+  combatCondition: { type: 'trophies_lt', value: 3 },
+  marketDiscards: [1],
+  imagePath: '/cards/act-17.png',
+};
+
+const CHA_17: ChallengeCard = {
+  id: 'cha-17',
+  level: 3,
+  cardNumber: 17,
+  damage: 4,
+  shields: 0,
+  consumableSlot: false,
+  attackBombExtraCombo: true,
+  schoolSymbol: false,
+  reaction: null,
+  greenMutagen: true,
+  pokerKeepValues: [2, 2, 5, 5, 5],
+  pokerPattern: 'Conservar 2, 2, 5, 5 y 5.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-17.png',
+};
+
+// ==========================================
+// CARTA #7 — Nivel III (impreso 17, destino casilla 14)
+// ==========================================
+
+const ACT_7: ActionCard = {
+  id: 'act-7',
+  level: 3,
+  cardNumber: 17,
+  movement: 4,
+  destination: 'Casilla 14',
+  destinationSlot: 14,
+  tieBreakDirection: 'up',
+  attributeBonus: 'alchemy',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: true,
+  trailType: 'terrain',
+  phaseIIPriority: 'meditate_or_monster',
+  combatRequirement: 'Meditar si puede; si no, monstruo si tienes < 3 trofeos',
+  combatCondition: { type: 'trophies_lt', value: 3 },
+  marketDiscards: [6],
+  imagePath: '/cards/act-7.png',
+};
+
+const CHA_7: ChallengeCard = {
+  id: 'cha-7',
+  level: 3,
+  cardNumber: 17,
+  damage: 3,
+  shields: 0,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['blue', 'red', 'green'],
+  pokerKeepValues: [1, 2, 3, 3, 3],
+  pokerPattern: 'Conservar 1, 2, 3, 3 y 3.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-7.png',
+};
+
+// ==========================================
+// CARTA #4 — Nivel III
+// ==========================================
+
+const ACT_4: ActionCard = {
+  id: 'act-4',
+  level: 3,
+  cardNumber: 4,
+  movement: 4,
+  destination: 'Casilla 4',
+  destinationSlot: 4,
+  tieBreakDirection: 'down',
+  attributeBonus: 'special_highest',
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  phaseIIPriority: 'meditate_or_monster',
+  combatRequirement: 'Meditar si puede; si no, monstruo si tienes < 3 trofeos',
+  combatCondition: { type: 'trophies_lt', value: 3 },
+  marketDiscards: [4, 5],
+  imagePath: '/cards/act-4.png',
+};
+
+const CHA_4: ChallengeCard = {
+  id: 'cha-4',
+  level: 3,
+  cardNumber: 4,
+  damage: 0,
+  shields: 3,
+  consumableSlot: false,
+  attackPotionOpponentShieldDamage: true,
+  schoolSymbol: false,
+  reaction: null,
+  mutagens: ['red', 'blue'],
+  pokerKeepValues: [4, 6, 1, 3, 3],
+  pokerPattern: 'Conservar 4, 6, 1, 3 y 3.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-4.png',
+};
+
 /** Todas las cartas de Acción catalogadas (orden de inserción). */
 export const ACTION_CARDS: ActionCard[] = [
-  ACT_1, ACT_2, ACT_3, ACT_5, ACT_6, ACT_8, ACT_10, ACT_11, ACT_12, ACT_13, ACT_14, ACT_15, ACT_16, ACT_18,
+  ACT_1, ACT_2, ACT_3, ACT_4, ACT_5, ACT_6, ACT_7, ACT_8, ACT_9, ACT_10, ACT_11, ACT_12, ACT_13, ACT_14, ACT_15, ACT_16, ACT_17, ACT_18,
 ];
 
 /** Todas las cartas de Desafío catalogadas (orden de inserción). */
@@ -573,7 +733,9 @@ export const CHALLENGE_CARDS: ChallengeCard[] = [
  * Cartas de Desafío nivel 3 apartadas del mazo inicial.
  * Se añaden al mazo cuando el Automa medita o gana trofeos.
  */
-export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [CHA_3, CHA_14];
+export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [
+  CHA_3, CHA_4, CHA_7, CHA_9, CHA_14, CHA_17,
+];
 
 export function getCatalogStats() {
   return {

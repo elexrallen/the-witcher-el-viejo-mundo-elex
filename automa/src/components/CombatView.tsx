@@ -171,6 +171,11 @@ export default function CombatView({
                     <span className="text-red-400 font-black text-center">{combat.damageInflictedThisTurn} Daño</span>
                     <span className="text-sky-400 font-black text-center">+{combat.shieldsActiveThisTurn} Escudo</span>
                   </div>
+                  {(combat.bonusOpponentDamageThisTurn ?? 0) > 0 && (
+                    <p className="text-amber-400 text-xs font-mono text-center">
+                      +{combat.bonusOpponentDamageThisTurn} daño al oponente (poción)
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="p-6 text-center text-zinc-500 text-sm">

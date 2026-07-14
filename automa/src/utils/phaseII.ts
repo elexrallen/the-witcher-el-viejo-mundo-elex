@@ -8,6 +8,12 @@ export function canMeditate(automa: AutomaState): boolean {
 }
 
 export function inferPhaseIIAction(card: ActionCard, automa: AutomaState): PhaseIIAction {
+  if (card.phaseIIPriority === "meditate_or_monster") {
+    if (canMeditate(automa)) return "meditate";
+    if (meetsCombatRequirement(card, automa)) return "combat";
+    return "explore";
+  }
+
   if (canMeditate(automa)) {
     return "meditate";
   }
@@ -20,6 +26,16 @@ export function inferPhaseIIAction(card: ActionCard, automa: AutomaState): Phase
 }
 
 export function getPhaseIIHint(card: ActionCard, automa: AutomaState): string {
+  if (card.phaseIIPriority === "meditate_or_monster") {
+    if (canMeditate(automa)) {
+      return "Prioridad: Meditar (atributo en nivel 5 y trofeo disponible).";
+    }
+    if (meetsCombatRequirement(card, automa)) {
+      return `Si no puede meditar: combate monstruo si ${formatCombatCondition(card).toLowerCase()}.`;
+    }
+    return `No medita ni combate (${formatCombatCondition(card)}). El Automa explora.`;
+  }
+
   if (canMeditate(automa)) {
     return "Prioridad: Meditar (atributo en nivel 5 y trofeo disponible).";
   }

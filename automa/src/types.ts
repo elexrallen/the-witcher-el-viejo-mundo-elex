@@ -77,6 +77,8 @@ export interface ActionCard {
   combatCondition?: CombatCondition;
   /** Prioridad en Fase II: brujo/automa antes que monstruo. */
   combatPriority?: CombatPriority;
+  /** Meditar si puede; si no, combate con monstruo si cumple combatCondition. */
+  phaseIIPriority?: 'meditate_or_monster';
   marketDiscards: number[];
   /** Ruta a imagen de la carta física (opcional). */
   imagePath?: string;
@@ -101,6 +103,8 @@ export interface ChallengeCard {
   attackBombExtraCombo?: boolean;
   /** Gasta 1 poción: baraja la carta superior del descarte en el mazo de combate. */
   attackPotionShuffleDiscardTop?: boolean;
+  /** Gasta 1 poción: el oponente sufre daño igual a los escudos activos del Automa. */
+  attackPotionOpponentShieldDamage?: boolean;
   schoolSymbol: boolean;   // Triggers School Bonus
   reaction: {
     type: 'shield' | 'damage' | 'shield_damage' | 'none';
@@ -168,4 +172,6 @@ export interface CombatState {
     effectDescription: string;
   } | null;
   fightLog: string[];
+  /** Daño extra infligido al oponente por efectos de carta (p. ej. poción → escudos). */
+  bonusOpponentDamageThisTurn?: number;
 }

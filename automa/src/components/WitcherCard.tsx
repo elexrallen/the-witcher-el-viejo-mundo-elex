@@ -110,6 +110,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                     case 'lowest_defense': return 'Bajo +1 y Defensa +1';
                     case 'lowest_alchemy': return 'Bajo +1 y Alquimia +1';
                     case 'highest_special': return 'Subir Alto y Especial +1';
+                    case 'defense_highest': return 'Defensa +1 y Atributo más Alto +1';
+                    case 'attack_highest': return 'Ataque +1 y Atributo más Alto +1';
+                    case 'special_highest': return 'Especial +1 y Atributo más Alto +1';
                     case 'alchemy_any': return 'Alquimia y Elegir +1';
                     default: return `Subir ${actCard.attributeBonus}`;
                   }
@@ -274,7 +277,8 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
           chaCard.attackDiscardTopCard ||
           chaCard.attackBombDiscardTopDamage ||
           chaCard.attackBombExtraCombo ||
-          chaCard.attackPotionShuffleDiscardTop) && (
+          chaCard.attackPotionShuffleDiscardTop ||
+          chaCard.attackPotionOpponentShieldDamage) && (
           <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 mb-3 text-xs font-sans text-amber-200/90 space-y-1">
             <div className="text-[9px] uppercase font-mono tracking-wider text-amber-400 font-bold">Efecto de ataque</div>
             {chaCard.attackPotionForDamage && (
@@ -291,6 +295,9 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             )}
             {chaCard.attackPotionShuffleDiscardTop && (
               <p>Si tiene poción: gasta 1 y baraja la carta superior del descarte en el mazo de combate.</p>
+            )}
+            {chaCard.attackPotionOpponentShieldDamage && (
+              <p>Si tiene poción: gasta 1 → el oponente sufre daño igual a los escudos activos del Automa.</p>
             )}
           </div>
         )}
