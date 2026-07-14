@@ -1,697 +1,187 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Catálogo de cartas del Automa — se construye carta a carta desde las físicas.
+ * Cada entrada corresponde a una carta real verificada (imagen + reglas).
  */
 
 import { ActionCard, ChallengeCard } from '../types';
 
 // ==========================================
-// ACTION CARDS (Mazo de Acción del Automa)
+// CARTA #2 — Genérica nivel I (primera del catálogo)
 // ==========================================
 
-export const GENERIC_ACTION_CARDS: ActionCard[] = [
-  {
-    id: 'act-2',
-    level: 'generic',
-    movement: 4,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'attack',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [1, 6]
-  },
-  {
-    id: 'act-15',
-    level: 'generic',
-    movement: 2,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'defense',
-    potionBonus: false,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [1, 5]
-  },
-  {
-    id: 'act-8',
-    level: 'generic',
-    movement: 1,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'alchemy',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [3, 4]
-  }
-];
+const ACT_2: ActionCard = {
+  id: 'act-2',
+  level: 'generic',
+  cardNumber: 2,
+  movement: 4,
+  destination: 'Casilla 2',
+  destinationSlot: 2,
+  tieBreakDirection: 'up',
+  attributeBonus: 'special',
+  potionBonus: true,
+  bombBonus: false,
+  trailBonus: true,
+  trailType: 'terrain',
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [6],
+  imagePath: '/cards/act-2.png',
+};
 
-export const LEVEL_1_ACTION_CARDS: ActionCard[] = [
-  {
-    id: 'act-11',
-    level: 1,
-    movement: 3,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'special',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [2, 5]
-  },
-  {
-    id: 'act-5',
-    level: 1,
-    movement: 3,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'attack',
-    potionBonus: false,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [1, 3, 5]
-  },
-  {
-    id: 'act-16',
-    level: 1,
-    movement: 4,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'defense',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes ≥ 2 Trofeos',
-    marketDiscards: [2, 6]
-  },
-  {
-    id: 'act-19',
-    level: 1,
-    movement: 99,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'attack_defense',
-    potionBonus: false,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes < 1 Trofeo (0 trofeos)',
-    marketDiscards: [2]
-  },
-  {
-    id: 'act-20',
-    level: 1,
-    movement: 99,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'defense_special_any',
-    potionBonus: false,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes < 1 Trofeo (0 trofeos)',
-    marketDiscards: [2, 3]
-  },
-  {
-    id: 'act-21',
-    level: 1,
-    movement: 99,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'attack_alchemy',
-    potionBonus: false,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes < 1 Trofeo (0 trofeos)',
-    marketDiscards: [4]
-  }
-];
-
-export const LEVEL_2_ACTION_CARDS: ActionCard[] = [
-  {
-    id: 'act-1',
-    level: 2,
-    movement: 3,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'attack',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [1, 4]
-  },
-  {
-    id: 'act-6',
-    level: 2,
-    movement: 3,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'defense',
-    potionBonus: false,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [2, 5]
-  },
-  {
-    id: 'act-10',
-    level: 2,
-    movement: 3,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'alchemy',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [3, 6]
-  },
-  {
-    id: 'act-12',
-    level: 2,
-    movement: 4,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'special',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [1, 5]
-  },
-  {
-    id: 'act-13',
-    level: 2,
-    movement: 2,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'attack',
-    potionBonus: false,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes ≥ 2 Trofeos',
-    marketDiscards: [2, 4]
-  },
-  {
-    id: 'act-18',
-    level: 2,
-    movement: 3,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'defense',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [3, 4, 5]
-  },
-  {
-    id: 'act-22',
-    level: 2,
-    movement: 99,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'highest',
-    potionBonus: false,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes ≤ 2 Trofeos',
-    marketDiscards: [3, 4]
-  },
-  {
-    id: 'act-23',
-    level: 2,
-    movement: 99,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'lowest',
-    potionBonus: true,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes ≤ 2 Trofeos',
-    marketDiscards: [1]
-  },
-  {
-    id: 'act-24',
-    level: 2,
-    movement: 99,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'special',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate si tienes ≤ 2 Trofeos',
-    marketDiscards: [2]
-  }
-];
-
-export const LEVEL_3_ACTION_CARDS: ActionCard[] = [
-  {
-    id: 'act-3',
-    level: 3,
-    movement: 3,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'alchemy',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [1, 3, 6]
-  },
-  {
-    id: 'act-4',
-    level: 3,
-    movement: 4,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'special',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [2, 4, 6]
-  },
-  {
-    id: 'act-7',
-    level: 3,
-    movement: 3,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'attack',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 2 Trofeos',
-    marketDiscards: [1, 2, 5]
-  },
-  {
-    id: 'act-9',
-    level: 3,
-    movement: 1,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'defense',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [3, 5, 6]
-  },
-  {
-    id: 'act-14',
-    level: 3,
-    movement: 4,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'alchemy',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate si tienes ≥ 1 Trofeo',
-    marketDiscards: [1, 3, 5]
-  },
-  {
-    id: 'act-17',
-    level: 3,
-    movement: 4,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'special',
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: true,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [2, 4, 5, 6]
-  },
-  {
-    id: 'act-25',
-    level: 3,
-    movement: 99,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: 'highest_special',
-    potionBonus: false,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [4]
-  },
-  {
-    id: 'act-26',
-    level: 3,
-    movement: 99,
-    destination: 'Monstruo de nivel más alto',
-    attributeBonus: 'alchemy_any',
-    potionBonus: false,
-    bombBonus: false,
-    trailBonus: false,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [3]
-  },
-  {
-    id: 'act-27',
-    level: 3,
-    movement: 99,
-    destination: 'Monstruo de nivel más bajo',
-    attributeBonus: null,
-    potionBonus: true,
-    bombBonus: true,
-    trailBonus: false,
-    combatRequirement: 'Combate siempre (Trofeos ≥ 0)',
-    marketDiscards: [1, 2]
-  }
-];
-
+const CHA_2: ChallengeCard = {
+  id: 'cha-2',
+  level: 'generic',
+  cardNumber: 2,
+  damage: 2,
+  shields: 0,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [1, 2, 3, 4, 4],
+  pokerPattern: 'Conservar 1, 2, 3, 4 y 4.',
+  redMutagen: true,
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-2.png',
+};
 
 // ==========================================
-// CHALLENGE CARDS (Mazo de Desafío y Combate)
+// CARTA #15 — Genérica nivel I
 // ==========================================
 
-export const GENERIC_CHALLENGE_CARDS: ChallengeCard[] = [
-  {
-    id: 'cha-2',
-    level: 'generic',
-    damage: 2,
-    shields: 1,
-    consumableSlot: false,
-    schoolSymbol: false,
-    reaction: null,
-    pokerPattern: 'Mantener valores consecutivos.'
-  },
-  {
-    id: 'cha-15',
-    level: 'generic',
-    damage: 2,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener Parejas.'
-  },
-  {
-    id: 'cha-8',
-    level: 'generic',
-    damage: 2,
-    shields: 1,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'shield',
-      value: 3,
-      description: 'Defensa de Aard: Sube tu nivel de escudo al máximo de inmediato.'
-    },
-    pokerPattern: 'Mantener Parejas o Dobles Parejas.'
-  }
-];
+const ACT_15: ActionCard = {
+  id: 'act-15',
+  level: 'generic',
+  cardNumber: 15,
+  movement: 2,
+  destination: 'Casilla 15',
+  destinationSlot: 15,
+  tieBreakDirection: 'down',
+  attributeBonus: 'lowest',
+  potionBonus: false,
+  bombBonus: true,
+  bombRequiresModule: true,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [1, 5],
+  imagePath: '/cards/act-15.png',
+};
 
-export const LEVEL_1_CHALLENGE_CARDS: ChallengeCard[] = [
-  {
-    id: 'cha-11',
-    level: 1,
-    damage: 1,
-    shields: 2,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'shield',
-      value: 1,
-      description: 'Esquiva Rápida: Absorbe 1 de daño entrante.'
-    },
-    pokerPattern: 'Relanzar todo excepto el dado más alto.'
-  },
-  {
-    id: 'cha-5',
-    level: 1,
-    damage: 2,
-    shields: 1,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'damage',
-      value: 2,
-      description: 'Barrera de Quen Explosiva: El oponente sufre 2 daños directos inmediatamente.'
-    },
-    pokerPattern: 'Mantener Parejas, Tríos o Póker.'
-  },
-  {
-    id: 'cha-16',
-    level: 1,
-    damage: 2,
-    shields: 2,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener valores consecutivos para intentar Escalera.'
-  },
-  {
-    id: 'cha-19',
-    level: 1,
-    damage: 3,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'damage',
-      value: 2,
-      description: 'Ataque de Represalia: El oponente sufre 2 daños directos adicionales de inmediato.'
-    },
-    pokerPattern: 'Intentar Póker: Mantener cuatro dados iguales de valor 5.'
-  },
-  {
-    id: 'cha-20',
-    level: 1,
-    damage: 1,
-    shields: 2,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'damage',
-      value: 2,
-      description: 'Efecto de Alquimia: El Automa consume 1 poción para infligir 2 daños directos adicionales de inmediato.'
-    },
-    pokerPattern: 'Intentar Póker: Mantener cuatro dados iguales de valor 5.'
-  },
-  {
-    id: 'cha-21',
-    level: 1,
-    damage: 2,
-    shields: 1,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Descarte de Combate: El oponente debe descartar 2 cartas de su mano de inmediato.'
-    },
-    pokerPattern: 'Intentar Escalera: Mantener valores consecutivos de 1 a 5.'
-  }
-];
+const CHA_15: ChallengeCard = {
+  id: 'cha-15',
+  level: 'generic',
+  cardNumber: 15,
+  damage: 2,
+  shields: 0,
+  consumableSlot: true,
+  potionDamageBonus: 1,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [5, 3, 3, 4, 4],
+  pokerPattern: 'Conservar 5, 3, 3, 4 y 4.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-15.png',
+};
 
-export const LEVEL_2_CHALLENGE_CARDS: ChallengeCard[] = [
-  {
-    id: 'cha-1',
-    level: 2,
-    damage: 2,
-    shields: 2,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener Tríos.'
-  },
-  {
-    id: 'cha-6',
-    level: 2,
-    damage: 2,
-    shields: 1,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'shield_damage',
-      value: 2,
-      description: 'Bloqueo Activo Quen: Cancela 1 punto de daño e inflige 1 daño de contragolpe.'
-    },
-    pokerPattern: 'Mantener valores consecutivos.'
-  },
-  {
-    id: 'cha-10',
-    level: 2,
-    damage: 2,
-    shields: 1,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'shield',
-      value: 2,
-      description: 'Esquiva Desafiante Aard: Cancela hasta 2 puntos de daño entrante.'
-    },
-    pokerPattern: 'Mantener Parejas de valor alto.'
-  },
-  {
-    id: 'cha-12',
-    level: 2,
-    damage: 2,
-    shields: 1,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Relanzar todo excepto el dado más alto.'
-  },
-  {
-    id: 'cha-13',
-    level: 2,
-    damage: 2,
-    shields: 1,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Intentar Full House: Mantener parejas/tríos.'
-  },
-  {
-    id: 'cha-18',
-    level: 2,
-    damage: 2,
-    shields: 1,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener Parejas, relanzar el resto.'
-  },
-  {
-    id: 'cha-22',
-    level: 2,
-    damage: 3,
-    shields: 1,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'damage',
-      value: 2,
-      description: 'Contraataque Fulminante: El oponente sufre 2 daños directos de inmediato.'
-    },
-    pokerPattern: 'Intentar Póker o Escalera.'
-  },
-  {
-    id: 'cha-23',
-    level: 2,
-    damage: 4,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Intimidación: El oponente debe descartar 2 cartas de su mano de inmediato.'
-    },
-    pokerPattern: 'Intentar Escalera: Conservar secuencia consecutiva.'
-  },
-  {
-    id: 'cha-24',
-    level: 2,
-    damage: 2,
-    shields: 2,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Robo de Combate: El Automa roba 1 carta de combate de su mazo de inmediato.'
-    },
-    pokerPattern: 'Intentar Full House: Mantener parejas y tríos.'
-  }
-];
+// ==========================================
+// CARTA #8 — Genérica nivel I
+// ==========================================
 
-export const LEVEL_3_CHALLENGE_CARDS: ChallengeCard[] = [
-  {
-    id: 'cha-3',
-    level: 3,
-    damage: 3,
-    shields: 2,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener valores consecutivos.'
+const ACT_8: ActionCard = {
+  id: 'act-8',
+  level: 'generic',
+  cardNumber: 8,
+  movement: 1,
+  destination: 'Casilla 8',
+  destinationSlot: 8,
+  tieBreakDirection: 'up',
+  attributeBonus: 'lowest_defense',
+  defenseBonusRaisesShield: true,
+  potionBonus: false,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [4, 6],
+  imagePath: '/cards/act-8.png',
+};
+
+const CHA_8: ChallengeCard = {
+  id: 'cha-8',
+  level: 'generic',
+  cardNumber: 8,
+  damage: 1,
+  shields: 2,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: {
+    type: 'shield',
+    value: 0,
+    raiseShieldToMax: true,
+    description: 'Si esta carta es descartada por un ataque enemigo, sube el nivel de escudo hasta tu Defensa actual.',
   },
-  {
-    id: 'cha-7',
-    level: 3,
-    damage: 3,
-    shields: 2,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'shield',
-      value: 3,
-      description: 'Barrera Infranqueable: Absorbe hasta 3 de daño entrante.'
-    },
-    pokerPattern: 'Mantener Repóker (5 iguales) o Full House.'
-  },
-  {
-    id: 'cha-9',
-    level: 3,
-    damage: 3,
-    shields: 3,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener Full House, tríos o parejas.'
-  },
-  {
-    id: 'cha-17',
-    level: 3,
-    damage: 3,
-    shields: 2,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener consecutivos.'
-  },
-  {
-    id: 'cha-14',
-    level: 3,
-    damage: 3,
-    shields: 3,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: null,
-    pokerPattern: 'Mantener consecutivos.'
-  },
-  {
-    id: 'cha-4',
-    level: 3,
-    damage: 3,
-    shields: 2,
-    consumableSlot: false,
-    schoolSymbol: true,
-    reaction: {
-      type: 'damage',
-      value: 3,
-      description: 'Reflejo Rúnico Supremo: Devuelve daño directo igual a los escudos actuales del Automa.'
-    },
-    pokerPattern: 'Mantener consecutivos para intentar Escalera.'
-  },
-  {
-    id: 'cha-25',
-    level: 3,
-    damage: 3,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Especial 1: Activa el efecto Especial 1 de la Cacería Legendaria o la expansión correspondiente.'
-    },
-    pokerPattern: 'Intentar Escalera Mayor.'
-  },
-  {
-    id: 'cha-26',
-    level: 3,
-    damage: 2,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Especial 2: Activa el efecto Especial 2 de la Cacería Legendaria o la expansión correspondiente.'
-    },
-    pokerPattern: 'Intentar Escalera de valor alto.'
-  },
-  {
-    id: 'cha-27',
-    level: 3,
-    damage: 3,
-    shields: 0,
-    consumableSlot: true,
-    schoolSymbol: true,
-    reaction: {
-      type: 'none',
-      value: 0,
-      description: 'Especial 3: Activa el efecto Especial 3 de la Cacería Legendaria o la expansión correspondiente.'
-    },
-    pokerPattern: 'Intentar Full House: Mantener parejas y tríos.'
-  }
-];
+  pokerKeepValues: [1, 5, 2, 2, 2],
+  pokerPattern: 'Conservar 1, 5, 2, 2 y 2.',
+  playerMonsterAttack: 'mordisco',
+  imagePath: '/cards/cha-8.png',
+};
+
+// ==========================================
+// CARTA #11 — Genérica nivel I
+// ==========================================
+
+const ACT_11: ActionCard = {
+  id: 'act-11',
+  level: 'generic',
+  cardNumber: 11,
+  movement: 3,
+  destination: 'Casilla 11',
+  destinationSlot: 11,
+  tieBreakDirection: 'down',
+  attributeBonus: 'lowest_alchemy',
+  potionBonus: true,
+  bombBonus: false,
+  trailBonus: false,
+  combatRequirement: 'Combatir monstruo en la localización si tienes < 1 trofeo',
+  combatCondition: { type: 'trophies_lt', value: 1 },
+  marketDiscards: [3],
+  imagePath: '/cards/act-11.png',
+};
+
+const CHA_11: ChallengeCard = {
+  id: 'cha-11',
+  level: 'generic',
+  cardNumber: 11,
+  damage: 3,
+  shields: 0,
+  consumableSlot: false,
+  schoolSymbol: false,
+  reaction: null,
+  pokerKeepValues: [1, 2, 3, 4, 6],
+  pokerPattern: 'Conservar 1, 2, 3, 4 y 6.',
+  playerMonsterAttack: 'embestida',
+  imagePath: '/cards/cha-11.png',
+};
+
+/** Todas las cartas de Acción catalogadas (orden de inserción). */
+export const ACTION_CARDS: ActionCard[] = [ACT_2, ACT_8, ACT_11, ACT_15];
+
+/** Todas las cartas de Desafío catalogadas (orden de inserción). */
+export const CHALLENGE_CARDS: ChallengeCard[] = [CHA_2, CHA_8, CHA_11, CHA_15];
+
+/**
+ * Cartas de Desafío nivel 3 apartadas del mazo inicial.
+ * Se añaden al mazo cuando el Automa medita o gana trofeos.
+ */
+export const LEVEL_3_CHALLENGE_RESERVE: ChallengeCard[] = [];
+
+export function getCatalogStats() {
+  return {
+    actionCount: ACTION_CARDS.length,
+    challengeCount: CHALLENGE_CARDS.length,
+    reserveCount: LEVEL_3_CHALLENGE_RESERVE.length,
+  };
+}

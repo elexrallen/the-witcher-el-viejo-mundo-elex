@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { ActionCard, ChallengeCard, WitcherSchool } from '../types';
-import { formatMovementPM } from '../utils/actionCard';
+import { formatMovementPM, formatDestination } from '../utils/actionCard';
 import { WitcherIcon, SchoolIcon } from './WitcherIcon';
 
 interface WitcherCardProps {
@@ -46,6 +46,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         id={`action-card-${actCard.id}`}
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 to-amber-500"></div>
+        {actCard.imagePath && !compact && (
+          <img
+            src={actCard.imagePath}
+            alt={`Carta de acción ${actCard.cardNumber ?? actCard.id}`}
+            className="w-full rounded-lg mb-3 border border-zinc-800 object-cover max-h-40"
+          />
+        )}
         {/* Card Header */}
         <div className="flex items-center justify-between mb-3 border-b border-zinc-800 pb-2">
           <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getLevelBadgeColor(actCard.level)}`}>
@@ -60,7 +67,12 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             <WitcherIcon name="compass" size={22} className="text-orange-500 shrink-0" />
             <div>
               <div className="text-[9px] uppercase font-mono tracking-wider text-zinc-500 font-bold">Viajar hacia</div>
-              <div className="text-sm font-display font-bold text-white tracking-tight">{actCard.destination}</div>
+              <div className="text-sm font-display font-bold text-white tracking-tight">{formatDestination(actCard)}</div>
+              {actCard.tieBreakDirection && (
+                <div className="text-[9px] font-mono text-zinc-500 mt-0.5">
+                  Desempate: {actCard.tieBreakDirection === 'up' ? '↑' : actCard.tieBreakDirection === 'down' ? '↓' : actCard.tieBreakDirection === 'left' ? '←' : '→'}
+                </div>
+              )}
             </div>
           </div>
           <div className="bg-orange-600 text-white px-2.5 py-1 rounded-lg flex flex-col items-center justify-center shrink-0 min-w-[36px]">
@@ -93,6 +105,8 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                     case 'attack_alchemy': return 'Ataque y Alquimia +1';
                     case 'highest': return 'Subir Atributo más Alto';
                     case 'lowest': return 'Subir Atributo más Bajo';
+                    case 'lowest_defense': return 'Bajo +1 y Defensa +1';
+                    case 'lowest_alchemy': return 'Bajo +1 y Alquimia +1';
                     case 'highest_special': return 'Subir Alto y Especial +1';
                     case 'alchemy_any': return 'Alquimia y Elegir +1';
                     default: return `Subir ${actCard.attributeBonus}`;
@@ -118,7 +132,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
               <WitcherIcon name="bomb" size={14} className="shrink-0" />
-              <span className="font-sans">{actCard.bombBonus ? 'Coger Bomba' : 'Sin Bomba'}</span>
+              <span className="font-sans">
+                {actCard.bombBonus
+                  ? actCard.bombRequiresModule
+                    ? 'Coger Bomba (módulo)'
+                    : 'Coger Bomba'
+                  : 'Sin Bomba'}
+              </span>
             </div>
 
             {/* Monster Trail */}
@@ -128,7 +148,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
                 : 'bg-zinc-900/20 border-transparent text-zinc-600'
             }`}>
               <WitcherIcon name="trail" size={14} className="shrink-0" />
-              <span className="font-sans">{actCard.trailBonus ? 'Obtener Rastro' : 'Sin Rastro'}</span>
+              <span className="font-sans">
+                {actCard.trailBonus
+                  ? actCard.trailType === 'terrain'
+                    ? 'Rastro del terreno actual'
+                    : 'Obtener Rastro'
+                  : 'Sin Rastro'}
+              </span>
             </div>
           </div>
         </div>
@@ -168,6 +194,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         id={`challenge-card-${chaCard.id}`}
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-orange-500"></div>
+        {chaCard.imagePath && !compact && (
+          <img
+            src={chaCard.imagePath}
+            alt={`Carta de desafío ${chaCard.cardNumber ?? chaCard.id}`}
+            className="w-full rounded-lg mb-3 border border-zinc-800 object-cover max-h-40"
+          />
+        )}
         {/* Card Header */}
         <div className="flex items-center justify-between mb-3 border-b border-zinc-800 pb-2">
           <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getLevelBadgeColor(chaCard.level)}`}>
@@ -216,7 +249,13 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
               : 'bg-zinc-900/20 border-transparent text-zinc-650'
           }`}>
             <WitcherIcon name="potion" size={14} className="text-orange-400 shrink-0" />
-            <span className="font-sans">{chaCard.consumableSlot ? 'Usa Poción' : 'Sin Poción'}</span>
+            <span className="font-sans">
+              {chaCard.consumableSlot
+                ? chaCard.potionDamageBonus != null
+                  ? `Poción: +${chaCard.potionDamageBonus} daño`
+                  : 'Usa Poción'
+                : 'Sin Poción'}
+            </span>
           </div>
         </div>
 
@@ -241,9 +280,27 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
         )}
 
         {/* Poker pattern */}
-        <div className="border-t border-zinc-800 pt-2.5 text-center text-[10px] mt-auto">
+        <div className="border-t border-zinc-800 pt-2.5 text-center text-[10px] mt-auto space-y-1">
+          {chaCard.redMutagen && (
+            <div className="text-red-400 font-mono uppercase text-[8px] tracking-wider font-bold">Mutágeno rojo en combate</div>
+          )}
+          {chaCard.playerMonsterAttack && (
+            <div className="text-sky-400 font-mono uppercase text-[8px] tracking-wider font-bold">
+              Monstruo ataca: {chaCard.playerMonsterAttack}
+            </div>
+          )}
           <span className="text-zinc-500 font-mono block uppercase text-[8px] tracking-wider mb-0.5 font-bold">Póker de Dados</span>
-          <span className="text-zinc-300 font-sans italic font-medium">"{chaCard.pokerPattern}"</span>
+          {chaCard.pokerKeepValues ? (
+            <div className="flex justify-center gap-1">
+              {chaCard.pokerKeepValues.map((value, idx) => (
+                <span key={`${value}-${idx}`} className="bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5 font-mono text-xs text-zinc-200">
+                  {value}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <span className="text-zinc-300 font-sans italic font-medium">&ldquo;{chaCard.pokerPattern}&rdquo;</span>
+          )}
         </div>
       </div>
     );

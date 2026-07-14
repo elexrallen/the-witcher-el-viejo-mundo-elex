@@ -15,6 +15,8 @@ type SetupWizardProps = {
   onDifficultyChange: (d: Difficulty) => void;
   useDicePoker: boolean;
   onDicePokerChange: (v: boolean) => void;
+  useBombs: boolean;
+  onBombsChange: (v: boolean) => void;
   useMutagens: boolean;
   onMutagensChange: (v: boolean) => void;
   useSkellige: boolean;
@@ -27,38 +29,33 @@ type SetupWizardProps = {
 
 const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
 
-function DeckTable({ difficulty }: { difficulty: Difficulty }) {
-  const action =
-    difficulty === "easy"
-      ? ["Nivel I: 4 Gen. + 1 Esp.", "Nivel II: 4 Gen. + 1 Esp.", "Nivel III: 2 Gen. + 1 Esp.", "Total: 13 cartas"]
-      : difficulty === "intermediate"
-        ? ["Nivel I: 3 Gen. + 1 Esp.", "Nivel II: 3 Gen. + 1 Esp.", "Nivel III: 3 Gen. + 1 Esp.", "Total: 12 cartas"]
-        : ["Nivel I: 2 Gen. + 1 Esp.", "Nivel II: 2 Gen. + 1 Esp.", "Nivel III: 2 Gen. + 1 Esp.", "Total: 9 cartas"];
+import { getCatalogStats } from "../data/cards";
 
-  const challenge =
-    difficulty === "easy"
-      ? ["Nivel I: 2 Gen. + 2 Esp.", "Nivel II: 2 Gen. + 2 Esp.", "Nivel III: 1 Gen. + 2 Esp.", "Total: 11 cartas"]
-      : ["Nivel I: 3 Gen. + 2 Esp.", "Nivel II: 3 Gen. + 2 Esp.", "Nivel III: 0 Gen. + 2 Esp.", "Total: 12 cartas"];
+function DeckTable() {
+  const { actionCount, challengeCount, reserveCount } = getCatalogStats();
 
   return (
     <div className="setup-deck-table grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
         <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN</span>
         <ul className="space-y-0.5 text-zinc-400">
-          {action.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
+          <li>Cartas catalogadas: {actionCount}</li>
+          <li>Manual V1.4: 13 cartas por partida (cuando el catálogo esté completo)</li>
         </ul>
-        <p className="text-[10px] text-orange-400/80 mt-2">Baraja Lvl3 → Lvl2 → Lvl1 al apilar.</p>
+        <p className="text-[10px] text-orange-400/80 mt-2">
+          Por ahora se usa todo el catálogo disponible, barajado.
+        </p>
       </div>
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
         <span className="text-zinc-200 font-bold block mb-2">Mazo de DESAFÍO</span>
         <ul className="space-y-0.5 text-zinc-400">
-          {challenge.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
+          <li>Cartas catalogadas: {challengeCount}</li>
+          <li>Reserva nivel 3: {reserveCount}</li>
+          <li>Manual V1.4: 11–12 cartas por partida (cuando el catálogo esté completo)</li>
         </ul>
-        <p className="text-[10px] text-orange-400/80 mt-2">Aparta 3 cartas Lvl3 para trofeos.</p>
+        <p className="text-[10px] text-orange-400/80 mt-2">
+          Las cartas se añaden una a una desde las físicas.
+        </p>
       </div>
     </div>
   );
@@ -76,6 +73,8 @@ export default function SetupWizard(props: SetupWizardProps) {
     onDifficultyChange,
     useDicePoker,
     onDicePokerChange,
+    useBombs,
+    onBombsChange,
     useMutagens,
     onMutagensChange,
     useSkellige,
@@ -95,6 +94,7 @@ export default function SetupWizard(props: SetupWizardProps) {
 
   const modules = [
     { checked: useDicePoker, onChange: onDicePokerChange, icon: "dice" as const, title: "Póker de Dados", desc: "Rerolls con cartas del mazo Desafío." },
+    { checked: useBombs, onChange: onBombsChange, icon: "bomb" as const, title: "Bombas", desc: "Bonos de bomba en cartas de Acción y uso en combate (máx. 4)." },
     { checked: useMutagens, onChange: onMutagensChange, icon: "magic" as const, title: "Mutágenos y Debilidad", desc: "Mutaciones y debilitar monstruos con rastros." },
     { checked: useSkellige, onChange: onSkelligeChange, icon: "sail" as const, title: "Skellige", desc: "Islas, barcos y pista de Dagon." },
     { checked: useLegendaryHunt, onChange: onLegendaryHuntChange, icon: "legendary" as const, title: "Cacería Legendaria", desc: "Fichas de destrucción vs jefe legendario." },
@@ -192,7 +192,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                     </button>
                   ))}
                 </div>
-                <DeckTable difficulty={difficulty} />
+                <DeckTable />
               </div>
             )}
 
@@ -220,7 +220,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                   <p><strong className="text-orange-400">Escuela:</strong> {selectedSchool.name}</p>
                   <p><strong className="text-orange-400">Dificultad:</strong> {difficulty}</p>
                   <p><strong className="text-orange-400">Módulos:</strong>{" "}
-                    {[useDicePoker && "Póker", useMutagens && "Mutágenos", useSkellige && "Skellige", useLegendaryHunt && "Cacería"].filter(Boolean).join(", ") || "Ninguno"}
+                    {[useDicePoker && "Póker", useBombs && "Bombas", useMutagens && "Mutágenos", useSkellige && "Skellige", useLegendaryHunt && "Cacería"].filter(Boolean).join(", ") || "Ninguno"}
                   </p>
                 </div>
                 {!isMobile && <div className="flex justify-center"><SpecialSchoolCardComponent school={selectedSchool} /></div>}

@@ -19,6 +19,7 @@ export interface AutomaSnapshot {
   selectedSchoolId: WitcherSchoolId;
   difficulty: "easy" | "intermediate" | "difficult";
   useDicePoker: boolean;
+  useBombs: boolean;
   useMutagens: boolean;
   useSkellige: boolean;
   useLegendaryHunt: boolean;
@@ -59,6 +60,7 @@ export function createDefaultAutomaSnapshot(): AutomaSnapshot {
     selectedSchoolId: "wolf",
     difficulty: "intermediate",
     useDicePoker: true,
+    useBombs: false,
     useMutagens: false,
     useSkellige: false,
     useLegendaryHunt: false,
@@ -68,9 +70,10 @@ export function createDefaultAutomaSnapshot(): AutomaSnapshot {
       attributes: { attack: 1, defense: 1, alchemy: 1, special: 1 },
       trophies: 0,
       potions: 1,
-      bombs: 1,
+      bombs: 0,
       trails: { red: 0, blue: 0, green: 0, yellow: 0 },
       location: "Vizima (Temeria)",
+      currentTerrain: "yellow",
       mutagens: [],
       weaknesses: 0,
       destructionTokens: 0,
@@ -113,7 +116,8 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
     return {
       ...defaults,
       ...parsed,
-      automa: { ...defaults.automa, ...parsed.automa },
+      useBombs: parsed.useBombs ?? defaults.useBombs,
+      automa: { ...defaults.automa, ...parsed.automa, currentTerrain: parsed.automa?.currentTerrain ?? defaults.automa.currentTerrain },
       lockedAttributes: { ...defaults.lockedAttributes, ...parsed.lockedAttributes },
       combat: { ...defaults.combat, ...parsed.combat },
       actionDeck: parsed.actionDeck ?? defaults.actionDeck,

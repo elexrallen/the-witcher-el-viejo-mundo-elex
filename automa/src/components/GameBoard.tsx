@@ -26,6 +26,7 @@ type GameBoardProps = {
   bonusApplied: boolean;
   logs: string[];
   useDicePoker: boolean;
+  useBombs: boolean;
   useMutagens: boolean;
   useSkellige: boolean;
   useLegendaryHunt: boolean;
@@ -59,6 +60,7 @@ export default function GameBoard(props: GameBoardProps) {
   const boardProps = {
     automa: props.automa,
     lockedAttributes: props.lockedAttributes,
+    useBombs: props.useBombs,
     onUpdateAttribute: props.onUpdateAttribute,
     onAutoImprove: props.onAutoImprove,
     onAddTrophy: props.onAddTrophy,

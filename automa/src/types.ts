@@ -38,32 +38,69 @@ export interface WitcherSchool {
   specialCard?: SchoolSpecialCard;
 }
 
+export type TieBreakDirection = 'up' | 'down' | 'left' | 'right';
+export type TrailColor = 'red' | 'blue' | 'green' | 'yellow';
+export type TrailType = 'none' | 'random' | 'terrain';
+
+export type CombatCondition =
+  | { type: 'always' }
+  | { type: 'trophies_gte'; value: number }
+  | { type: 'trophies_lte'; value: number }
+  | { type: 'trophies_lt'; value: number };
+
 export interface ActionCard {
   id: string;
   level: 'generic' | 1 | 2 | 3;
+  cardNumber?: number;
   movement: number;
+  /** Texto legible del destino (p. ej. «Casilla 2» o «Monstruo de nivel más alto»). */
   destination: string;
+  /** Número de casilla impreso en la carta (1–6), si aplica. */
+  destinationSlot?: number;
+  /** Flecha de desempate de prioridad de movimiento. */
+  tieBreakDirection?: TieBreakDirection;
   attributeBonus: string | null;
+  /** Si true, al subir Defensa en Fase I el escudo en combate refleja el nivel de Defensa. */
+  defenseBonusRaisesShield?: boolean;
   potionBonus: boolean;
   bombBonus: boolean;
+  /** Si true, el bono de bomba solo aplica con el módulo de bombas activo. */
+  bombRequiresModule?: boolean;
   trailBonus: boolean;
+  /** random = color aleatorio; terrain = rastro del terreno de la localización actual. */
+  trailType?: TrailType;
   combatRequirement: string;
+  combatCondition?: CombatCondition;
   marketDiscards: number[];
+  /** Ruta a imagen de la carta física (opcional). */
+  imagePath?: string;
 }
 
 export interface ChallengeCard {
   id: string;
   level: 'generic' | 1 | 2 | 3;
+  cardNumber?: number;
   damage: number;
   shields: number;
   consumableSlot: boolean; // Triggers potion/bomb use
+  /** Daño extra al consumir poción con consumableSlot (por defecto +2, o +4 Mantícora). */
+  potionDamageBonus?: number;
   schoolSymbol: boolean;   // Triggers School Bonus
   reaction: {
     type: 'shield' | 'damage' | 'shield_damage' | 'none';
     value: number;
     description: string;
+    /** Sube el escudo activo al máximo al descartarse por daño (p. ej. cha-8). */
+    raiseShieldToMax?: boolean;
   } | null;
   pokerPattern: string;
+  /** Valores concretos a conservar en el póker (p. ej. [1,2,3,4,4]). */
+  pokerKeepValues?: number[];
+  /** Mutágeno rojo impreso en el margen de la carta. */
+  redMutagen?: boolean;
+  /** Símbolo de ataque del monstruo cuando el jugador combate (mordisco/embestida). */
+  playerMonsterAttack?: 'mordisco' | 'embestida' | null;
+  imagePath?: string;
 }
 
 export interface AutomaState {
@@ -85,6 +122,8 @@ export interface AutomaState {
     yellow: number;
   };
   location: string;
+  /** Terreno de la localización actual (para rastros de terreno en Fase I). */
+  currentTerrain: TrailColor;
   mutagens: string[]; // e.g. "red", "blue", "green"
   weaknesses: number; // monster weakness level (0-3)
   destructionTokens: number; // Legendary Hunt

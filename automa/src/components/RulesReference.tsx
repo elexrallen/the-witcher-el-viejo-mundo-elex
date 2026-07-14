@@ -25,10 +25,11 @@ export default function RulesReference() {
         "El juego se despliega siguiendo las reglas normales de 2 jugadores.",
         "Tablero de Brujo: Elige una Escuela para el Automa, coloca sus marcadores de Atributo (Ataque, Defensa, Alquimia y Especial) en el nivel 1. Coloca su miniatura en el mapa.",
         "Distribución de Monstruos: Coloca los monstruos aleatoriamente por el mapa de forma habitual.",
-        "Cartas del Automa: El Automa NO utiliza monedas de oro ni el mazo inicial normal. En su lugar, utiliza dos mazos propios: Mazo de Acción y Mazo de Desafío.",
-        "Dificultad Fácil: 4 cartas Genéricas + 4 cartas de Nivel 1 en cada mazo.",
-        "Dificultad Intermedio: 4 cartas Genéricas + 4 cartas de Nivel 2 en cada mazo.",
-        "Dificultad Difícil: 4 cartas Genéricas + 4 cartas de Nivel 3 en cada mazo.",
+        "Cartas del Automa: El Automa utiliza dos mazos propios: Mazo de Acción y Mazo de Desafío.",
+        "Catálogo en la app: Las cartas se incorporan una a una desde las físicas. Por ahora solo están las verificadas; al completar el catálogo se aplicará la selección por dificultad del manual.",
+        "Dificultad Fácil (manual): 4 cartas Genéricas + 4 cartas de Nivel 1 en cada mazo.",
+        "Dificultad Intermedio (manual): 4 cartas Genéricas + 4 cartas de Nivel 2 en cada mazo.",
+        "Dificultad Difícil (manual): 4 cartas Genéricas + 4 cartas de Nivel 3 en cada mazo.",
         "Ambos mazos se barajan por separado al comenzar el juego."
       ],
       tips: "Recuerda que las cartas sobrantes de nivel 3 que queden fuera se colocan cerca; las ganarás cuando el Automa medite o consiga trofeos."

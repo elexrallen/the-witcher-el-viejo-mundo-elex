@@ -6,7 +6,8 @@
 import React, { useState } from 'react';
 import { WitcherIcon } from './WitcherIcon';
 import { ChallengeCard } from '../types';
-import { GENERIC_CHALLENGE_CARDS } from '../data/cards';
+import { CHALLENGE_CARDS } from '../data/cards';
+import { applyPokerPattern } from '../utils/pokerPattern';
 
 interface DicePokerProps {
   challengeDeck: ChallengeCard[];
@@ -32,101 +33,16 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
   const handleDrawDecisionCard = () => {
     // Draw a card from challenge deck, or get a random generic one if none available
     let card = onDrawChallenge();
-    if (!card) {
-      // fallback
-      const randomIndex = Math.floor(Math.random() * GENERIC_CHALLENGE_CARDS.length);
-      card = GENERIC_CHALLENGE_CARDS[randomIndex];
+    if (!card && CHALLENGE_CARDS.length > 0) {
+      const randomIndex = Math.floor(Math.random() * CHALLENGE_CARDS.length);
+      card = CHALLENGE_CARDS[randomIndex];
     }
 
     setDrawnCard(card);
     setPokerStep('card_drawn');
 
-    // Automatically analyze the dice according to the card's poker pattern
-    const pattern = card.pokerPattern.toLowerCase();
-    const counts = Array(7).fill(0);
-    dice.forEach(d => counts[d]++);
-
-    const newKept = [false, false, false, false, false];
-    let explanation = '';
-
-    if (pattern.includes('parejas') || pattern.includes('pareja')) {
-      // Keep any pairs or multiple pairs
-      explanation = 'La IA mantiene parejas o valores duplicados.';
-      const pairs: number[] = [];
-      for (let i = 1; i <= 6; i++) {
-        if (counts[i] >= 2) {
-          pairs.push(i);
-        }
-      }
-      dice.forEach((val, index) => {
-        if (pairs.includes(val)) {
-          newKept[index] = true;
-        }
-      });
-    } else if (pattern.includes('valores altos') || pattern.includes('4+')) {
-      // Keep dice >= 4
-      explanation = 'La IA mantiene dados con valores altos (4, 5 o 6).';
-      dice.forEach((val, index) => {
-        if (val >= 4) {
-          newKept[index] = true;
-        }
-      });
-    } else if (pattern.includes('tríos') || pattern.includes('trío')) {
-      // Keep trio or double pair
-      explanation = 'La IA mantiene tríos, o la pareja más alta si no hay trío.';
-      let bestValue = -1;
-      let hasTrioOrBetter = false;
-
-      // check trios first
-      for (let i = 6; i >= 1; i--) {
-        if (counts[i] >= 3) {
-          bestValue = i;
-          hasTrioOrBetter = true;
-          break;
-        }
-      }
-
-      if (!hasTrioOrBetter) {
-        // fall back to highest pair
-        for (let i = 6; i >= 1; i--) {
-          if (counts[i] >= 2) {
-            bestValue = i;
-            break;
-          }
-        }
-      }
-
-      if (bestValue !== -1) {
-        dice.forEach((val, index) => {
-          if (val === bestValue) {
-            newKept[index] = true;
-          }
-        });
-      }
-    } else if (pattern.includes('consecutivos') || pattern.includes('escalera')) {
-      // Keep unique consecutive values (to build street)
-      explanation = 'La IA mantiene valores consecutivos únicos para intentar Escalera.';
-      const seen = new Set<number>();
-      dice.forEach((val, index) => {
-        if (!seen.has(val)) {
-          seen.add(val);
-          newKept[index] = true;
-        }
-      });
-    } else {
-      // Relanzar todo excepto el valor más alto
-      explanation = 'La IA relanza todo excepto el dado con el valor más alto.';
-      const maxVal = Math.max(...dice);
-      let markedMax = false;
-      dice.forEach((val, index) => {
-        if (val === maxVal && !markedMax) {
-          newKept[index] = true;
-          markedMax = true;
-        }
-      });
-    }
-
-    setKeptIndices(newKept);
+    const { kept, explanation } = applyPokerPattern(dice, card);
+    setKeptIndices(kept);
     setPokerPatternExplanation(explanation);
   };
 
@@ -285,6 +201,11 @@ export default function DicePoker({ challengeDeck, onDrawChallenge }: DicePokerP
             <p className="dice-poker__card-hint">
               Los dados marcados se mantienen. Tócalos para ajustar manualmente si hace falta.
             </p>
+            {drawnCard.playerMonsterAttack && (
+              <p className="dice-poker__card-hint text-sky-400">
+                Si el jugador combate un monstruo que ataca: <strong>{drawnCard.playerMonsterAttack}</strong>.
+              </p>
+            )}
             <button
               type="button"
               onClick={handleSecondRoll}

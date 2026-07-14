@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  GENERIC_ACTION_CARDS,
-  LEVEL_1_ACTION_CARDS,
-  LEVEL_2_ACTION_CARDS,
-  LEVEL_3_ACTION_CARDS,
-  GENERIC_CHALLENGE_CARDS,
-  LEVEL_1_CHALLENGE_CARDS,
-  LEVEL_2_CHALLENGE_CARDS,
-  LEVEL_3_CHALLENGE_CARDS,
-} from "./data/cards";
+import { ACTION_CARDS, CHALLENGE_CARDS } from "./data/cards";
 import { WITCHER_SCHOOLS } from "./data/schools";
 import {
   WitcherSchoolId,
@@ -17,8 +8,10 @@ import {
   AutomaState,
   CombatState,
 } from "./types";
-import { shuffleArray, sampleCards } from "./utils/shuffle";
-import { formatMovementGuide, MOVEMENT_UNLIMITED } from "./utils/actionCard";
+import { shuffleArray } from "./utils/shuffle";
+import { buildDecksFromCatalog } from "./utils/deckBuilder";
+import { getMaxShieldLevel } from "./utils/combat";
+import { formatMovementGuide, formatDestination } from "./utils/actionCard";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
 import GameBoard, { GameTab } from "./components/GameBoard";
@@ -38,6 +31,7 @@ export default function App() {
   const [selectedSchoolId, setSelectedSchoolId] = useState<WitcherSchoolId>(initialSnapshot.selectedSchoolId);
   const [difficulty, setDifficulty] = useState<"easy" | "intermediate" | "difficult">(initialSnapshot.difficulty);
   const [useDicePoker, setUseDicePoker] = useState(initialSnapshot.useDicePoker);
+  const [useBombs, setUseBombs] = useState(initialSnapshot.useBombs ?? false);
   const [useMutagens, setUseMutagens] = useState(initialSnapshot.useMutagens);
   const [useSkellige, setUseSkellige] = useState(initialSnapshot.useSkellige);
   const [useLegendaryHunt, setUseLegendaryHunt] = useState(initialSnapshot.useLegendaryHunt);
@@ -66,6 +60,7 @@ export default function App() {
         selectedSchoolId,
         difficulty,
         useDicePoker,
+        useBombs,
         useMutagens,
         useSkellige,
         useLegendaryHunt,
@@ -97,6 +92,7 @@ export default function App() {
     selectedSchoolId,
     difficulty,
     useDicePoker,
+    useBombs,
     useMutagens,
     useSkellige,
     useLegendaryHunt,
@@ -156,63 +152,13 @@ export default function App() {
   };
 
   const handleStartGame = () => {
-    let finalActions: ActionCard[] = [];
-    let finalChallenges: ChallengeCard[] = [];
-
-    const genericActionLvl1 = [...GENERIC_ACTION_CARDS, ...LEVEL_1_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED)];
-    const specificActionLvl1 = LEVEL_1_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
-    const genericActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED);
-    const specificActionLvl2 = LEVEL_2_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
-    const genericActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement !== MOVEMENT_UNLIMITED);
-    const specificActionLvl3 = LEVEL_3_ACTION_CARDS.filter((c) => c.movement === MOVEMENT_UNLIMITED);
-
-    const genericChallengeLvl1 = [...GENERIC_CHALLENGE_CARDS, ...LEVEL_1_CHALLENGE_CARDS.filter((c) => !["cha-19", "cha-20", "cha-21"].includes(c.id))];
-    const specificChallengeLvl1 = LEVEL_1_CHALLENGE_CARDS.filter((c) => ["cha-19", "cha-20", "cha-21"].includes(c.id));
-    const genericChallengeLvl2 = LEVEL_2_CHALLENGE_CARDS.filter((c) => !["cha-22", "cha-23", "cha-24"].includes(c.id));
-    const specificChallengeLvl2 = LEVEL_2_CHALLENGE_CARDS.filter((c) => ["cha-22", "cha-23", "cha-24"].includes(c.id));
-    const genericChallengeLvl3 = LEVEL_3_CHALLENGE_CARDS.filter((c) => !["cha-25", "cha-26", "cha-27"].includes(c.id));
-    const specificChallengeLvl3 = LEVEL_3_CHALLENGE_CARDS.filter((c) => ["cha-25", "cha-26", "cha-27"].includes(c.id));
-
-    if (difficulty === "easy") {
-      finalActions = [
-        ...shuffleArray([...sampleCards(genericActionLvl1, 4), ...sampleCards(specificActionLvl1, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl2, 4), ...sampleCards(specificActionLvl2, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl3, 2), ...sampleCards(specificActionLvl3, 1)]),
-      ];
-      finalChallenges = shuffleArray([
-        ...sampleCards(genericChallengeLvl1, 2), ...sampleCards(specificChallengeLvl1, 2),
-        ...sampleCards(genericChallengeLvl2, 2), ...sampleCards(specificChallengeLvl2, 2),
-        ...sampleCards(genericChallengeLvl3, 1), ...sampleCards(specificChallengeLvl3, 2),
-      ]);
-    } else if (difficulty === "intermediate") {
-      finalActions = [
-        ...shuffleArray([...sampleCards(genericActionLvl1, 3), ...sampleCards(specificActionLvl1, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl2, 3), ...sampleCards(specificActionLvl2, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl3, 3), ...sampleCards(specificActionLvl3, 1)]),
-      ];
-      finalChallenges = shuffleArray([
-        ...sampleCards(genericChallengeLvl1, 3), ...sampleCards(specificChallengeLvl1, 2),
-        ...sampleCards(genericChallengeLvl2, 3), ...sampleCards(specificChallengeLvl2, 2),
-        ...sampleCards(genericChallengeLvl3, 0), ...sampleCards(specificChallengeLvl3, 2),
-      ]);
-    } else {
-      finalActions = [
-        ...shuffleArray([...sampleCards(genericActionLvl1, 2), ...sampleCards(specificActionLvl1, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl2, 2), ...sampleCards(specificActionLvl2, 1)]),
-        ...shuffleArray([...sampleCards(genericActionLvl3, 2), ...sampleCards(specificActionLvl3, 1)]),
-      ];
-      finalChallenges = shuffleArray([
-        ...sampleCards(genericChallengeLvl1, 3), ...sampleCards(specificChallengeLvl1, 2),
-        ...sampleCards(genericChallengeLvl2, 3), ...sampleCards(specificChallengeLvl2, 2),
-        ...sampleCards(genericChallengeLvl3, 0), ...sampleCards(specificChallengeLvl3, 2),
-      ]);
+    if (ACTION_CARDS.length === 0 || CHALLENGE_CARDS.length === 0) {
+      addLog("No hay cartas catalogadas suficientes para iniciar partida.");
+      return;
     }
 
-    const activeChallengeIds = new Set(finalChallenges.map((c) => c.id));
-    let reserve = LEVEL_3_CHALLENGE_CARDS.filter((c) => !activeChallengeIds.has(c.id));
-    if (reserve.length < 3) {
-      reserve = [...reserve, ...sampleCards(LEVEL_3_CHALLENGE_CARDS, 4 - reserve.length)];
-    }
+    const { actionDeck: finalActions, challengeDeck: finalChallenges, level3Reserve: reserve } =
+      buildDecksFromCatalog();
 
     const startLocation =
       selectedSchoolId === "wolf" ? "Kaer Morhen (Lobo)"
@@ -226,9 +172,10 @@ export default function App() {
       attributes: { attack: 1, defense: 1, alchemy: 1, special: 1 },
       trophies: 0,
       potions: 1,
-      bombs: 1,
+      bombs: useBombs ? 1 : 0,
       trails: { red: 0, blue: 0, green: 0, yellow: 0 },
       location: startLocation,
+      currentTerrain: "yellow",
       mutagens: [],
       weaknesses: 0,
       destructionTokens: 0,
@@ -247,7 +194,9 @@ export default function App() {
     setSetupMode(false);
     setCurrentTab("turn");
     setCombat((prev) => ({ ...prev, isActive: false }));
-    addLog(`Partida iniciada — ${selectedSchoolObj.name} (${difficulty}).`);
+    addLog(
+      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Catálogo: ${ACTION_CARDS.length} acción, ${CHALLENGE_CARDS.length} desafío.`
+    );
   };
 
   const drawActionCard = () => {
@@ -265,7 +214,7 @@ export default function App() {
     setActionDeck((prev) => prev.slice(1));
     setActiveActionCard(nextCard);
     setBonusApplied(false);
-    addLog(`Fase I: Carta robada. Destino: ${nextCard.destination}, ${formatMovementGuide(nextCard.movement)}.`);
+    addLog(`Fase I: Carta robada. Destino: ${formatDestination(nextCard)}, ${formatMovementGuide(nextCard.movement)}.`);
   };
 
   const applyActionCardBonuses = () => {
@@ -280,15 +229,45 @@ export default function App() {
     else if (bonus === "defense_special_any") { handleUpdateAttribute("defense", 1); handleUpdateAttribute("special", 1); handleAutoImproveAttribute("lowest"); }
     else if (bonus === "highest") handleAutoImproveAttribute("highest");
     else if (bonus === "lowest") handleAutoImproveAttribute("lowest");
+    else if (bonus === "lowest_defense") {
+      handleAutoImproveAttribute("lowest");
+      handleUpdateAttribute("defense", 1);
+      if (activeActionCard.defenseBonusRaisesShield) {
+        addLog(`Defensa +1 (nivel ${Math.min(5, automa.attributes.defense + 1)}): el escudo en combate suma el nivel de Defensa del tablero.`);
+      }
+    }
+    else if (bonus === "lowest_alchemy") {
+      handleAutoImproveAttribute("lowest");
+      handleUpdateAttribute("alchemy", 1);
+    }
     else if (bonus === "highest_special") { handleAutoImproveAttribute("highest"); handleUpdateAttribute("special", 1); }
     else if (bonus === "alchemy_any") { handleUpdateAttribute("alchemy", 1); handleAutoImproveAttribute("lowest"); }
 
     if (activeActionCard.potionBonus) setAutoma((p) => ({ ...p, potions: Math.min(4, p.potions + 1) }));
-    if (activeActionCard.bombBonus) setAutoma((p) => ({ ...p, bombs: Math.min(4, p.bombs + 1) }));
+    const grantBomb =
+      activeActionCard.bombBonus &&
+      (!activeActionCard.bombRequiresModule || useBombs);
+    if (grantBomb) {
+      setAutoma((p) => ({ ...p, bombs: Math.min(4, p.bombs + 1) }));
+      addLog("Bomba añadida (máx. 4).");
+    } else if (activeActionCard.bombBonus && activeActionCard.bombRequiresModule && !useBombs) {
+      addLog("Bono de bomba ignorado: módulo de bombas desactivado.");
+    }
     if (activeActionCard.trailBonus) {
-      const colors: ("red" | "blue" | "green" | "yellow")[] = ["red", "blue", "green", "yellow"];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      setAutoma((p) => ({ ...p, trails: { ...p.trails, [randomColor]: p.trails[randomColor] + 1 } }));
+      const trailType = activeActionCard.trailType ?? "random";
+      if (trailType === "terrain") {
+        const color = automa.currentTerrain;
+        setAutoma((p) => ({
+          ...p,
+          trails: { ...p.trails, [color]: p.trails[color] + 1 },
+        }));
+        addLog(`Rastro de terreno actual (+1 ${color}).`);
+      } else {
+        const colors: ("red" | "blue" | "green" | "yellow")[] = ["red", "blue", "green", "yellow"];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        setAutoma((p) => ({ ...p, trails: { ...p.trails, [randomColor]: p.trails[randomColor] + 1 } }));
+        addLog(`Rastro aleatorio (+1 ${randomColor}).`);
+      }
     }
     setBonusApplied(true);
     addLog("Acciones de Fase I aplicadas.");
@@ -393,15 +372,30 @@ export default function App() {
     if (card.consumableSlot) {
       if (automa.potions > 0) {
         setAutoma((p) => ({ ...p, potions: p.potions - 1 }));
-        baseDamage += automa.schoolId === "manticore" ? 4 : 2;
-      } else if (automa.bombs > 0) {
+        const potionBonus =
+          card.potionDamageBonus ??
+          (automa.schoolId === "manticore" ? 4 : 2);
+        baseDamage += potionBonus;
+        fightLogs.push(`Poción consumida: +${potionBonus} daño.`);
+      } else if (useBombs && automa.bombs > 0) {
         setAutoma((p) => ({ ...p, bombs: p.bombs - 1 }));
         baseDamage += 2;
       }
     }
 
+    if (useMutagens && card.redMutagen && automa.mutagens.includes("red")) {
+      fightLogs.push("Mutágeno rojo activo en esta carta.");
+    } else if (useMutagens && card.redMutagen) {
+      fightLogs.push("Carta con icono de mutágeno rojo (sin mutágeno adquirido aún).");
+    }
+
+    const defenseShieldBonus = automa.attributes.defense;
     const totalDamage = baseDamage + schoolDamageBonus;
-    const totalShield = baseShield + schoolShieldBonus;
+    const totalShield = baseShield + schoolShieldBonus + defenseShieldBonus;
+
+    if (defenseShieldBonus > 0) {
+      fightLogs.push(`Bono de Defensa (nivel ${defenseShieldBonus}): +${defenseShieldBonus} escudo.`);
+    }
 
     setCombat((prev) => ({
       ...prev,
@@ -422,14 +416,38 @@ export default function App() {
     let remainingDamageToDiscard = effectiveDamage;
     let tempDeck = [...combat.combatDeck];
     let tempDiscard = [...combat.combatDiscard];
+    let shieldsAfterHit = effectiveDamage === 0 ? Math.max(0, combat.shieldsActiveThisTurn - rawDamage) : 0;
+    const reactionLogs: string[] = [];
+    let lastReaction: CombatState["lastReactionTriggered"] = null;
 
     while (remainingDamageToDiscard > 0 && tempDeck.length > 0) {
       const discardedCard = tempDeck[0];
       tempDeck = tempDeck.slice(1);
       tempDiscard.push(discardedCard);
       remainingDamageToDiscard--;
-      if (discardedCard.reaction?.type === "shield" || discardedCard.reaction?.type === "shield_damage") {
-        remainingDamageToDiscard -= Math.min(discardedCard.reaction.value, remainingDamageToDiscard);
+
+      const reaction = discardedCard.reaction;
+      if (!reaction) continue;
+
+      if (reaction.raiseShieldToMax) {
+        const maxShield = getMaxShieldLevel(automa.attributes.defense);
+        shieldsAfterHit = maxShield;
+        remainingDamageToDiscard = 0;
+        const msg = `⚡ Reacción (${discardedCard.id}): escudo al máximo (Defensa ${maxShield}).`;
+        reactionLogs.push(msg);
+        lastReaction = { card: discardedCard, effectDescription: reaction.description };
+      } else if (reaction.type === "shield" || reaction.type === "shield_damage") {
+        const absorbed = Math.min(reaction.value, remainingDamageToDiscard);
+        remainingDamageToDiscard -= absorbed;
+        if (absorbed > 0) {
+          const msg = `⚡ Reacción (${discardedCard.id}): cancela ${absorbed} de daño restante.`;
+          reactionLogs.push(msg);
+          lastReaction = { card: discardedCard, effectDescription: reaction.description };
+        }
+      } else if (reaction.type === "damage" && reaction.value > 0) {
+        const msg = `⚡ Reacción (${discardedCard.id}): ${reaction.value} daño de contraataque.`;
+        reactionLogs.push(msg);
+        lastReaction = { card: discardedCard, effectDescription: reaction.description };
       }
     }
 
@@ -437,8 +455,13 @@ export default function App() {
       ...prev,
       combatDeck: tempDeck,
       combatDiscard: tempDiscard,
-      shieldsActiveThisTurn: effectiveDamage === 0 ? Math.max(0, prev.shieldsActiveThisTurn - rawDamage) : 0,
-      fightLog: [`Daño ${rawDamage} (neto ${effectiveDamage}). Mazo: ${tempDeck.length}.`, ...prev.fightLog],
+      shieldsActiveThisTurn: shieldsAfterHit,
+      lastReactionTriggered: lastReaction ?? prev.lastReactionTriggered,
+      fightLog: [
+        `Daño ${rawDamage} (neto ${effectiveDamage}). Mazo: ${tempDeck.length}.`,
+        ...reactionLogs,
+        ...prev.fightLog,
+      ],
     }));
     if (tempDeck.length === 0) addLog("Automa derrotado en combate.");
   };
@@ -485,6 +508,8 @@ export default function App() {
             onDifficultyChange={setDifficulty}
             useDicePoker={useDicePoker}
             onDicePokerChange={setUseDicePoker}
+            useBombs={useBombs}
+            onBombsChange={setUseBombs}
             useMutagens={useMutagens}
             onMutagensChange={setUseMutagens}
             useSkellige={useSkellige}
@@ -518,6 +543,7 @@ export default function App() {
             bonusApplied={bonusApplied}
             logs={logs}
             useDicePoker={useDicePoker}
+            useBombs={useBombs}
             useMutagens={useMutagens}
             useSkellige={useSkellige}
             useLegendaryHunt={useLegendaryHunt}

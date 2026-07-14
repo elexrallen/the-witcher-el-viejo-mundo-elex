@@ -5,6 +5,7 @@ import { DEFAULT_CITIES } from "../utils/cities";
 type AutomaBoardProps = {
   automa: AutomaState;
   lockedAttributes: Record<string, boolean>;
+  useBombs?: boolean;
   onUpdateAttribute: (attr: "attack" | "defense" | "alchemy" | "special", delta: number) => void;
   onAutoImprove: (type: "highest" | "lowest") => void;
   onAddTrophy: () => void;
@@ -16,6 +17,7 @@ type AutomaBoardProps = {
 export default function AutomaBoard({
   automa,
   lockedAttributes,
+  useBombs = false,
   onUpdateAttribute,
   onAutoImprove,
   onAddTrophy,
@@ -188,10 +190,12 @@ export default function AutomaBoard({
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className={`grid gap-3 ${useBombs ? "grid-cols-2" : "grid-cols-1"}`}>
           {[
             { key: "potions" as const, label: "Pociones", icon: "potion" as const, color: "text-emerald-500" },
-            { key: "bombs" as const, label: "Bombas", icon: "bomb" as const, color: "text-purple-500" },
+            ...(useBombs
+              ? [{ key: "bombs" as const, label: "Bombas", icon: "bomb" as const, color: "text-purple-500" }]
+              : []),
           ].map((item) => {
             const count = automa[item.key];
             return (
@@ -230,6 +234,25 @@ export default function AutomaBoard({
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
+        </div>
+        <div className="space-y-2 mb-4">
+          <label className="text-[10px] text-zinc-500 block font-display font-bold uppercase">Terreno de la localización:</label>
+          <select
+            value={automa.currentTerrain}
+            onChange={(e) =>
+              onAutomaChange((p) => ({
+                ...p,
+                currentTerrain: e.target.value as AutomaState["currentTerrain"],
+              }))
+            }
+            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-300 focus:outline-none focus:border-orange-500 min-h-[var(--touch-min)]"
+          >
+            <option value="red">Rojo</option>
+            <option value="blue">Azul</option>
+            <option value="green">Verde</option>
+            <option value="yellow">Amarillo</option>
+          </select>
+          <p className="text-[9px] text-zinc-600">Usado cuando la carta indica rastro del terreno actual.</p>
         </div>
         <div className="automa-trails">
           {[

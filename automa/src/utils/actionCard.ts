@@ -15,5 +15,24 @@ export function formatMovementGuide(movement: number): string {
   if (isUnlimitedMovement(movement)) {
     return "hasta el destino (camino más corto, sin límite de PM)";
   }
-  return `${movement} espacio${movement === 1 ? "" : "s"}`;
+  return `${movement} PM`;
+}
+
+const TIE_BREAK_LABELS: Record<string, string> = {
+  up: "flecha ↑ (prioridad norte)",
+  down: "flecha ↓ (prioridad sur)",
+  left: "flecha ← (prioridad oeste)",
+  right: "flecha → (prioridad este)",
+};
+
+export function formatTieBreak(direction?: string): string | null {
+  if (!direction) return null;
+  return TIE_BREAK_LABELS[direction] ?? `flecha ${direction}`;
+}
+
+export function formatDestination(card: { destination: string; destinationSlot?: number }): string {
+  if (card.destinationSlot != null) {
+    return `Casilla ${card.destinationSlot}`;
+  }
+  return card.destination;
 }

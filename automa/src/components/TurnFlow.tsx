@@ -4,7 +4,8 @@ import WitcherCard from "./WitcherCard";
 import PhaseStepper from "./PhaseStepper";
 import { canMeditate, getPhaseIIHint, inferPhaseIIAction, PhaseIIAction } from "../utils/phaseII";
 import { COMMON_OPPONENTS } from "../utils/cities";
-import { formatMovementGuide } from "../utils/actionCard";
+import { formatMovementGuide, formatDestination, formatTieBreak } from "../utils/actionCard";
+import { formatCombatCondition } from "../utils/combatCondition";
 import { AutomaState } from "../types";
 
 type TurnFlowProps = {
@@ -101,8 +102,13 @@ export default function TurnFlow({
                 <h5 className="text-[10px] uppercase font-mono text-orange-400 font-bold">Fase I — Movimiento y acciones</h5>
                 <p className="text-xs text-zinc-300">
                   Desplázate <strong className="text-white">{formatMovementGuide(activeActionCard.movement)}</strong> hacia{" "}
-                  <strong className="text-white">{activeActionCard.destination}</strong>.
-                  Desempate: rastro → menor vida → flecha de dirección.
+                  <strong className="text-white">{formatDestination(activeActionCard)}</strong>.
+                  {formatTieBreak(activeActionCard.tieBreakDirection) && (
+                    <> Desempate: rastro → menor vida → <strong className="text-white">{formatTieBreak(activeActionCard.tieBreakDirection)}</strong>.</>
+                  )}
+                  {!activeActionCard.tieBreakDirection && (
+                    <> Desempate: rastro → menor vida → flecha de dirección.</>
+                  )}
                 </p>
                 {!bonusApplied ? (
                   <button
@@ -136,7 +142,7 @@ export default function TurnFlow({
         {turnPhase === 2 && activeActionCard && (
           <div className="space-y-4" id="phase-2-playmat">
             <p className="text-xs text-zinc-400 bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
-              {getPhaseIIHint(activeActionCard)}
+              {getPhaseIIHint(activeActionCard, automa)}
             </p>
 
             <div className="grid grid-cols-1 gap-2.5">
@@ -159,7 +165,7 @@ export default function TurnFlow({
                 <span className="font-display text-xs font-black text-red-400 block uppercase">
                   Combatir {recommended === "combat" && "← Prioridad carta"}
                 </span>
-                <p className="text-[10px] text-zinc-400">{activeActionCard.combatRequirement}</p>
+                <p className="text-[10px] text-zinc-400">{formatCombatCondition(activeActionCard)}</p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     value={opponentType}
