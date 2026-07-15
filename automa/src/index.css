@@ -48,7 +48,11 @@
   max-width: 1180px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 1rem calc(1.5rem + var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
+  padding: 0 0.75rem 1.25rem;
+}
+
+body.has-bottom-nav .automa-content {
+  padding-bottom: 0.75rem;
 }
 
 .automa-header {
@@ -385,11 +389,17 @@
   font-weight: 700;
 }
 
+.setup-stepper__label {
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
 .setup-wizard__nav {
   position: sticky;
-  bottom: 0;
+  bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(transparent, rgba(10, 12, 16, 0.95) 20%);
   padding-bottom: 0.25rem;
+  z-index: 5;
 }
 
 /* Phase stepper */
@@ -598,8 +608,77 @@
   overflow-y: auto;
 }
 
+.combat-card-sheet__toggle {
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.combat-reaction-banner {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(69, 26, 3, 0.35);
+}
+
+.combat-reaction-banner__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.combat-reaction-banner__summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.combat-reaction-banner__title {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gold-bright);
+  font-family: Cinzel, serif;
+}
+
+.combat-reaction-banner__text {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #fde68a;
+}
+
+.combat-reaction-banner__expand {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.combat-reaction-banner__list {
+  margin: 0.55rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.combat-reaction-banner__item--active {
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+.combat-reaction-banner__confirm {
+  margin-top: 0.65rem;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.45) !important;
+  background: rgba(69, 10, 10, 0.45) !important;
+}
+
 .combat-view {
   background: linear-gradient(to bottom, #0c0c0c, rgba(127, 29, 29, 0.08), #0c0c0c);
+  padding-bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
 }
 
 /* Tab nav scroll */
@@ -906,13 +985,69 @@
 }
 
 @media (max-width: 640px) {
+  .app--automa {
+    padding: 0.65rem 0.65rem 0;
+  }
+
+  .automa-tab-nav {
+    top: var(--automa-header-h, 3.75rem);
+  }
+
+  .automa-counter-btn {
+    width: var(--touch-min, 2.75rem);
+    height: var(--touch-min, 2.75rem);
+  }
+
+  .automa-trail-card .automa-counter-btn {
+    width: var(--touch-min, 2.75rem);
+    height: var(--touch-min, 2.75rem);
+  }
+
+  .combat-card-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
+    z-index: 35;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .combat-card-sheet--open {
+    max-height: min(70dvh, calc(100dvh - var(--automa-header-h, 3.75rem) - 8rem));
+  }
+
+  .combat-card-sheet__toggle {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px) + 0.35rem);
+    z-index: 36;
+  }
+
+  .combat-view:has(.combat-card-sheet--open) .combat-card-sheet__toggle {
+    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px) + min(70dvh, calc(100dvh - var(--automa-header-h, 3.75rem) - 8rem)) + 0.35rem);
+  }
+
   .game-board {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .game-board__main {
     min-width: 0;
+  }
+
+  .automa-card-lightbox__header {
+    padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  }
+
+  .automa-card-lightbox__viewport,
+  .automa-school-card-lightbox__body {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   }
 }
 

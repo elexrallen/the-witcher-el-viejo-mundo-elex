@@ -4,6 +4,7 @@ import { CombatState, WitcherSchool } from "../types";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { closeAllOpenDialogs } from "../utils/dialog";import WitcherCard from "./WitcherCard";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
+import CombatReactionBanner from "./CombatReactionBanner";
 import MonsterSpecialAttackPanel from "./MonsterSpecialAttackPanel";
 import { findMonsterSpecialAttack } from "../utils/monsterSpecialAttacks";
 
@@ -16,6 +17,7 @@ type CombatViewProps = {
   onEndCombat: (automaWon: boolean) => void;
   onDiscardTopCombatCard: () => void;
   onAcknowledgeBeforeCombat: () => void;
+  onAcknowledgeCounterattack: () => void;
 };
 
 export default function CombatView({
@@ -27,11 +29,12 @@ export default function CombatView({
   onEndCombat,
   onDiscardTopCombatCard,
   onAcknowledgeBeforeCombat,
+  onAcknowledgeCounterattack,
 }: CombatViewProps) {
   const isMobile = useIsMobile();
   const [damageInput, setDamageInput] = useState("");
   const [monsterAttack, setMonsterAttack] = useState<"mordisco" | "embestida" | null>(null);
-  const [cardSheetOpen, setCardSheetOpen] = useState(true);
+  const [cardSheetOpen, setCardSheetOpen] = useState(false);
 
   useEffect(() => {
     closeAllOpenDialogs();
@@ -95,6 +98,11 @@ export default function CombatView({
               />
             </div>
           </div>
+
+          <CombatReactionBanner
+            combat={combat}
+            onAcknowledgeCounterattack={onAcknowledgeCounterattack}
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-zinc-800/80">
             <button
@@ -199,12 +207,14 @@ export default function CombatView({
 
         {isMobile ? (
           <>
-            {combat.revealedCard && (
-              <button type="button" onClick={() => setCardSheetOpen(!cardSheetOpen)} className="combat-card-sheet__toggle py-2 text-xs text-orange-400 font-bold uppercase">
-                {cardSheetOpen ? "Ocultar carta" : "Ver carta revelada"}
-              </button>
-            )}
-            <div className={`combat-card-sheet ${cardSheetOpen && combat.revealedCard ? "combat-card-sheet--open" : ""}`}>
+            <button
+              type="button"
+              onClick={() => setCardSheetOpen(!cardSheetOpen)}
+              className="combat-card-sheet__toggle py-2.5 min-h-[var(--touch-min)] text-xs text-orange-400 font-bold uppercase w-full"
+            >
+              {cardSheetOpen ? "Ocultar carta revelada" : combat.revealedCard ? "Ver carta revelada" : "Carta del Automa"}
+            </button>
+            <div className={`combat-card-sheet ${cardSheetOpen ? "combat-card-sheet--open" : ""}`}>
               {combat.revealedCard ? (
                 <div className="flex flex-col items-center gap-3 p-4">
                   <WitcherCard card={combat.revealedCard} type="challenge" school={activeSchool} />

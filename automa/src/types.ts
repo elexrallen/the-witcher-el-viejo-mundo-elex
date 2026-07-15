@@ -219,6 +219,23 @@ export interface AutomaState {
   shieldLevel: number;
 }
 
+/** Estado de un Automa individual en partidas multi-jugador solitario. */
+export interface AutomaPlayerState {
+  id: string;
+  label: string;
+  schoolId: WitcherSchoolId;
+  automa: AutomaState;
+  lockedAttributes: Record<string, boolean>;
+  challengeDeck: ChallengeCard[];
+  challengeDiscard: ChallengeCard[];
+  level3ChallengeReserve: ChallengeCard[];
+  turnPhase: 1 | 2 | 3;
+  bonusApplied: boolean;
+  activeActionCard: ActionCard | null;
+  combat: CombatState;
+  logs: string[];
+}
+
 export interface CombatState {
   isActive: boolean;
   opponentType: 'monster' | 'witcher';
@@ -249,4 +266,8 @@ export interface CombatState {
   opponentMonsterId?: string;
   /** Efecto «antes del combate» ya aplicado (p. ej. Gigante de Hielo). */
   beforeCombatSpecialAcknowledged?: boolean;
+  /** Daño de contraataque pendiente de confirmar en mesa. */
+  pendingCounterattack?: number;
+  /** Cartas descartadas en el último golpe recibido. */
+  lastDamageDiscards?: { card: ChallengeCard; reactionTriggered: boolean }[];
 }

@@ -3,111 +3,122 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getMaxShieldLevel } from "./utils/combat";
-import { EMPTY_MEDITATION_TROPHIES } from "./utils/meditation";
+import type { GameTab } from "./components/GameBoard";
 import {
-  DEFAULT_DESTRUCTION_RESERVE,
-  DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
-} from "./utils/legendaryHuntRules";
+  createAutomaPlayerState,
+  DEFAULT_COMBAT,
+  mergeAutomaPlayerState,
+} from "./utils/automaPlayer";
 import type {
   ActionCard,
+  AutomaPlayerState,
   AutomaState,
   ChallengeCard,
   CombatState,
   WitcherSchoolId,
 } from "./types";
 
+export { DEFAULT_COMBAT } from "./utils/automaPlayer";
+
 export const AUTOMA_STORAGE_KEY = "witcher-automa-v1";
 
 export interface AutomaSnapshot {
   setupMode: boolean;
-  selectedSchoolId: WitcherSchoolId;
+  playerCount: number;
+  setupSchoolIds: WitcherSchoolId[];
   difficulty: "easy" | "intermediate" | "difficult";
   useDicePoker: boolean;
   useBombs: boolean;
   useMutagens: boolean;
   useSkellige: boolean;
   useLegendaryHunt: boolean;
-  automa: AutomaState;
-  lockedAttributes: Record<string, boolean>;
   turnCount: number;
   currentTab: GameTab;
   actionDeck: ActionCard[];
   actionDiscard: ActionCard[];
-  activeActionCard: ActionCard | null;
-  challengeDeck: ChallengeCard[];
-  challengeDiscard: ChallengeCard[];
-  level3ChallengeReserve: ChallengeCard[];
-  turnPhase: 1 | 2 | 3;
-  bonusApplied: boolean;
-  combat: CombatState;
-  logs: string[];
+  automaPlayers: AutomaPlayerState[];
+  activeAutomaIndex: number;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  selectedSchoolId?: WitcherSchoolId;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  automa?: AutomaState;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  lockedAttributes?: Record<string, boolean>;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  challengeDeck?: ChallengeCard[];
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  challengeDiscard?: ChallengeCard[];
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  level3ChallengeReserve?: ChallengeCard[];
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  turnPhase?: 1 | 2 | 3;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  bonusApplied?: boolean;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  activeActionCard?: ActionCard | null;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  combat?: CombatState;
+  /** @deprecated Migración desde saves v1 con un solo Automa. */
+  logs?: string[];
 }
 
-const DEFAULT_COMBAT: CombatState = {
-  isActive: false,
-  opponentType: "monster",
-  opponentName: "Monstruo",
-  combatDeck: [],
-  combatDiscard: [],
-  revealedCard: null,
-  damageInflictedThisTurn: 0,
-  shieldsActiveThisTurn: 0,
-  potionsConsumedThisTurn: 0,
-  bombsConsumedThisTurn: 0,
-  lastReactionTriggered: null,
-  fightLog: [],
-};
+function createDefaultPlayers(): AutomaPlayerState[] {
+  return [createAutomaPlayerState(0, "wolf", "intermediate", false)];
+}
 
 export function createDefaultAutomaSnapshot(): AutomaSnapshot {
   return {
     setupMode: true,
-    selectedSchoolId: "wolf",
+    playerCount: 1,
+    setupSchoolIds: ["wolf"],
     difficulty: "intermediate",
     useDicePoker: true,
     useBombs: false,
     useMutagens: false,
     useSkellige: false,
     useLegendaryHunt: false,
-    automa: {
-      schoolId: "wolf",
-      difficulty: "intermediate",
-      attributes: { attack: 1, defense: 1, alchemy: 1, special: 1 },
-      trophies: 0,
-      potions: 1,
-      bombs: 0,
-      trails: { red: 0, blue: 0, green: 0, yellow: 0 },
-      location: "Vizima (Temeria)",
-      currentTerrain: "yellow",
-      mutagens: [],
-      weaknesses: 0,
-      destructionTokens: 0,
-      dagonTrack: 0,
-      legendaryMonsterDefeated: false,
-      legendaryMonsterBaseLife: DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
-      legendaryMonsterId: "ciclope",
-      destructionReserveRemaining: DEFAULT_DESTRUCTION_RESERVE,
-      meditationTrophiesClaimed: { ...EMPTY_MEDITATION_TROPHIES },
-      shieldLevel: 1,
-    },
-    lockedAttributes: {
-      attack: false,
-      defense: false,
-      alchemy: false,
-      special: false,
-    },
     turnCount: 1,
     currentTab: "turn",
     actionDeck: [],
     actionDiscard: [],
-    activeActionCard: null,
-    challengeDeck: [],
-    challengeDiscard: [],
-    level3ChallengeReserve: [],
-    turnPhase: 1,
-    bonusApplied: false,
-    combat: { ...DEFAULT_COMBAT },
-    logs: ["El Brujo Automa ha desenvainado sus espadas."],
+    automaPlayers: createDefaultPlayers(),
+    activeAutomaIndex: 0,
+  };
+}
+
+function migrateLegacySnapshot(parsed: Partial<AutomaSnapshot>): AutomaSnapshot {
+  const defaults = createDefaultAutomaSnapshot();
+  const schoolId = parsed.selectedSchoolId ?? parsed.automa?.schoolId ?? "wolf";
+  const defaultPlayer = createAutomaPlayerState(
+    0,
+    schoolId,
+    parsed.difficulty ?? defaults.difficulty,
+    parsed.useBombs ?? defaults.useBombs
+  );
+
+  const legacyPlayer = mergeAutomaPlayerState(defaultPlayer, {
+    schoolId,
+    automa: parsed.automa,
+    lockedAttributes: parsed.lockedAttributes,
+    challengeDeck: parsed.challengeDeck,
+    challengeDiscard: parsed.challengeDiscard,
+    level3ChallengeReserve: parsed.level3ChallengeReserve,
+    turnPhase: parsed.turnPhase,
+    bonusApplied: parsed.bonusApplied,
+    activeActionCard: (parsed as { activeActionCard?: ActionCard | null }).activeActionCard ?? null,
+    combat: parsed.combat,
+    logs: parsed.logs,
+  });
+
+  return {
+    ...defaults,
+    ...parsed,
+    playerCount: 1,
+    setupSchoolIds: [schoolId],
+    automaPlayers: [legacyPlayer],
+    activeAutomaIndex: 0,
+    actionDeck: parsed.actionDeck ?? defaults.actionDeck,
+    actionDiscard: parsed.actionDiscard ?? defaults.actionDiscard,
   };
 }
 
@@ -123,40 +134,42 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
 
   try {
     const parsed = JSON.parse(raw) as Partial<AutomaSnapshot>;
+    if (!parsed.automaPlayers || parsed.automaPlayers.length === 0) {
+      return migrateLegacySnapshot(parsed);
+    }
+
     const defaults = createDefaultAutomaSnapshot();
+    const setupSchoolIds =
+      parsed.setupSchoolIds && parsed.setupSchoolIds.length > 0
+        ? parsed.setupSchoolIds
+        : parsed.automaPlayers.map((player) => player.schoolId);
+
+    const automaPlayers = parsed.automaPlayers.map((player, index) => {
+      const schoolId = player.schoolId ?? setupSchoolIds[index] ?? "wolf";
+      const base = createAutomaPlayerState(
+        index,
+        schoolId,
+        parsed.difficulty ?? defaults.difficulty,
+        parsed.useBombs ?? defaults.useBombs
+      );
+      return mergeAutomaPlayerState(base, player);
+    });
+
+    const activeAutomaIndex = Math.min(
+      Math.max(parsed.activeAutomaIndex ?? 0, 0),
+      automaPlayers.length - 1
+    );
+
     return {
       ...defaults,
       ...parsed,
+      playerCount: parsed.playerCount ?? automaPlayers.length,
+      setupSchoolIds,
       useBombs: parsed.useBombs ?? defaults.useBombs,
-      automa: {
-        ...defaults.automa,
-        ...parsed.automa,
-        currentTerrain: parsed.automa?.currentTerrain ?? defaults.automa.currentTerrain,
-        legendaryMonsterDefeated:
-          parsed.automa?.legendaryMonsterDefeated ?? defaults.automa.legendaryMonsterDefeated,
-        legendaryMonsterBaseLife:
-          parsed.automa?.legendaryMonsterBaseLife ?? defaults.automa.legendaryMonsterBaseLife,
-        destructionReserveRemaining:
-          parsed.automa?.destructionReserveRemaining ??
-          defaults.automa.destructionReserveRemaining,
-        legendaryMonsterId:
-          parsed.automa?.legendaryMonsterId ?? defaults.automa.legendaryMonsterId,
-        meditationTrophiesClaimed: {
-          ...defaults.automa.meditationTrophiesClaimed,
-          ...parsed.automa?.meditationTrophiesClaimed,
-        },
-        shieldLevel:
-          parsed.automa?.shieldLevel ??
-          getMaxShieldLevel(parsed.automa?.attributes?.defense ?? defaults.automa.attributes.defense),
-      },
-      lockedAttributes: { ...defaults.lockedAttributes, ...parsed.lockedAttributes },
-      combat: { ...defaults.combat, ...parsed.combat },
+      automaPlayers,
+      activeAutomaIndex,
       actionDeck: parsed.actionDeck ?? defaults.actionDeck,
       actionDiscard: parsed.actionDiscard ?? defaults.actionDiscard,
-      challengeDeck: parsed.challengeDeck ?? defaults.challengeDeck,
-      challengeDiscard: parsed.challengeDiscard ?? defaults.challengeDiscard,
-      level3ChallengeReserve: parsed.level3ChallengeReserve ?? defaults.level3ChallengeReserve,
-      logs: Array.isArray(parsed.logs) ? parsed.logs : defaults.logs,
     };
   } catch {
     return createDefaultAutomaSnapshot();
@@ -172,4 +185,23 @@ export function saveAutomaSnapshot(snapshot: AutomaSnapshot) {
 
 export function buildAutomaSnapshot(state: AutomaSnapshot): AutomaSnapshot {
   return structuredClone(state);
+}
+
+export function getActivePlayer(snapshot: AutomaSnapshot): AutomaPlayerState {
+  return (
+    snapshot.automaPlayers[snapshot.activeAutomaIndex] ?? snapshot.automaPlayers[0]
+  );
+}
+
+export function patchActivePlayer(
+  snapshot: AutomaSnapshot,
+  patch: Partial<AutomaPlayerState>
+): AutomaSnapshot {
+  const index = snapshot.activeAutomaIndex;
+  return {
+    ...snapshot,
+    automaPlayers: snapshot.automaPlayers.map((player, playerIndex) =>
+      playerIndex === index ? { ...player, ...patch } : player
+    ),
+  };
 }

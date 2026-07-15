@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { WitcherIcon, type WitcherIconName } from "./WitcherIcon";
-import { ActionCard, AutomaState, ChallengeCard, WitcherSchool } from "../types";
+import { ActionCard, AutomaPlayerState, AutomaState, ChallengeCard, WitcherSchool } from "../types";
 import AutomaBoard from "./AutomaBoard";
+import AutomaSelector from "./AutomaSelector";
 import BoardDrawer, { BoardFab } from "./BoardDrawer";
 import TurnFlow from "./TurnFlow";
 import DicePoker from "./DicePoker";
@@ -14,6 +15,9 @@ export type GameTab = "turn" | "poker" | "expansions" | "rules";
 type GameBoardProps = {
   automa: AutomaState;
   activeSchool: WitcherSchool;
+  automaPlayers: AutomaPlayerState[];
+  activeAutomaIndex: number;
+  onSelectAutoma: (index: number) => void;
   lockedAttributes: Record<string, boolean>;
   turnPhase: 1 | 2 | 3;
   turnCount: number;
@@ -73,7 +77,12 @@ export default function GameBoard(props: GameBoardProps) {
     <main className="game-board flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6" id="game-main">
       <div className="game-board__grid grid grid-cols-1 lg:grid-cols-12 gap-6">
         <section className="game-board__main lg:col-span-8 lg:order-2 order-1 flex flex-col gap-4" id="interaction-dashboard">
-          <div className="tab-nav sticky top-0 z-20 bg-zinc-950/95 backdrop-blur-sm -mx-1 px-1 pt-1" id="tab-nav">
+          <AutomaSelector
+            players={props.automaPlayers}
+            activeIndex={props.activeAutomaIndex}
+            onSelect={props.onSelectAutoma}
+          />
+          <div className="tab-nav automa-tab-nav sticky z-20 bg-zinc-950/95 backdrop-blur-sm -mx-1 px-1 pt-1" id="tab-nav">
             <div className="flex overflow-x-auto flex-nowrap gap-1 border-b border-zinc-850 pb-0">
               {tabs
                 .filter((t) => t.show)

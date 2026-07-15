@@ -30,6 +30,7 @@ export default function RulesReference() {
         "Mazo de Acción al iniciar: baraja niv. III, encima niv. II barajadas, encima niv. I barajadas. El Automa roba desde arriba (niv. I primero).",
         "Mazo de Acción vacío: forma un nuevo mazo solo con las cartas de niv. III del descarte y barájalo; las de niv. I y II permanecen en el descarte.",
         "Mazo de Desafío: todas las cartas barajadas juntas al inicio. Tres cartas genéricas niv. III apartadas para trofeos.",
+        "Varios Automas: puedes simular varios brujos en solitario. Cada uno necesita su propio mazo Desafío (sin cartas duplicadas); el mazo de Acción es compartido. Los turnos se alternan: cada Automa completa su fase I–III antes de pasar al siguiente.",
       ],
       tips: "Recuerda que las cartas sobrantes de nivel 3 que queden fuera se colocan cerca; las ganarás cuando el Automa medite o consiga trofeos."
     },

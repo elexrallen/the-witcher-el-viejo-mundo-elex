@@ -1,6 +1,7 @@
 import {
   ACTION_CARDS,
   CHALLENGE_CARDS,
+  getCatalogStats,
   LEVEL_3_CHALLENGE_RESERVE,
   SCHOOL_ACTION_CARDS,
   SCHOOL_CHALLENGE_CARDS,
@@ -14,6 +15,11 @@ export type BuiltDecks = {
   actionDeck: ActionCard[];
   challengeDeck: ChallengeCard[];
   level3Reserve: ChallengeCard[];
+};
+
+export type BuiltMultiChallengeDecks = {
+  challengeDecks: ChallengeCard[][];
+  level3Reserves: ChallengeCard[][];
 };
 
 export type DeckBuildOptions = {
@@ -118,6 +124,36 @@ function pickByLevel<T extends ActionCard | ChallengeCard>(
   );
 }
 
+function pickByLevelExcluding<T extends { id: string }>(
+  pool: T[],
+  counts: LevelCounts,
+  usedIds: Set<string>
+): T[] {
+  const available = pool.filter((card) => !usedIds.has(card.id));
+  const picked = pickByLevel(available, counts);
+  for (const card of picked) {
+    usedIds.add(card.id);
+  }
+  return picked;
+}
+
+/** Cartas Desafío necesarias por Automa (mazo + reserva de trofeos). */
+export function getChallengeCardsPerAutoma(difficulty: DeckDifficulty): number {
+  const table = MANUAL_DECK_TABLES[difficulty];
+  const sum = (counts: LevelCounts) => counts[1] + counts[2] + counts[3];
+  return sum(table.challenge.generic) + sum(table.challenge.school) + TROPHY_RESERVE_COUNT;
+}
+
+/** Máximo de Automas según catálogo disponible (sin duplicar cartas Desafío). */
+export function getMaxAutomaPlayers(difficulty: DeckDifficulty): number {
+  const stats = getCatalogStats();
+  const perAutoma = getChallengeCardsPerAutoma(difficulty);
+  if (perAutoma <= 0) {
+    return 1;
+  }
+  return Math.max(1, Math.min(4, Math.floor(stats.challengeCount / perAutoma)));
+}
+
 function pickLegendaryHuntCards(difficulty: DeckDifficulty): ActionCard[] {
   const count = difficulty === "easy" ? 1 : difficulty === "difficult" ? 3 : 2;
   return pickRandom(LEGENDARY_HUNT_ACTION_CARDS, count);
@@ -202,4 +238,57 @@ export function buildDecksFromCatalog(options?: DeckBuildOptions): BuiltDecks {
     challengeDeck,
     level3Reserve: trophyReserve,
   };
+}
+
+/**
+ * Construye un mazo Desafío independiente por Automa, sin repetir cartas entre ellos.
+ * El mazo de Acción sigue siendo compartido (usar buildDecksFromCatalog).
+ */
+export function buildChallengeDecksForPlayers(
+  playerCount: number,
+  options?: DeckBuildOptions
+): BuiltMultiChallengeDecks {
+  const difficulty: DeckDifficulty = options?.difficulty ?? "intermediate";
+  const table = MANUAL_DECK_TABLES[difficulty];
+  const usedIds = new Set<string>();
+
+  const genericChallengePool = [...CHALLENGE_CARDS];
+  const genericChallengeL3Pool = [...LEVEL_3_CHALLENGE_RESERVE];
+  const schoolChallengePool = [...SCHOOL_CHALLENGE_CARDS];
+
+  const challengeDecks: ChallengeCard[][] = [];
+  const level3Reserves: ChallengeCard[][] = [];
+
+  for (let i = 0; i < playerCount; i++) {
+    const trophyReserve = pickRandom(
+      genericChallengeL3Pool.filter((card) => !usedIds.has(card.id)),
+      TROPHY_RESERVE_COUNT
+    );
+    for (const card of trophyReserve) {
+      usedIds.add(card.id);
+    }
+
+    const genericChallengeFullPool = [
+      ...genericChallengePool.filter((card) => !usedIds.has(card.id)),
+      ...genericChallengeL3Pool.filter((card) => !usedIds.has(card.id)),
+    ];
+
+    const selectedChallengeGeneric = pickByLevelExcluding(
+      genericChallengeFullPool,
+      table.challenge.generic,
+      usedIds
+    );
+    const selectedChallengeSchool = pickByLevelExcluding(
+      schoolChallengePool,
+      table.challenge.school,
+      usedIds
+    );
+
+    challengeDecks.push(
+      shuffleArray([...selectedChallengeGeneric, ...selectedChallengeSchool])
+    );
+    level3Reserves.push(trophyReserve);
+  }
+
+  return { challengeDecks, level3Reserves };
 }

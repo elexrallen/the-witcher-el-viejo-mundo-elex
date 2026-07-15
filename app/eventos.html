@@ -149,7 +149,7 @@
                   <div class="card-reveal__shade" id="card-shade" aria-hidden="true"></div>
                   <div class="card-reveal__line" id="card-reveal-line" aria-hidden="true" hidden></div>
                   <p class="card-reveal__hint" id="card-reveal-hint">
-                    Desliza hacia abajo en la barra lateral para ir revelando la carta mientras lees.
+                    Desliza el control inferior para revelar la carta mientras lees.
                   </p>
                 </div>
                 <div class="card-reveal__rail" aria-label="Control de revelado">
@@ -197,16 +197,25 @@
     </main>
   </div>
 
-  <footer class="play-bar play-bar--visible" id="play-bar">
-    <button type="button" class="btn btn--secondary btn--icon-label" id="btn-open-stash">
+  <footer class="play-bar play-bar--visible play-bar--eventos" id="play-bar">
+    <button
+      type="button"
+      class="btn btn--secondary btn--icon-label"
+      id="btn-open-stash"
+      aria-label="Cartas en mesa"
+    >
       <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
-      <span class="hide-on-narrow">Cartas en mesa</span>
+      <span class="btn-text-full">Cartas en mesa</span>
+      <span class="btn-text-short" aria-hidden="true">Cartas</span>
     </button>
-    <button type="button" class="btn btn--secondary" id="btn-zoom">
+    <button type="button" class="btn btn--secondary" id="btn-zoom" aria-label="Ver carta ampliada">
       <span class="btn-text-full">Ver carta ampliada</span>
       <span class="btn-text-short" aria-hidden="true">Ampliar</span>
     </button>
-    <button type="button" class="btn btn--primary" id="btn-next">Siguiente (#<span id="btn-next-label">2</span>)</button>
+    <button type="button" class="btn btn--primary" id="btn-next">
+      <span class="btn-text-full">Siguiente (#<span id="btn-next-label">2</span>)</span>
+      <span class="btn-text-short" aria-hidden="true">Siguiente</span>
+    </button>
   </footer>
 
   <dialog class="event-stash-dialog" id="stash-dialog">

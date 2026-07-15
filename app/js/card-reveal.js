@@ -19,9 +19,9 @@ export function initCardReveal({
   let direction = "down";
 
   const HINT_DOWN =
-    "Desliza hacia abajo para revelar la carta de arriba a abajo.";
+    "Desliza el control inferior para revelar la carta de arriba a abajo.";
   const HINT_UP =
-    "Desliza hacia abajo para revelar de abajo arriba (útil para la opción B).";
+    "Desliza el control inferior para revelar de abajo arriba (opción B).";
 
   const viewports = [
     { image, shade, line, slider, hint, directionButton, resetButton },

@@ -16,10 +16,11 @@ import {
   isMobileViewport,
   renderRoleBanner,
   setPlayMode,
+  shouldAutoExpandInstruction,
   showToast,
   updateProgress,
 } from "./ui.js";
-import { initMobileUX, refreshPlayBarHeight } from "./mobile.js";
+import { initMobileUX, refreshMobileChrome } from "./mobile.js";
 import { initAppChrome } from "./chrome.js";
 import { enhanceIconElements, locationIconId } from "./icons.js";
 import { initPlayerSetup } from "./player-setup.js";
@@ -218,14 +219,23 @@ function persistState() {
   });
 }
 
+function toggleSettingsPanel(open) {
+  const shouldOpen = open ?? els.panelSettings.hasAttribute("hidden");
+  if (shouldOpen) {
+    els.panelSettings.removeAttribute("hidden");
+    if (isMobileViewport()) {
+      document.body.classList.add("settings-open");
+    }
+  } else {
+    els.panelSettings.setAttribute("hidden", "");
+    document.body.classList.remove("settings-open");
+  }
+  refreshMobileChrome();
+}
+
 function bindEvents() {
   els.btnSettings.addEventListener("click", () => {
-    const hidden = els.panelSettings.hasAttribute("hidden");
-    if (hidden) {
-      els.panelSettings.removeAttribute("hidden");
-    } else {
-      els.panelSettings.setAttribute("hidden", "");
-    }
+    toggleSettingsPanel();
   });
 
   els.btnResetDeck.addEventListener("click", () => {
@@ -367,7 +377,7 @@ function setInstruction(key) {
     <h3 class="instruction__title">${copy.title}</h3>
     <p class="instruction__body">${copy.body}</p>
   `;
-  if (isMobileViewport()) {
+  if (isMobileViewport() && shouldAutoExpandInstruction()) {
     expandInstruction(els.instruction, els.btnToggleInstruction);
   }
 }
@@ -653,7 +663,7 @@ function showLocations() {
   els.screenLocations.hidden = false;
   els.playBar.classList.remove("play-bar--visible");
   setPlayMode(false);
-  refreshPlayBarHeight();
+  refreshMobileChrome();
   hideProgress(els.deckProgress);
   renderLocations();
   renderResumeBanner();
@@ -670,10 +680,11 @@ function openCardScreen(location) {
   els.screenCard.hidden = false;
   els.playBar.classList.add("play-bar--visible");
   setPlayMode(true);
-  refreshPlayBarHeight();
+  refreshMobileChrome();
   els.panelSettings.setAttribute("hidden", "");
+  document.body.classList.remove("settings-open");
 
-  if (isMobileViewport()) {
+  if (isMobileViewport() && shouldAutoExpandInstruction()) {
     expandInstruction(els.instruction, els.btnToggleInstruction);
   }
 
@@ -728,7 +739,7 @@ function prepareCard(location, card) {
     "Pulsa <strong>Robar carta</strong> para revelar la imagen.",
   );
   setRuleRemindersVisible(!hasChoices);
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function revealDrawnCard() {
@@ -741,7 +752,7 @@ function revealDrawnCard() {
 
   hidePlaceholder();
   showCardImage();
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 
   if (hasChoices) {
     state.cardPhase = "read";
@@ -752,7 +763,7 @@ function revealDrawnCard() {
     els.btnNext.hidden = false;
     els.btnNext.textContent = "Elegir opción";
     setRuleRemindersVisible(true);
-    refreshPlayBarHeight();
+    refreshMobileChrome();
     return;
   }
 
@@ -763,7 +774,7 @@ function revealDrawnCard() {
   els.btnNext.hidden = false;
   els.btnNext.textContent = "Siguiente carta";
   setRuleRemindersVisible(false);
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function showChoosePhase() {
@@ -774,7 +785,7 @@ function showChoosePhase() {
   updateChoiceLabels(state.currentCard);
   els.choices.hidden = false;
   els.btnNext.hidden = true;
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function revealOutcome(choice) {
@@ -790,10 +801,10 @@ function revealOutcome(choice) {
     cardReveal?.setDirection("down");
     cardReveal?.revealAll();
   }
-  refreshPlayBarHeight();
+  refreshMobileChrome();
   els.btnNext.hidden = false;
   els.btnNext.textContent = "Siguiente carta";
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function updateDeckStatus() {

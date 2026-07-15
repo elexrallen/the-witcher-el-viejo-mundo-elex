@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WitcherIcon } from "./WitcherIcon";
 import AppNav from "./AppNav";
 import { useIsMobile } from "../hooks/useMediaQuery";
@@ -9,6 +9,8 @@ type AppHeaderProps = {
   difficulty?: string;
   turnCount?: number;
   trophies?: number;
+  automaCount?: number;
+  activeAutomaLabel?: string;
   onReconfig?: () => void;
 };
 
@@ -18,13 +20,41 @@ export default function AppHeader({
   difficulty,
   turnCount,
   trophies = 0,
+  automaCount = 1,
+  activeAutomaLabel,
   onReconfig,
 }: AppHeaderProps) {
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const header = document.getElementById("game-header");
+    if (!header) return;
+
+    const updateHeight = () => {
+      document.documentElement.style.setProperty(
+        "--automa-header-h",
+        `${Math.ceil(header.getBoundingClientRect().height)}px`
+      );
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    window.addEventListener("resize", updateHeight, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [setupMode, isMobile, schoolName, turnCount, trophies, automaCount]);
+
   return (
-    <header className="header automa-header sticky top-0 z-30 bg-zinc-950/90 backdrop-blur-sm" id="game-header">
+    <header
+      className="header automa-header sticky top-0 z-30 bg-zinc-950/90 backdrop-blur-sm"
+      id="game-header"
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+    >
       <div className="header__brand">
         <span className="header__sigil" aria-hidden="true">⚔</span>
         <div>
@@ -50,6 +80,9 @@ export default function AppHeader({
                 </span>
                 <span className="automa-status__compact-item automa-status__compact-school">
                   {schoolName}
+                  {automaCount > 1 && (
+                    <span className="text-zinc-500 font-normal"> · {automaCount}A</span>
+                  )}
                 </span>
                 <div className="automa-header-menu">
                   <button
@@ -74,7 +107,14 @@ export default function AppHeader({
               <>
                 <div className="automa-status__item">
                   <span className="automa-status__label">Escuela</span>
-                  <span className="automa-status__value">{schoolName}</span>
+                  <span className="automa-status__value">
+                    {schoolName}
+                    {automaCount > 1 && activeAutomaLabel && (
+                      <span className="block text-[10px] text-zinc-500 font-normal normal-case">
+                        {activeAutomaLabel}
+                      </span>
+                    )}
+                  </span>
                 </div>
                 <div className="automa-status__item">
                   <span className="automa-status__label">Trofeos</span>

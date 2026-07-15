@@ -1,4 +1,5 @@
 import { initAppChrome } from "./chrome.js";
+import { initMobileUX } from "./mobile.js";
 import { enhanceIconElements } from "./icons.js";
 import {
   canMigrateOrphanedSession,
@@ -34,6 +35,7 @@ let editingGameId = null;
 
 function init() {
   initAppChrome({ page: "home" });
+  initMobileUX();
   enhanceIconElements();
   bindEvents();
   render();

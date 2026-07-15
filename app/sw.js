@@ -2,7 +2,7 @@
  * Service worker — caché offline del asistente de mesa.
  * Permite instalación como PWA en navegadores compatibles.
  */
-const CACHE_NAME = "witcher-assistant-v4";
+const CACHE_NAME = "witcher-assistant-v5";
 
 const APP_SHELL = [
   "./",

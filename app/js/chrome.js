@@ -90,6 +90,10 @@ function upgradeSettingsButton() {
 }
 
 function injectBottomNav(activePage) {
+  if (!window.matchMedia("(max-width: 640px)").matches) {
+    return;
+  }
+
   if (document.querySelector(".bottom-nav")) {
     return;
   }
@@ -117,6 +121,8 @@ function injectBottomNav(activePage) {
   document.body.append(nav);
   document.body.classList.add("has-bottom-nav");
   enhanceIconElements(nav);
+
+  import("./mobile.js").then(({ refreshMobileChrome }) => refreshMobileChrome());
 }
 
 function initCollapsibleSections() {

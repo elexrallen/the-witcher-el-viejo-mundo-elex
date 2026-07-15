@@ -10,8 +10,11 @@ import { useIsMobile } from "../hooks/useMediaQuery";
 type Difficulty = "easy" | "intermediate" | "difficult";
 
 type SetupWizardProps = {
-  selectedSchoolId: WitcherSchoolId;
-  onSchoolChange: (id: WitcherSchoolId) => void;
+  playerCount: number;
+  maxPlayerCount: number;
+  setupSchoolIds: WitcherSchoolId[];
+  onPlayerCountChange: (count: number) => void;
+  onSchoolChange: (index: number, id: WitcherSchoolId) => void;
   difficulty: Difficulty;
   onDifficultyChange: (d: Difficulty) => void;
   useDicePoker: boolean;
@@ -24,12 +27,11 @@ type SetupWizardProps = {
   onSkelligeChange: (v: boolean) => void;
   useLegendaryHunt: boolean;
   onLegendaryHuntChange: (v: boolean) => void;
-  selectedSchool: WitcherSchool;
   onStart: () => void;
   startError?: string | null;
 };
 
-const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
+const STEPS = ["Automas", "Dificultad", "Módulos", "Resumen"];
 
 import { getCatalogStats } from "../data/cards";
 import {
@@ -40,9 +42,11 @@ import {
 function DeckTable({
   useLegendaryHunt = false,
   difficulty = "intermediate",
+  playerCount = 1,
 }: {
   useLegendaryHunt?: boolean;
   difficulty?: Difficulty;
+  playerCount?: number;
 }) {
   const {
     actionCount,
@@ -60,7 +64,7 @@ function DeckTable({
   return (
     <div className="setup-deck-table grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
-        <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN</span>
+        <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN (compartido)</span>
         <ul className="space-y-0.5 text-zinc-400">
           <li>Total catalogadas: <strong className="text-zinc-200">{actionCount}</strong></li>
           <li>Genéricas: {genericActionCount} · Escuela: {schoolActionCount}</li>
@@ -77,7 +81,7 @@ function DeckTable({
         </ul>
       </div>
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
-        <span className="text-zinc-200 font-bold block mb-2">Mazo de DESAFÍO</span>
+        <span className="text-zinc-200 font-bold block mb-2">Mazo de DESAFÍO (por Automa)</span>
         <ul className="space-y-0.5 text-zinc-400">
           <li>Total catalogadas: <strong className="text-zinc-200">{challengeCount}</strong></li>
           <li>Genéricas: {genericChallengeCount} · Escuela: {schoolChallengeCount}</li>
@@ -85,10 +89,13 @@ function DeckTable({
             Partida ({difficulty}):{" "}
             <strong className="text-zinc-200">{manual.challengeTotal}</strong> en mazo ·{" "}
             <strong className="text-zinc-200">{TROPHY_RESERVE_COUNT}</strong> reserva trofeos
+            {playerCount > 1 && (
+              <span className="text-orange-400"> × {playerCount} Automas</span>
+            )}
           </li>
         </ul>
         <p className="text-[10px] text-orange-400/80 mt-2">
-          Reserva: cartas Lvl III apartadas; se añaden al meditar o ganar trofeos.
+          Cada Automa necesita su propio mazo Desafío sin cartas duplicadas entre ellos.
         </p>
       </div>
     </div>
@@ -99,9 +106,13 @@ export default function SetupWizard(props: SetupWizardProps) {
   const isMobile = useIsMobile();
   const [step, setStep] = useState(0);
   const [showBonusTip, setShowBonusTip] = useState(false);
+  const [configuringAutoma, setConfiguringAutoma] = useState(0);
 
   const {
-    selectedSchoolId,
+    playerCount,
+    maxPlayerCount,
+    setupSchoolIds,
+    onPlayerCountChange,
     onSchoolChange,
     difficulty,
     onDifficultyChange,
@@ -115,10 +126,13 @@ export default function SetupWizard(props: SetupWizardProps) {
     onSkelligeChange,
     useLegendaryHunt,
     onLegendaryHuntChange,
-    selectedSchool,
     onStart,
     startError,
   } = props;
+
+  const previewSchoolId = setupSchoolIds[configuringAutoma] ?? setupSchoolIds[0] ?? "wolf";
+  const previewSchool: WitcherSchool =
+    WITCHER_SCHOOLS.find((school) => school.id === previewSchoolId) ?? WITCHER_SCHOOLS[0];
 
   const bonusLabel = (id: WitcherSchoolId) => {
     if (id === "wolf") return "+1 Daño";
@@ -162,42 +176,103 @@ export default function SetupWizard(props: SetupWizardProps) {
             </div>
 
             {step === 0 && (
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono mb-3 font-bold">
-                  Selecciona la Escuela del Automa
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {WITCHER_SCHOOLS.map((school) => {
-                    const isSelected = selectedSchoolId === school.id;
-                    return (
-                      <button
-                        key={school.id}
-                        type="button"
-                        onClick={() => onSchoolChange(school.id)}
-                        className={`p-3 sm:p-4 rounded-xl border-2 text-left flex flex-col justify-between min-h-[5.5rem] transition-all cursor-pointer ${
-                          isSelected
-                            ? "bg-gradient-to-br from-orange-600/30 to-amber-500/20 border-orange-500 text-white"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
-                        }`}
-                        id={`setup-school-${school.id}`}
-                      >
-                        <div className="flex items-center justify-between w-full gap-1">
-                          <span className="font-display text-xs sm:text-sm font-bold">{school.name}</span>
-                          <SchoolIcon school={school.id} size={20} />
-                        </div>
-                        <span className="text-[10px] font-mono mt-2 text-orange-400 font-black uppercase">
-                          {bonusLabel(school.id)}
-                        </span>
-                      </button>
-                    );
-                  })}
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono mb-3 font-bold">
+                    ¿Cuántos Automas en mesa?
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[1, 2, 3, 4].map((count) => {
+                      const disabled = count > maxPlayerCount;
+                      const isSelected = playerCount === count;
+                      return (
+                        <button
+                          key={count}
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => onPlayerCountChange(count)}
+                          className={`px-4 py-3 min-h-[var(--touch-min)] rounded-xl border-2 font-display font-bold text-sm uppercase transition-all ${
+                            isSelected
+                              ? "bg-orange-950/30 border-orange-500 text-orange-300"
+                              : disabled
+                                ? "bg-zinc-950 border-zinc-900 text-zinc-600 cursor-not-allowed"
+                                : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700 cursor-pointer"
+                          }`}
+                        >
+                          {count} Automa{count > 1 ? "s" : ""}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {maxPlayerCount < 4 && (
+                    <p className="text-[10px] text-zinc-500 mt-2">
+                      Máximo {maxPlayerCount} con el catálogo actual y la dificultad elegida (cada uno necesita mazo Desafío propio).
+                    </p>
+                  )}
                 </div>
-                <button type="button" onClick={() => setShowBonusTip(!showBonusTip)} className="mt-3 text-xs text-orange-400 underline cursor-pointer">
+
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-500 font-mono mb-3 font-bold">
+                    Escuela de cada Automa
+                  </label>
+                  {playerCount > 1 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {setupSchoolIds.slice(0, playerCount).map((schoolId, index) => {
+                        const school = WITCHER_SCHOOLS.find((item) => item.id === schoolId);
+                        return (
+                          <button
+                            key={`tab-${index}`}
+                            type="button"
+                            onClick={() => setConfiguringAutoma(index)}
+                            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-bold uppercase ${
+                              configuringAutoma === index
+                                ? "border-orange-500 text-orange-300 bg-orange-950/30"
+                                : "border-zinc-800 text-zinc-500"
+                            }`}
+                          >
+                            <SchoolIcon school={schoolId} size={16} />
+                            Automa {index + 1}
+                            {school && <span className="hidden sm:inline text-zinc-400">({school.name})</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {WITCHER_SCHOOLS.map((school) => {
+                      const activeSchoolId = setupSchoolIds[configuringAutoma] ?? setupSchoolIds[0];
+                      const isSelected = activeSchoolId === school.id;
+                      return (
+                        <button
+                          key={school.id}
+                          type="button"
+                          onClick={() => onSchoolChange(configuringAutoma, school.id)}
+                          className={`p-3 sm:p-4 rounded-xl border-2 text-left flex flex-col justify-between min-h-[5.5rem] transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-gradient-to-br from-orange-600/30 to-amber-500/20 border-orange-500 text-white"
+                              : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                          }`}
+                          id={`setup-school-${configuringAutoma}-${school.id}`}
+                        >
+                          <div className="flex items-center justify-between w-full gap-1">
+                            <span className="font-display text-xs sm:text-sm font-bold">{school.name}</span>
+                            <SchoolIcon school={school.id} size={20} />
+                          </div>
+                          <span className="text-[10px] font-mono mt-2 text-orange-400 font-black uppercase">
+                            {bonusLabel(school.id)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <button type="button" onClick={() => setShowBonusTip(!showBonusTip)} className="text-xs text-orange-400 underline cursor-pointer">
                   {showBonusTip ? "Ocultar" : "¿Qué significan los bonos de escuela?"}
                 </button>
                 {showBonusTip && (
-                  <p className="mt-2 text-xs text-zinc-400 leading-relaxed bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
-                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza.
+                  <p className="text-xs text-zinc-400 leading-relaxed bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
+                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza. Puedes simular varios brujos: un mazo Desafío por Automa y un mazo Acción compartido.
                   </p>
                 )}
               </div>
@@ -227,7 +302,11 @@ export default function SetupWizard(props: SetupWizardProps) {
                     </button>
                   ))}
                 </div>
-                <DeckTable useLegendaryHunt={useLegendaryHunt} difficulty={difficulty} />
+                <DeckTable
+                  useLegendaryHunt={useLegendaryHunt}
+                  difficulty={difficulty}
+                  playerCount={playerCount}
+                />
               </div>
             )}
 
@@ -252,13 +331,24 @@ export default function SetupWizard(props: SetupWizardProps) {
             {step === 3 && (
               <div className="space-y-4">
                 <div className="bg-zinc-950/60 border border-zinc-850 rounded-xl p-4 text-sm text-zinc-300 space-y-2">
-                  <p><strong className="text-orange-400">Escuela:</strong> {selectedSchool.name}</p>
+                  <p>
+                    <strong className="text-orange-400">Automas:</strong>{" "}
+                    {setupSchoolIds.slice(0, playerCount).map((schoolId, index) => {
+                      const school = WITCHER_SCHOOLS.find((item) => item.id === schoolId);
+                      return `${index + 1}. ${school?.name ?? schoolId}`;
+                    }).join(" · ")}
+                  </p>
                   <p><strong className="text-orange-400">Dificultad:</strong> {difficulty}</p>
                   <p><strong className="text-orange-400">Módulos:</strong>{" "}
                     {[useDicePoker && "Póker", useBombs && "Bombas", useMutagens && "Mutágenos", useSkellige && "Skellige", useLegendaryHunt && "Cacería"].filter(Boolean).join(", ") || "Ninguno"}
                   </p>
+                  {playerCount > 1 && (
+                    <p className="text-xs text-zinc-500">
+                      Turnos alternados: cada Automa juega su fase completa antes de pasar al siguiente. Mazo Acción compartido.
+                    </p>
+                  )}
                 </div>
-                <SchoolCardSetupPreview school={selectedSchool} />
+                <SchoolCardSetupPreview school={previewSchool} />
                 {startError && (
                   <p className="text-sm text-red-400 bg-red-950/40 border border-red-900/50 rounded-lg px-3 py-2" role="alert">
                     {startError}
@@ -286,10 +376,16 @@ export default function SetupWizard(props: SetupWizardProps) {
           <div className="mt-6"><PlayerAssistantLinks compact /></div>
         </div>
 
+        {isMobile && step !== 3 && (
+          <div className="w-full lg:w-[340px] shrink-0 flex flex-col items-center bg-zinc-950/60 border border-zinc-850 p-4 sm:p-6 rounded-2xl gap-4">
+            <SchoolCardSetupPreview school={previewSchool} />
+          </div>
+        )}
+
         {!isMobile && step !== 3 && (
           <div className="w-full lg:w-[340px] shrink-0 flex flex-col items-center bg-zinc-950/60 border border-zinc-850 p-6 rounded-2xl gap-4">
             <span className="text-[10px] uppercase tracking-widest text-orange-400 font-mono font-black">Carta de Habilidad Especial</span>
-            <SpecialSchoolCardComponent school={selectedSchool} />
+            <SpecialSchoolCardComponent school={previewSchool} />
           </div>
         )}
       </div>

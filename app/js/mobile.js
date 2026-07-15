@@ -4,19 +4,26 @@
 import { icon } from "./icons.js";
 
 export function initMobileUX() {
-  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  const mq = window.matchMedia("(max-width: 640px)");
 
-  if (isMobile) {
-    collapseInstructionsByDefault();
-    document.documentElement.classList.add("is-mobile");
-  }
+  const applyMobileClass = () => {
+    if (mq.matches) {
+      collapseInstructionsByDefault();
+      document.documentElement.classList.add("is-mobile");
+    } else {
+      document.documentElement.classList.remove("is-mobile");
+    }
+  };
+
+  applyMobileClass();
+  mq.addEventListener("change", applyMobileClass);
 
   if (window.matchMedia("(pointer: coarse)").matches) {
     document.documentElement.classList.add("is-touch");
   }
 
-  updatePlayBarHeight();
-  window.addEventListener("resize", updatePlayBarHeight, { passive: true });
+  refreshMobileChrome();
+  window.addEventListener("resize", refreshMobileChrome, { passive: true });
 }
 
 function collapseInstructionsByDefault() {
@@ -39,10 +46,45 @@ function updatePlayBarHeight() {
     return;
   }
 
+  const visible = bar.classList.contains("play-bar--visible") || !bar.hasAttribute("hidden");
+  if (!visible) {
+    document.documentElement.style.setProperty("--play-bar-h", "0px");
+    return;
+  }
+
   const height = bar.getBoundingClientRect().height;
   document.documentElement.style.setProperty("--play-bar-h", `${Math.ceil(height)}px`);
 }
 
+function updateBottomNavHeight() {
+  const nav = document.querySelector(".bottom-nav");
+  if (!nav || !window.matchMedia("(max-width: 640px)").matches) {
+    document.documentElement.style.setProperty("--bottom-nav-h", "0px");
+    return;
+  }
+
+  const height = nav.getBoundingClientRect().height;
+  document.documentElement.style.setProperty("--bottom-nav-h", `${Math.ceil(height)}px`);
+}
+
+function updateHeaderHeight() {
+  const header = document.querySelector(".header");
+  if (!header) {
+    return;
+  }
+
+  const height = header.getBoundingClientRect().height;
+  document.documentElement.style.setProperty("--header-h", `${Math.ceil(height)}px`);
+}
+
+export function refreshMobileChrome() {
+  requestAnimationFrame(() => {
+    updatePlayBarHeight();
+    updateBottomNavHeight();
+    updateHeaderHeight();
+  });
+}
+
 export function refreshPlayBarHeight() {
-  requestAnimationFrame(updatePlayBarHeight);
+  refreshMobileChrome();
 }

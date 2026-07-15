@@ -49,6 +49,8 @@ export function hideProgress(element) {
 
 import { icon } from "./icons.js";
 
+let instructionCollapsedByUser = false;
+
 export function bindInstructionToggle(button, panel) {
   if (!button || !panel) {
     return;
@@ -66,10 +68,15 @@ export function bindInstructionToggle(button, panel) {
 
   button.addEventListener("click", () => {
     const collapsed = panel.classList.toggle("instruction--collapsed");
+    instructionCollapsedByUser = collapsed;
     setLabel(collapsed);
   });
 
   setLabel(panel.classList.contains("instruction--collapsed"));
+}
+
+export function shouldAutoExpandInstruction() {
+  return !instructionCollapsedByUser;
 }
 
 export function expandInstruction(panel, button) {

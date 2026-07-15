@@ -1089,6 +1089,10 @@ body.play-mode .card-figure__img {
   margin-top: 0.75rem;
 }
 
+.event-persistent__actions .btn--icon-label {
+  min-height: var(--touch-min);
+}
+
 .event-persistent__hint,
 .event-persistent__status {
   margin: 0;
@@ -1307,6 +1311,50 @@ kbd {
   flex: 1.4;
 }
 
+.play-bar--eventos {
+  flex-wrap: nowrap;
+}
+
+.play-bar--eventos .btn {
+  min-width: 0;
+}
+
+.play-bar--eventos .btn--icon-label {
+  gap: 0.3rem;
+}
+
+@media (max-width: 960px) {
+  .play-bar--eventos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+    padding: 0.55rem 0.65rem calc(0.55rem + var(--safe-bottom));
+  }
+
+  .play-bar--eventos .btn {
+    flex: unset;
+    min-height: var(--touch-min);
+    font-size: 0.8rem;
+    padding: 0.55rem 0.35rem;
+    overflow: visible;
+    white-space: normal;
+    text-overflow: unset;
+  }
+
+  .play-bar--eventos .btn--primary {
+    grid-column: auto;
+    flex: unset;
+    font-size: 0.85rem;
+  }
+
+  .play-bar--eventos .btn--icon-label {
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.72rem;
+    line-height: 1.15;
+  }
+}
+
 .btn {
   border: none;
   border-radius: 12px;
@@ -1368,9 +1416,49 @@ kbd {
   transform: translateX(-50%) translateY(0);
 }
 
+@media (max-width: 960px) {
+  .btn-text-full {
+    display: none;
+  }
+
+  .btn-text-short {
+    display: inline;
+  }
+}
+
 @media (max-width: 640px) {
   :root {
     --play-bar-h: 5.25rem;
+    --bottom-nav-h: 3.85rem;
+    --header-h: 9rem;
+    --chrome-bottom: calc(var(--play-bar-h) + var(--bottom-nav-h) + var(--safe-bottom));
+    --chrome-top-estimate: var(--header-h);
+    --card-area-max-h: calc(100dvh - var(--chrome-bottom) - var(--chrome-top-estimate) - 6rem);
+    --card-area-max-h-play: calc(100dvh - var(--chrome-bottom) - var(--chrome-top-estimate) - 10rem);
+  }
+
+  body.has-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom));
+  }
+
+  body.play-mode.has-bottom-nav {
+    padding-bottom: calc(var(--play-bar-h) + var(--bottom-nav-h) + 0.35rem + var(--safe-bottom));
+  }
+
+  .has-bottom-nav .mode-nav {
+    display: none;
+  }
+
+  .has-bottom-nav .play-bar {
+    bottom: calc(var(--bottom-nav-h) + var(--safe-bottom));
+  }
+
+  .has-bottom-nav .toast {
+    bottom: calc(var(--bottom-nav-h) + 1rem + var(--safe-bottom));
+  }
+
+  body.play-mode.has-bottom-nav .toast {
+    bottom: calc(var(--play-bar-h) + var(--bottom-nav-h) + 0.75rem + var(--safe-bottom));
   }
 
   .app {
@@ -1491,11 +1579,18 @@ kbd {
   }
 
   .role-banner {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem;
+    margin-bottom: 0.75rem;
+  }
+
+  body.play-mode .panel--card .role-banner {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.45rem;
     padding: 0.65rem 0.8rem;
-    margin-bottom: 0.75rem;
   }
 
   .explore-card {
@@ -1520,7 +1615,7 @@ kbd {
 
   body.play-mode .panel--card .card-reveal__img,
   body.play-mode .panel--card .card-figure__img {
-    max-height: calc(100dvh - var(--play-bar-h) - 20rem);
+    max-height: var(--card-area-max-h-play);
   }
 
   body.play-mode .panel--card .role-banner__detail {
@@ -1570,40 +1665,69 @@ kbd {
 
   .card-reveal__shell {
     width: 100%;
-    gap: 0.45rem;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .card-reveal__viewport {
     border-radius: 12px;
+    order: 1;
   }
 
   .card-reveal__img,
   .card-figure__img {
-    max-height: calc(100dvh - var(--play-bar-h) - 11.5rem);
+    max-height: var(--card-area-max-h);
   }
 
   .card-reveal__hint {
-    top: 38%;
-    width: 92%;
-    padding: 0.65rem 0.75rem;
+    position: static;
+    transform: none;
+    order: 2;
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 0.65rem;
     font-size: 0.78rem;
     line-height: 1.4;
+    text-align: center;
+    border-radius: 10px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .card-reveal--active .card-reveal__hint,
+  .card-reveal--full .card-reveal__hint {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
   }
 
   .card-reveal__rail {
-    width: 3rem;
-    padding: 0.65rem 0.4rem;
-    gap: 0.65rem;
+    order: 3;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    gap: 0.55rem;
   }
 
   .card-reveal__slider-wrap {
-    min-height: 10rem;
-    max-height: calc(100dvh - var(--play-bar-h) - 14rem);
+    flex: 1;
+    min-height: auto;
+    max-height: none;
+    min-width: 0;
+    height: var(--touch-min);
   }
 
   .card-reveal__slider {
-    width: min(300px, calc(100dvh - var(--play-bar-h) - 14rem));
+    position: static;
+    width: 100%;
     height: 0.65rem;
+    transform: none;
+    transform-origin: unset;
   }
 
   .card-reveal__slider::-webkit-slider-thumb {
@@ -1616,10 +1740,12 @@ kbd {
     height: 1.75rem;
   }
 
+  .card-reveal__direction,
   .card-reveal__reset {
     width: var(--touch-min);
     height: var(--touch-min);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
   }
 
   .choices--simple {
@@ -1680,10 +1806,25 @@ kbd {
     padding: 0.55rem 0.65rem calc(0.55rem + var(--safe-bottom));
   }
 
+  .play-bar--eventos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .play-bar .btn {
     min-height: var(--touch-min);
     font-size: 0.82rem;
     padding: 0.6rem 0.45rem;
+  }
+
+  .play-bar--eventos .btn {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.3rem;
+  }
+
+  .play-bar--eventos .btn--icon-label {
+    flex-direction: column;
+    gap: 0.12rem;
+    font-size: 0.7rem;
   }
 
   .play-bar .btn--primary {
@@ -1692,16 +1833,13 @@ kbd {
     font-size: 0.92rem;
   }
 
+  .play-bar--eventos .btn--primary {
+    grid-column: auto;
+    font-size: 0.82rem;
+  }
+
   .play-bar .btn[hidden] {
     display: none;
-  }
-
-  .btn-text-full {
-    display: none;
-  }
-
-  .btn-text-short {
-    display: inline;
   }
 
   .rule-reminder--desktop {
@@ -1782,10 +1920,34 @@ kbd {
   .zoom-dialog__layout {
     height: 100dvh;
     max-height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
 
   .zoom-dialog__viewport {
+    flex: 1;
+    min-height: 0;
     max-height: none;
+    overflow: auto;
+  }
+
+  .zoom-dialog__viewport .card-reveal__img {
+    max-height: calc(100dvh - 7rem - var(--safe-bottom));
+  }
+
+  .zoom-dialog__toolbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  .card-reveal--active .zoom-dialog__toolbar .card-reveal__hint,
+  .card-reveal--full .zoom-dialog__toolbar .card-reveal__hint {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    overflow: hidden;
   }
 
   .zoom-dialog__controls .card-reveal__direction,
@@ -1793,6 +1955,187 @@ kbd {
     width: var(--touch-min);
     height: var(--touch-min);
     font-size: 1.1rem;
+  }
+
+  .phase-panel__summary {
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-content .rules-list {
+    font-size: 0.88rem;
+    padding-left: 1.1rem;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .action-card__desc {
+    display: none;
+  }
+
+  .action-card {
+    min-height: var(--touch-min);
+    padding: 0.85rem;
+  }
+
+  .quick-link__desc {
+    display: none;
+  }
+
+  .solo-banner__text {
+    font-size: 0.82rem;
+  }
+
+  .role-banner__role {
+    font-size: 0.62rem;
+    padding: 0.2rem 0.45rem;
+  }
+
+  .role-banner__detail {
+    display: none;
+  }
+
+  body.play-mode .panel--card .role-banner__detail {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .instruction-toggle__text {
+    font-size: 0.72rem;
+  }
+
+  .event-jump__hint {
+    display: none;
+  }
+
+  .panel--locations .lead {
+    display: none;
+  }
+
+  .mission-panel .muted {
+    display: none;
+  }
+
+  .player-setup__hint {
+    display: none;
+  }
+
+  .hide-on-narrow {
+    display: none;
+  }
+
+  .event-stash-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 78dvh;
+    margin: auto 0 0;
+    border-radius: 14px 14px 0 0;
+    padding: 0.85rem 0.75rem calc(0.85rem + env(safe-area-inset-bottom));
+  }
+
+  .event-stash-dialog__title {
+    font-size: 0.95rem;
+  }
+
+  .event-stash-dialog__hint {
+    font-size: 0.78rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .event-stash__item {
+    grid-template-columns: 2rem 1fr auto;
+    gap: 0.45rem;
+    padding: 0.35rem 0.4rem;
+  }
+
+  .event-stash__thumb {
+    width: 2rem;
+    height: 2.75rem;
+    max-width: 2rem;
+    max-height: 2.75rem;
+    min-width: 2rem;
+    min-height: 2.75rem;
+  }
+
+  .event-stash__label {
+    font-size: 0.8rem;
+  }
+
+  .event-stash__btn-label {
+    display: none;
+  }
+
+  .event-stash__actions .btn {
+    padding: 0.35rem;
+    min-width: var(--touch-min);
+    min-height: var(--touch-min);
+    justify-content: center;
+  }
+
+  .event-stash-chip__label {
+    display: none;
+  }
+
+  .saved-game-card {
+    flex-direction: column;
+  }
+
+  .saved-game-card__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .active-game-chip__label {
+    display: none;
+  }
+
+  .saved-games-section__header {
+    flex-wrap: wrap;
+  }
+
+  .phase-step:not(.phase-step--active) .phase-step__label {
+    display: none;
+  }
+
+  .phase-step--active {
+    min-width: 6.5rem;
+  }
+
+  body.settings-open {
+    overflow: hidden;
+  }
+
+  body.settings-open .panel--settings {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    margin: 0;
+    max-height: 100dvh;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  body.settings-open .panel--settings::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: -1;
+  }
+
+  body.settings-open .panel--settings > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel--settings__scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-height: 0;
+    padding-bottom: calc(0.5rem + var(--safe-bottom));
   }
 }
 
@@ -2565,189 +2908,6 @@ kbd {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-}
-
-@media (max-width: 640px) {
-  :root {
-    --bottom-nav-h: 3.85rem;
-  }
-
-  body.has-bottom-nav {
-    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom));
-  }
-
-  body.play-mode.has-bottom-nav {
-    padding-bottom: calc(var(--play-bar-h) + var(--bottom-nav-h) + 0.35rem + var(--safe-bottom));
-  }
-
-  .has-bottom-nav .mode-nav {
-    display: none;
-  }
-
-  .has-bottom-nav .play-bar {
-    bottom: calc(var(--bottom-nav-h) + var(--safe-bottom));
-  }
-
-  .has-bottom-nav .toast {
-    bottom: calc(var(--bottom-nav-h) + 1rem + var(--safe-bottom));
-  }
-
-  body.play-mode.has-bottom-nav .toast {
-    bottom: calc(var(--play-bar-h) + var(--bottom-nav-h) + 0.75rem + var(--safe-bottom));
-  }
-
-  .phase-panel__summary {
-    font-size: 0.88rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-content .rules-list {
-    font-size: 0.88rem;
-    padding-left: 1.1rem;
-    margin: 0.5rem 0 0.75rem;
-  }
-
-  .action-card__desc {
-    display: none;
-  }
-
-  .action-card {
-    min-height: var(--touch-min);
-    padding: 0.85rem;
-  }
-
-  .quick-link__desc {
-    display: none;
-  }
-
-  .solo-banner__text {
-    font-size: 0.82rem;
-  }
-
-  .role-banner {
-    flex-direction: row;
-    align-items: center;
-    padding: 0.55rem 0.7rem;
-    gap: 0.55rem;
-  }
-
-  .role-banner__role {
-    font-size: 0.62rem;
-    padding: 0.2rem 0.45rem;
-  }
-
-  .role-banner__detail {
-    display: none;
-  }
-
-  .instruction-toggle__text {
-    font-size: 0.72rem;
-  }
-
-  .card-reveal__hint {
-    font-size: 0.72rem;
-    padding: 0.5rem 0.6rem;
-  }
-
-  .event-jump__hint {
-    display: none;
-  }
-
-  .explore-card__guide {
-    order: 3;
-  }
-
-  .panel--locations .lead {
-    display: none;
-  }
-
-  .mission-panel .muted {
-    display: none;
-  }
-
-  .player-setup__hint {
-    display: none;
-  }
-
-  .hide-on-narrow {
-    display: none;
-  }
-
-  .event-stash-dialog {
-    width: 100vw;
-    max-width: 100vw;
-    max-height: 78dvh;
-    margin: auto 0 0;
-    border-radius: 14px 14px 0 0;
-    padding: 0.85rem 0.75rem calc(0.85rem + env(safe-area-inset-bottom));
-  }
-
-  .event-stash-dialog__title {
-    font-size: 0.95rem;
-  }
-
-  .event-stash-dialog__hint {
-    font-size: 0.78rem;
-    margin-bottom: 0.65rem;
-  }
-
-  .event-stash__item {
-    grid-template-columns: 2rem 1fr auto;
-    gap: 0.45rem;
-    padding: 0.35rem 0.4rem;
-  }
-
-  .event-stash__thumb {
-    width: 2rem;
-    height: 2.75rem;
-    max-width: 2rem;
-    max-height: 2.75rem;
-    min-width: 2rem;
-    min-height: 2.75rem;
-  }
-
-  .event-stash__label {
-    font-size: 0.8rem;
-  }
-
-  .event-stash__btn-label {
-    display: none;
-  }
-
-  .event-stash__actions .btn {
-    padding: 0.35rem;
-    min-width: 2.1rem;
-    justify-content: center;
-  }
-
-  .event-stash-chip__label {
-    display: none;
-  }
-
-  .saved-game-card {
-    flex-direction: column;
-  }
-
-  .saved-game-card__actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .active-game-chip__label {
-    display: none;
-  }
-
-  .saved-games-section__header {
-    flex-wrap: wrap;
-  }
-
-  .phase-step:not(.phase-step--active) .phase-step__label {
-    display: none;
-  }
-
-  .phase-step--active {
-    min-width: 6.5rem;
-  }
 }
 
 @media (min-width: 641px) {

@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ACTION_CARDS, CHALLENGE_CARDS, getCatalogStats } from "./data/cards";
 import { WITCHER_SCHOOLS } from "./data/schools";
 import {
   WitcherSchoolId,
   ActionCard,
   ChallengeCard,
-  AutomaState,
+  AutomaPlayerState,
   CombatState,
 } from "./types";
 import { shuffleArray } from "./utils/shuffle";
-import { buildDecksFromCatalog, getManualDeckTotals } from "./utils/deckBuilder";
+import {
+  buildChallengeDecksForPlayers,
+  buildDecksFromCatalog,
+  getManualDeckTotals,
+  getMaxAutomaPlayers,
+} from "./utils/deckBuilder";
+import { createAutomaPlayerState } from "./utils/automaPlayer";
+import {
+  createActivePlayerSetters,
+} from "./utils/automaPlayerState";
 import { getMaxShieldLevel, capShieldLevel } from "./utils/combat";
 import { getCardMutagens, formatMutagenList } from "./utils/mutagens";
 import {
@@ -23,14 +32,11 @@ import {
   formatLegendaryLifeSummary,
   getEffectiveLegendaryMonsterLife,
   isLegendaryMonsterOpponent,
-  DEFAULT_DESTRUCTION_RESERVE,
-  DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
 } from "./utils/legendaryHuntRules";
 import { findMonsterSpecialAttack } from "./utils/monsterSpecialAttacks";
 import { closeAllOpenDialogs } from "./utils/dialog";
 import {
   ATTRIBUTE_LABELS,
-  EMPTY_MEDITATION_TROPHIES,
   getMeditationTrophyAttribute,
 } from "./utils/meditation";
 import AppHeader from "./components/AppHeader";
@@ -49,7 +55,10 @@ const initialSnapshot = loadAutomaSnapshot();
 
 export default function App() {
   const [setupMode, setSetupMode] = useState(initialSnapshot.setupMode);
-  const [selectedSchoolId, setSelectedSchoolId] = useState<WitcherSchoolId>(initialSnapshot.selectedSchoolId);
+  const [playerCount, setPlayerCount] = useState(initialSnapshot.playerCount);
+  const [setupSchoolIds, setSetupSchoolIds] = useState<WitcherSchoolId[]>(
+    initialSnapshot.setupSchoolIds
+  );
   const [difficulty, setDifficulty] = useState<"easy" | "intermediate" | "difficult">(initialSnapshot.difficulty);
   const [useDicePoker, setUseDicePoker] = useState(initialSnapshot.useDicePoker);
   const [useBombs, setUseBombs] = useState(initialSnapshot.useBombs ?? false);
@@ -57,49 +66,67 @@ export default function App() {
   const [useSkellige, setUseSkellige] = useState(initialSnapshot.useSkellige);
   const [useLegendaryHunt, setUseLegendaryHunt] = useState(initialSnapshot.useLegendaryHunt);
 
-  const [automa, setAutoma] = useState<AutomaState>(initialSnapshot.automa);
-
-  const [lockedAttributes, setLockedAttributes] = useState<Record<string, boolean>>(initialSnapshot.lockedAttributes);
+  const [automaPlayers, setAutomaPlayers] = useState<AutomaPlayerState[]>(
+    initialSnapshot.automaPlayers
+  );
+  const [activeAutomaIndex, setActiveAutomaIndex] = useState(
+    initialSnapshot.activeAutomaIndex
+  );
+  const activeAutomaIndexRef = useRef(activeAutomaIndex);
+  activeAutomaIndexRef.current = activeAutomaIndex;
 
   const [turnCount, setTurnCount] = useState(initialSnapshot.turnCount);
   const [currentTab, setCurrentTab] = useState<GameTab>(initialSnapshot.currentTab);
   const [actionDeck, setActionDeck] = useState<ActionCard[]>(initialSnapshot.actionDeck);
   const [actionDiscard, setActionDiscard] = useState<ActionCard[]>(initialSnapshot.actionDiscard);
-  const [activeActionCard, setActiveActionCard] = useState<ActionCard | null>(initialSnapshot.activeActionCard);
-  const [challengeDeck, setChallengeDeck] = useState<ChallengeCard[]>(initialSnapshot.challengeDeck);
-  const [challengeDiscard, setChallengeDiscard] = useState<ChallengeCard[]>(initialSnapshot.challengeDiscard);
-  const [level3ChallengeReserve, setLevel3ChallengeReserve] = useState<ChallengeCard[]>(initialSnapshot.level3ChallengeReserve);
-  const [turnPhase, setTurnPhase] = useState<1 | 2 | 3>(initialSnapshot.turnPhase);
-  const [bonusApplied, setBonusApplied] = useState(initialSnapshot.bonusApplied);
-  const [combat, setCombat] = useState<CombatState>(initialSnapshot.combat);
-  const [logs, setLogs] = useState<string[]>(initialSnapshot.logs);
   const [startError, setStartError] = useState<string | null>(null);
+
+  const activePlayer = automaPlayers[activeAutomaIndex] ?? automaPlayers[0];
+  const automa = activePlayer.automa;
+  const lockedAttributes = activePlayer.lockedAttributes;
+  const challengeDeck = activePlayer.challengeDeck;
+  const challengeDiscard = activePlayer.challengeDiscard;
+  const level3ChallengeReserve = activePlayer.level3ChallengeReserve;
+  const turnPhase = activePlayer.turnPhase;
+  const bonusApplied = activePlayer.bonusApplied;
+  const activeActionCard = activePlayer.activeActionCard;
+  const combat = activePlayer.combat;
+  const logs = activePlayer.logs;
+
+  const {
+    setAutoma,
+    setLockedAttributes,
+    setChallengeDeck,
+    setChallengeDiscard,
+    setLevel3ChallengeReserve,
+    setTurnPhase,
+    setBonusApplied,
+    setActiveActionCard,
+    setCombat,
+    setLogs,
+  } = createActivePlayerSetters(
+    setAutomaPlayers,
+    () => activeAutomaIndexRef.current
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const snapshot: AutomaSnapshot = buildAutomaSnapshot({
         setupMode,
-        selectedSchoolId,
+        playerCount,
+        setupSchoolIds,
         difficulty,
         useDicePoker,
         useBombs,
         useMutagens,
         useSkellige,
         useLegendaryHunt,
-        automa,
-        lockedAttributes,
         turnCount,
         currentTab,
         actionDeck,
         actionDiscard,
-        activeActionCard,
-        challengeDeck,
-        challengeDiscard,
-        level3ChallengeReserve,
-        turnPhase,
-        bonusApplied,
-        combat,
-        logs,
+        automaPlayers,
+        activeAutomaIndex,
       });
       saveAutomaSnapshot(snapshot);
       import("@app/saved-games.js").then(({ setLastMode, syncActiveGame }) => {
@@ -111,33 +138,63 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [
     setupMode,
-    selectedSchoolId,
+    playerCount,
+    setupSchoolIds,
     difficulty,
     useDicePoker,
     useBombs,
     useMutagens,
     useSkellige,
     useLegendaryHunt,
-    automa,
-    lockedAttributes,
     turnCount,
     currentTab,
     actionDeck,
     actionDiscard,
-    activeActionCard,
-    challengeDeck,
-    challengeDiscard,
-    level3ChallengeReserve,
-    turnPhase,
-    bonusApplied,
-    combat,
-    logs,
+    automaPlayers,
+    activeAutomaIndex,
   ]);
 
   const activeSchoolObj = WITCHER_SCHOOLS.find((s) => s.id === automa.schoolId) || WITCHER_SCHOOLS[0];
-  const selectedSchoolObj = WITCHER_SCHOOLS.find((s) => s.id === selectedSchoolId) || WITCHER_SCHOOLS[0];
 
   const addLog = (msg: string) => setLogs((prev) => [msg, ...prev.slice(0, 49)]);
+
+  const handleDifficultyChange = (next: "easy" | "intermediate" | "difficult") => {
+    setDifficulty(next);
+    const maxPlayers = getMaxAutomaPlayers(next);
+    if (playerCount > maxPlayers) {
+      handleSetupPlayerCountChange(maxPlayers);
+    }
+  };
+
+  const handleSetupPlayerCountChange = (count: number) => {
+    const maxPlayers = getMaxAutomaPlayers(difficulty);
+    const nextCount = Math.min(Math.max(count, 1), maxPlayers);
+    setPlayerCount(nextCount);
+    setSetupSchoolIds((prev) => {
+      const next = [...prev];
+      while (next.length < nextCount) {
+        next.push(WITCHER_SCHOOLS[next.length % WITCHER_SCHOOLS.length].id);
+      }
+      return next.slice(0, nextCount);
+    });
+  };
+
+  const handleSetupSchoolChange = (index: number, schoolId: WitcherSchoolId) => {
+    setSetupSchoolIds((prev) => {
+      const next = [...prev];
+      next[index] = schoolId;
+      return next;
+    });
+  };
+
+  const handleSelectAutoma = (index: number) => {
+    if (index === activeAutomaIndex) return;
+    if (combat.isActive) {
+      addLog("Termina el combate del Automa activo antes de cambiar.");
+      return;
+    }
+    setActiveAutomaIndex(index);
+  };
 
   const handleUpdateAttribute = (attr: "attack" | "defense" | "alchemy" | "special", delta: number) => {
     setAutoma((prev) => {
@@ -194,49 +251,39 @@ export default function App() {
       return;
     }
 
-    const { actionDeck: finalActions, challengeDeck: finalChallenges, level3Reserve: reserve } =
-      buildDecksFromCatalog({ useLegendaryHunt, difficulty });
+    const maxPlayers = getMaxAutomaPlayers(difficulty);
+    if (playerCount > maxPlayers) {
+      const message = `Con la dificultad ${difficulty} solo hay cartas Desafío para ${maxPlayers} Automa(s).`;
+      setStartError(message);
+      return;
+    }
 
-    const startLocation =
-      selectedSchoolId === "wolf" ? "Kaer Morhen (Lobo)"
-      : selectedSchoolId === "griffin" ? "Kaer Seren (Grifo)"
-      : selectedSchoolId === "viper" ? "Gorthur Gvaed (Víbora)"
-      : "Vizima (Temeria)";
-
-    setAutoma({
-      schoolId: selectedSchoolId,
+    const { actionDeck: finalActions } = buildDecksFromCatalog({
+      useLegendaryHunt,
       difficulty,
-      attributes: { attack: 1, defense: 1, alchemy: 1, special: 1 },
-      trophies: 0,
-      potions: 1,
-      bombs: useBombs ? 1 : 0,
-      trails: { red: 0, blue: 0, green: 0, yellow: 0 },
-      location: startLocation,
-      currentTerrain: "yellow",
-      mutagens: [],
-      weaknesses: 0,
-      destructionTokens: 0,
-      dagonTrack: 0,
-      legendaryMonsterDefeated: false,
-      legendaryMonsterBaseLife: DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
-      destructionReserveRemaining: DEFAULT_DESTRUCTION_RESERVE,
-      legendaryMonsterId: "ciclope",
-      meditationTrophiesClaimed: { ...EMPTY_MEDITATION_TROPHIES },
-      shieldLevel: 1,
     });
-    setLockedAttributes({ attack: false, defense: false, alchemy: false, special: false });
-    setActionDeck(finalActions);
-    setActionDiscard([]);
-    setActiveActionCard(null);
-    setChallengeDeck(finalChallenges);
-    setChallengeDiscard([]);
-    setLevel3ChallengeReserve(reserve);
-    setTurnCount(1);
-    setTurnPhase(1);
-    setBonusApplied(false);
-    setSetupMode(false);
-    setCurrentTab("turn");
-    setCombat((prev) => ({ ...prev, isActive: false }));
+    const { challengeDecks, level3Reserves } = buildChallengeDecksForPlayers(
+      playerCount,
+      { difficulty }
+    );
+
+    const players: AutomaPlayerState[] = setupSchoolIds
+      .slice(0, playerCount)
+      .map((schoolId, index) => {
+        const player = createAutomaPlayerState(
+          index,
+          schoolId,
+          difficulty,
+          useBombs
+        );
+        return {
+          ...player,
+          challengeDeck: challengeDecks[index] ?? [],
+          level3ChallengeReserve: level3Reserves[index] ?? [],
+          logs: [`${player.label} entra en la partida.`],
+        };
+      });
+
     const stats = getCatalogStats();
     const manual = getManualDeckTotals(difficulty);
     const lhCount =
@@ -247,9 +294,25 @@ export default function App() {
             ? 3
             : 2
         : 0;
-    addLog(
-      `Partida iniciada — ${selectedSchoolObj.name} (${difficulty}). Mazos: ${finalActions.length} acción, ${finalChallenges.length} desafío, ${reserve.length} reserva trofeos (manual: ${manual.actionTotal}${lhCount ? `+${lhCount} LH` : ""} / ${manual.challengeTotal}). Catálogo: ${stats.actionCount} acc. + ${stats.challengeCount} desaf.`
+
+    const schoolSummary = players.map((player) => player.label).join(", ");
+    const startLog = `Partida iniciada — ${playerCount} Automa(s): ${schoolSummary} (${difficulty}). Mazo Acción compartido: ${finalActions.length} cartas; Desafío por Automa: ${manual.challengeTotal} + ${level3Reserves[0]?.length ?? 3} reserva (manual: ${manual.actionTotal}${lhCount ? `+${lhCount} LH` : ""} / ${manual.challengeTotal}). Catálogo: ${stats.actionCount} acc. + ${stats.challengeCount} desaf.`;
+
+    setAutomaPlayers(
+      players.map((player, index) => ({
+        ...player,
+        logs:
+          index === 0
+            ? [startLog, ...player.logs]
+            : player.logs,
+      }))
     );
+    setActiveAutomaIndex(0);
+    setActionDeck(finalActions);
+    setActionDiscard([]);
+    setTurnCount(1);
+    setSetupMode(false);
+    setCurrentTab("turn");
   };
 
   const drawActionCard = () => {
@@ -457,11 +520,54 @@ export default function App() {
       setActionDiscard((prev) => [...prev, card]);
     }
 
-    setActiveActionCard(null);
-    setTurnCount((prev) => prev + 1);
-    setTurnPhase(1);
-    setBonusApplied(false);
-    addLog(`--- Turno ${turnCount + 1} ---`);
+    const currentIndex = activeAutomaIndex;
+    setAutomaPlayers((prev) => {
+      const cleared = prev.map((player, index) =>
+        index === currentIndex
+          ? {
+              ...player,
+              activeActionCard: null,
+              turnPhase: 1 as const,
+              bonusApplied: false,
+            }
+          : player
+      );
+
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < cleared.length) {
+        return cleared.map((player, index) =>
+          index === nextIndex
+            ? {
+                ...player,
+                logs: [
+                  `--- Turno de ${player.label} (ronda ${turnCount}) ---`,
+                  ...player.logs,
+                ],
+              }
+            : player
+        );
+      }
+
+      return cleared.map((player, index) =>
+        index === 0
+          ? {
+              ...player,
+              logs: [
+                `--- Ronda ${turnCount + 1} — turno de ${player.label} ---`,
+                ...player.logs,
+              ],
+            }
+          : player
+      );
+    });
+
+    const nextIndex = activeAutomaIndex + 1;
+    if (nextIndex < automaPlayers.length) {
+      setActiveAutomaIndex(nextIndex);
+    } else {
+      setActiveAutomaIndex(0);
+      setTurnCount((prev) => prev + 1);
+    }
   };
 
   const handleStartCombat = (opponentType: "monster" | "witcher", name: string) => {
@@ -505,6 +611,8 @@ export default function App() {
       potionsConsumedThisTurn: 0,
       bombsConsumedThisTurn: 0,
       lastReactionTriggered: null,
+      pendingCounterattack: 0,
+      lastDamageDiscards: [],
       fightLog: [`Combate vs ${name}. Mazo: ${combinedCombatDeck.length} cartas. Escudo inicial: ${openingShield}.`],
     });
     addLog(`¡COMBATE contra ${name.toUpperCase()}!`);
@@ -906,6 +1014,8 @@ export default function App() {
     let shieldsAfterHit = effectiveDamage === 0 ? Math.max(0, combat.shieldsActiveThisTurn - rawDamage) : 0;
     const reactionLogs: string[] = [];
     let lastReaction: CombatState["lastReactionTriggered"] = null;
+    let pendingCounterattack = combat.pendingCounterattack ?? 0;
+    const lastDamageDiscards: NonNullable<CombatState["lastDamageDiscards"]> = [];
 
     while (remainingDamageToDiscard > 0 && tempDeck.length > 0) {
       const discardedCard = tempDeck[0];
@@ -914,28 +1024,39 @@ export default function App() {
       remainingDamageToDiscard--;
 
       const reaction = discardedCard.reaction;
-      if (!reaction) continue;
+      let reactionTriggered = false;
+
+      if (!reaction) {
+        lastDamageDiscards.push({ card: discardedCard, reactionTriggered: false });
+        continue;
+      }
 
       if (reaction.raiseShieldToMax) {
         const maxShield = getMaxShieldLevel(automa.attributes.defense);
         shieldsAfterHit = maxShield;
         remainingDamageToDiscard = 0;
+        reactionTriggered = true;
         const msg = `⚡ Reacción (${discardedCard.id}): escudo al máximo (Defensa ${maxShield}).`;
         reactionLogs.push(msg);
         lastReaction = { card: discardedCard, effectDescription: reaction.description };
       } else if (reaction.type === "shield" || reaction.type === "shield_damage") {
         const absorbed = Math.min(reaction.value, remainingDamageToDiscard);
         remainingDamageToDiscard -= absorbed;
-        if (absorbed > 0) {
+        if (absorbed > 0 || reaction.value > 0) {
+          reactionTriggered = true;
           const msg = `⚡ Reacción (${discardedCard.id}): cancela ${absorbed} de daño restante.`;
           reactionLogs.push(msg);
           lastReaction = { card: discardedCard, effectDescription: reaction.description };
         }
       } else if (reaction.type === "damage" && reaction.value > 0) {
-        const msg = `⚡ Reacción (${discardedCard.id}): ${reaction.value} daño de contraataque.`;
+        pendingCounterattack += reaction.value;
+        reactionTriggered = true;
+        const msg = `⚡ Reacción (${discardedCard.id}): ${reaction.value} daño de contraataque (aplicar en mesa).`;
         reactionLogs.push(msg);
         lastReaction = { card: discardedCard, effectDescription: reaction.description };
       }
+
+      lastDamageDiscards.push({ card: discardedCard, reactionTriggered });
     }
 
     setCombat((prev) => ({
@@ -944,6 +1065,8 @@ export default function App() {
       combatDiscard: tempDiscard,
       shieldsActiveThisTurn: shieldsAfterHit,
       lastReactionTriggered: lastReaction ?? prev.lastReactionTriggered,
+      pendingCounterattack,
+      lastDamageDiscards,
       fightLog: [
         `Daño ${rawDamage} (neto ${effectiveDamage}). Mazo: ${tempDeck.length}.`,
         ...reactionLogs,
@@ -951,6 +1074,25 @@ export default function App() {
       ],
     }));
     if (tempDeck.length === 0) addLog("Automa derrotado en combate.");
+    if (pendingCounterattack > (combat.pendingCounterattack ?? 0)) {
+      addLog(`Contraataque pendiente: ${pendingCounterattack} daño al oponente.`);
+    }
+  };
+
+  const handleAcknowledgeCounterattack = () => {
+    setCombat((prev) => {
+      const amount = prev.pendingCounterattack ?? 0;
+      if (amount <= 0) return prev;
+      return {
+        ...prev,
+        pendingCounterattack: 0,
+        fightLog: [
+          `✓ Confirmado en mesa: monstruo recibe ${amount} de daño por reacción.`,
+          ...prev.fightLog,
+        ],
+      };
+    });
+    addLog("Daño de reacción aplicado al oponente en mesa.");
   };
 
   const handleEndCombat = (automaWon: boolean) => {
@@ -1010,6 +1152,8 @@ export default function App() {
           difficulty={automa.difficulty}
           turnCount={turnCount}
           trophies={automa.trophies}
+          automaCount={automaPlayers.length}
+          activeAutomaLabel={activePlayer.label}
           onReconfig={() => setSetupMode(true)}
         />
       </div>
@@ -1017,10 +1161,13 @@ export default function App() {
       <div className="automa-content flex flex-col flex-1 gap-6">
         {setupMode ? (
           <SetupWizard
-            selectedSchoolId={selectedSchoolId}
-            onSchoolChange={setSelectedSchoolId}
+            playerCount={playerCount}
+            maxPlayerCount={getMaxAutomaPlayers(difficulty)}
+            setupSchoolIds={setupSchoolIds}
+            onPlayerCountChange={handleSetupPlayerCountChange}
+            onSchoolChange={handleSetupSchoolChange}
             difficulty={difficulty}
-            onDifficultyChange={setDifficulty}
+            onDifficultyChange={handleDifficultyChange}
             useDicePoker={useDicePoker}
             onDicePokerChange={setUseDicePoker}
             useBombs={useBombs}
@@ -1031,7 +1178,6 @@ export default function App() {
             onSkelligeChange={setUseSkellige}
             useLegendaryHunt={useLegendaryHunt}
             onLegendaryHuntChange={setUseLegendaryHunt}
-            selectedSchool={selectedSchoolObj}
             onStart={handleStartGame}
             startError={startError}
           />
@@ -1045,11 +1191,15 @@ export default function App() {
             onEndCombat={handleEndCombat}
             onDiscardTopCombatCard={handleDiscardTopCombatCard}
             onAcknowledgeBeforeCombat={handleAcknowledgeBeforeCombat}
+            onAcknowledgeCounterattack={handleAcknowledgeCounterattack}
           />
         ) : (
           <GameBoard
             automa={automa}
             activeSchool={activeSchoolObj}
+            automaPlayers={automaPlayers}
+            activeAutomaIndex={activeAutomaIndex}
+            onSelectAutoma={handleSelectAutoma}
             lockedAttributes={lockedAttributes}
             turnPhase={turnPhase}
             turnCount={turnCount}

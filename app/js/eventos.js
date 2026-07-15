@@ -1,5 +1,5 @@
 import { initCardReveal } from "./card-reveal.js";
-import { initMobileUX, refreshPlayBarHeight } from "./mobile.js";
+import { initMobileUX, refreshMobileChrome } from "./mobile.js";
 import { initAppChrome } from "./chrome.js";
 import { enhanceIconElements } from "./icons.js";
 import {
@@ -183,7 +183,7 @@ async function init() {
   enhanceIconElements();
   setPlayMode(true);
   els.playBar.classList.add("play-bar--visible");
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 
   const deckKey = getDeckKey(state.currentDeck);
   const deckState = getDeckState(deckKey, getDeckCards(state.currentDeck).length);
@@ -252,14 +252,23 @@ function getCampaignDecks() {
   return state.data.decks.filter((deck) => deck.id !== MAIN_DECK_ID);
 }
 
+function toggleSettingsPanel(open) {
+  const shouldOpen = open ?? els.panelSettings.hasAttribute("hidden");
+  if (shouldOpen) {
+    els.panelSettings.removeAttribute("hidden");
+    if (window.matchMedia("(max-width: 640px)").matches) {
+      document.body.classList.add("settings-open");
+    }
+  } else {
+    els.panelSettings.setAttribute("hidden", "");
+    document.body.classList.remove("settings-open");
+  }
+  refreshMobileChrome();
+}
+
 function bindEvents() {
   els.btnSettings.addEventListener("click", () => {
-    const hidden = els.panelSettings.hasAttribute("hidden");
-    if (hidden) {
-      els.panelSettings.removeAttribute("hidden");
-    } else {
-      els.panelSettings.setAttribute("hidden", "");
-    }
+    toggleSettingsPanel();
   });
 
   els.btnResetDeck.addEventListener("click", () => {
@@ -631,7 +640,7 @@ function revealEvent(deck, number) {
   updateDeckStatus();
   updateRoleBanner();
   updateInstruction();
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function renderExpansions() {
@@ -729,6 +738,7 @@ function updateJumpControls(deck, number) {
   } else {
     els.btnNext.hidden = true;
   }
+  refreshMobileChrome();
 }
 
 function renderDeckUI(deck, number) {
@@ -788,14 +798,16 @@ function renderStashActions() {
       <p class="event-persistent__status muted">Ya en mesa de ${activeLabel}.</p>
       <button type="button" class="btn btn--secondary btn--icon-label" data-action="open-stash">
         <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
-        Ver en inventario
+        <span class="btn-text-full">Ver en inventario</span>
+        <span class="btn-text-short" aria-hidden="true">Inventario</span>
       </button>
     `;
   } else if (!fullyRevealed) {
     els.eventPersistentActions.innerHTML = `
       <button type="button" class="btn btn--primary btn--icon-label" data-action="add-stash" disabled>
         <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
-        Añadir a cartas en mesa
+        <span class="btn-text-full">Añadir a cartas en mesa</span>
+        <span class="btn-text-short" aria-hidden="true">Añadir</span>
       </button>
       <p class="event-persistent__hint muted">Revela la carta por completo para poder añadirla.</p>
     `;
@@ -803,7 +815,8 @@ function renderStashActions() {
     els.eventPersistentActions.innerHTML = `
       <button type="button" class="btn btn--primary btn--icon-label" data-action="add-stash">
         <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
-        Añadir a cartas en mesa
+        <span class="btn-text-full">Añadir a cartas en mesa</span>
+        <span class="btn-text-short" aria-hidden="true">Añadir</span>
       </button>
       <p class="event-persistent__hint muted">Se asignará a ${activeLabel}.</p>
     `;
@@ -841,7 +854,7 @@ function openStashPanel() {
   state.stashViewPlayer = state.session.activePlayer;
   renderStashPanel();
   els.stashDialog?.showModal();
-  refreshPlayBarHeight();
+  refreshMobileChrome();
 }
 
 function renderStashPlayerTabs() {
