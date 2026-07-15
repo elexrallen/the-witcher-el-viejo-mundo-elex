@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { WitcherIcon } from "./WitcherIcon";
-import { ActionCard, WitcherSchool } from "../types";
+import { ActionCard, AutomaPlayerState, AutomaState } from "../types";
 import ActionCardTurnPreview from "./ActionCardTurnPreview";
 import PhaseStepper from "./PhaseStepper";
 import { canMeditate, getMeditationTrophyAttribute, ATTRIBUTE_LABELS } from "../utils/meditation";
@@ -15,7 +15,15 @@ import { COMBAT_MONSTER_OPTIONS } from "../utils/monsterSpecialAttacks";
 import { formatMovementGuide, formatDestination, formatTieBreak } from "../utils/actionCard";
 import { formatCombatCondition } from "../utils/combatCondition";
 import { closeAllOpenDialogs } from "../utils/dialog";
-import { AutomaState } from "../types";
+import {
+  formatAutomaOpponentLabel,
+  getCoLocatedAutomaIndices,
+} from "../utils/automaVsAutoma";
+
+export type StartCombatOptions = {
+  /** Índice del Automa rival; null = brujo humano / mesa. */
+  opponentAutomaIndex?: number | null;
+};
 
 type TurnFlowProps = {
   turnPhase: 1 | 2 | 3;
@@ -23,6 +31,8 @@ type TurnFlowProps = {
   actionDeckLength: number;
   challengeDeckLength: number;
   automa: AutomaState;
+  automaPlayers?: AutomaPlayerState[];
+  activeAutomaIndex?: number;
   activeActionCard: ActionCard | null;
   bonusApplied: boolean;
   logs: string[];
@@ -30,7 +40,11 @@ type TurnFlowProps = {
   onApplyBonuses: () => void;
   onMeditate: () => void;
   onExplore: () => void;
-  onStartCombat: (opponentType: "monster" | "witcher", name: string) => void;
+  onStartCombat: (
+    opponentType: "monster" | "witcher",
+    name: string,
+    options?: StartCombatOptions
+  ) => void;
   onEndTurn: () => void;
   onClearLogs: () => void;
   onAdvanceToPhase2: () => void;
@@ -44,6 +58,8 @@ export default function TurnFlow({
   actionDeckLength,
   challengeDeckLength,
   automa,
+  automaPlayers = [],
+  activeAutomaIndex = 0,
   activeActionCard,
   bonusApplied,
   logs,
@@ -60,18 +76,48 @@ export default function TurnFlow({
 }: TurnFlowProps) {
   const [opponentName, setOpponentName] = useState("Grifo");
   const [opponentType, setOpponentType] = useState<"monster" | "witcher">("monster");
+  /** -1 = brujo humano/mesa; >=0 = índice Automa rival */
+  const [selectedRivalIndex, setSelectedRivalIndex] = useState<number>(-1);
   const [presence, setPresence] = useState<PhaseIIPresence>({
     witcherPresent: false,
     monsterPresent: true,
   });
+  const [witcherPresenceTouched, setWitcherPresenceTouched] = useState(false);
+
+  const coLocatedIndices = useMemo(
+    () => getCoLocatedAutomaIndices(automaPlayers, activeAutomaIndex),
+    [automaPlayers, activeAutomaIndex, automa.location]
+  );
 
   useEffect(() => {
     if (activeActionCard?.legendaryMonsterCombat) {
       setOpponentType("monster");
       setOpponentName("Monstruo legendario");
       setPresence({ witcherPresent: false, monsterPresent: true });
+      setWitcherPresenceTouched(false);
+      setSelectedRivalIndex(-1);
     }
   }, [activeActionCard?.id, activeActionCard?.legendaryMonsterCombat]);
+
+  useEffect(() => {
+    if (witcherPresenceTouched || activeActionCard?.legendaryMonsterCombat) {
+      return;
+    }
+    if (coLocatedIndices.length > 0) {
+      setPresence((prev) => ({ ...prev, witcherPresent: true }));
+      setSelectedRivalIndex(coLocatedIndices[0]);
+      setOpponentType("witcher");
+      setOpponentName(formatAutomaOpponentLabel(automaPlayers[coLocatedIndices[0]]));
+    } else {
+      setPresence((prev) => ({ ...prev, witcherPresent: false }));
+      setSelectedRivalIndex(-1);
+    }
+  }, [
+    coLocatedIndices,
+    automaPlayers,
+    witcherPresenceTouched,
+    activeActionCard?.legendaryMonsterCombat,
+  ]);
 
   useEffect(() => {
     if (!activeActionCard || turnPhase !== 2) return;
@@ -80,6 +126,18 @@ export default function TurnFlow({
       setOpponentType(resolved.opponentType);
     }
   }, [activeActionCard, automa.trophies, presence, turnPhase]);
+
+  useEffect(() => {
+    if (opponentType !== "witcher") return;
+    if (selectedRivalIndex >= 0 && automaPlayers[selectedRivalIndex]) {
+      setOpponentName(formatAutomaOpponentLabel(automaPlayers[selectedRivalIndex]));
+    } else if (selectedRivalIndex < 0 && opponentName !== "Brujo rival") {
+      // keep custom human name if already set to a monster option wrongly
+      if (!automaPlayers.some((p) => formatAutomaOpponentLabel(p) === opponentName)) {
+        setOpponentName("Brujo rival");
+      }
+    }
+  }, [opponentType, selectedRivalIndex, automaPlayers]);
 
   const recommended: PhaseIIAction | null = activeActionCard
     ? inferPhaseIIAction(activeActionCard, automa, presence)
@@ -211,13 +269,22 @@ export default function TurnFlow({
                 <input
                   type="checkbox"
                   checked={presence.witcherPresent}
-                  onChange={(e) =>
-                    setPresence((p) => ({ ...p, witcherPresent: e.target.checked }))
-                  }
+                  onChange={(e) => {
+                    setWitcherPresenceTouched(true);
+                    setPresence((p) => ({ ...p, witcherPresent: e.target.checked }));
+                  }}
                   className="rounded border-zinc-700"
                 />
                 Brujo en localización
               </label>
+              {coLocatedIndices.length > 0 && (
+                <span className="w-full text-orange-400/90 text-[10px]">
+                  Automa(s) en la misma casilla ({automa.location}):{" "}
+                  {coLocatedIndices
+                    .map((i) => formatAutomaOpponentLabel(automaPlayers[i]))
+                    .join(", ")}
+                </span>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-2.5">
@@ -246,39 +313,97 @@ export default function TurnFlow({
                 <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     value={opponentType}
-                    onChange={(e) => setOpponentType(e.target.value as "monster" | "witcher")}
+                    onChange={(e) => {
+                      const next = e.target.value as "monster" | "witcher";
+                      setOpponentType(next);
+                      if (next === "witcher" && coLocatedIndices.length > 0) {
+                        setSelectedRivalIndex(coLocatedIndices[0]);
+                      } else if (next === "witcher") {
+                        setSelectedRivalIndex(-1);
+                        setOpponentName("Brujo rival");
+                      } else {
+                        setSelectedRivalIndex(-1);
+                        setOpponentName("Grifo");
+                      }
+                    }}
                     className="bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2 text-xs min-h-[var(--touch-min)]"
                   >
                     <option value="monster">Monstruo</option>
                     <option value="witcher">Brujo</option>
                   </select>
-                  <select
-                    value={opponentName}
-                    onChange={(e) => setOpponentName(e.target.value)}
-                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2 text-xs min-h-[var(--touch-min)]"
-                  >
-                    {["Legendarios", "Regulares", undefined].map((group) => {
-                      const options = COMBAT_MONSTER_OPTIONS.filter(
-                        (o) => o.group === group || (!group && !o.group)
-                      );
-                      if (options.length === 0) return null;
-                      return (
-                        <optgroup key={group ?? "other"} label={group ?? "Otros"}>
-                          {options.map((o) => (
-                            <option key={o.value} value={o.value}>
-                              {o.label}
+                  {opponentType === "witcher" ? (
+                    <select
+                      value={String(selectedRivalIndex)}
+                      onChange={(e) => {
+                        const idx = Number(e.target.value);
+                        setSelectedRivalIndex(idx);
+                        if (idx >= 0 && automaPlayers[idx]) {
+                          setOpponentName(formatAutomaOpponentLabel(automaPlayers[idx]));
+                        } else {
+                          setOpponentName("Brujo rival");
+                        }
+                      }}
+                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2 text-xs min-h-[var(--touch-min)]"
+                    >
+                      <option value="-1">Brujo (humano / mesa)</option>
+                      {coLocatedIndices.map((index) => (
+                        <option key={automaPlayers[index].id} value={index}>
+                          {formatAutomaOpponentLabel(automaPlayers[index])}
+                        </option>
+                      ))}
+                      {automaPlayers.length > 1 &&
+                        automaPlayers
+                          .map((player, index) => ({ player, index }))
+                          .filter(
+                            ({ index }) =>
+                              index !== activeAutomaIndex &&
+                              !coLocatedIndices.includes(index)
+                          )
+                          .map(({ player, index }) => (
+                            <option key={player.id} value={index}>
+                              {formatAutomaOpponentLabel(player)} (otra casilla)
                             </option>
                           ))}
-                        </optgroup>
-                      );
-                    })}
-                  </select>
+                    </select>
+                  ) : (
+                    <select
+                      value={opponentName}
+                      onChange={(e) => setOpponentName(e.target.value)}
+                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2 text-xs min-h-[var(--touch-min)]"
+                    >
+                      {["Legendarios", "Regulares", undefined].map((group) => {
+                        const options = COMBAT_MONSTER_OPTIONS.filter(
+                          (o) => o.group === group || (!group && !o.group)
+                        );
+                        if (options.length === 0) return null;
+                        return (
+                          <optgroup key={group ?? "other"} label={group ?? "Otros"}>
+                            {options.map((o) => (
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
+                    </select>
+                  )}
                 </div>
+                {opponentType === "witcher" && selectedRivalIndex >= 0 && (
+                  <p className="text-[10px] text-orange-400/80">
+                    Combate Automa vs Automa: ambos usarán su mazo de Desafío.
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => {
                     closeAllOpenDialogs();
-                    onStartCombat(opponentType, opponentName);
+                    onStartCombat(opponentType, opponentName, {
+                      opponentAutomaIndex:
+                        opponentType === "witcher" && selectedRivalIndex >= 0
+                          ? selectedRivalIndex
+                          : null,
+                    });
                   }}
                   disabled={!combatAvailable}
                   className="w-full py-2.5 min-h-[var(--touch-min)] bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-900/40 rounded-xl text-xs font-bold uppercase disabled:opacity-40"

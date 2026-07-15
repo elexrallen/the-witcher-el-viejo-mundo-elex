@@ -25,6 +25,12 @@ export const DEFAULT_COMBAT: CombatState = {
   bombsConsumedThisTurn: 0,
   lastReactionTriggered: null,
   fightLog: [],
+  isAutomaVsAutoma: false,
+  opponentAutomaIndex: null,
+  opponentCombatDeck: [],
+  opponentCombatDiscard: [],
+  opponentShieldsThisTurn: 0,
+  opponentRevealedCard: null,
 };
 
 export function getStartLocationForSchool(schoolId: WitcherSchoolId): string {
@@ -82,6 +88,8 @@ export function createAutomaPlayerState(
       alchemy: false,
       special: false,
     },
+    actionDeck: [],
+    actionDiscard: [],
     challengeDeck: [],
     challengeDiscard: [],
     level3ChallengeReserve: [],
@@ -130,6 +138,8 @@ export function mergeAutomaPlayerState(
       ...partial.lockedAttributes,
     },
     combat: { ...defaults.combat, ...partial.combat },
+    actionDeck: partial.actionDeck ?? defaults.actionDeck,
+    actionDiscard: partial.actionDiscard ?? defaults.actionDiscard,
     challengeDeck: partial.challengeDeck ?? defaults.challengeDeck,
     challengeDiscard: partial.challengeDiscard ?? defaults.challengeDiscard,
     level3ChallengeReserve:

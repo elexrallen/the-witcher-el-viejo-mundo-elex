@@ -6,7 +6,6 @@
 import type { GameTab } from "./components/GameBoard";
 import {
   createAutomaPlayerState,
-  DEFAULT_COMBAT,
   mergeAutomaPlayerState,
 } from "./utils/automaPlayer";
 import type {
@@ -34,10 +33,12 @@ export interface AutomaSnapshot {
   useLegendaryHunt: boolean;
   turnCount: number;
   currentTab: GameTab;
-  actionDeck: ActionCard[];
-  actionDiscard: ActionCard[];
   automaPlayers: AutomaPlayerState[];
   activeAutomaIndex: number;
+  /** @deprecated Migración: antes el mazo de Acción era global. */
+  actionDeck?: ActionCard[];
+  /** @deprecated Migración: antes el descarte de Acción era global. */
+  actionDiscard?: ActionCard[];
   /** @deprecated Migración desde saves v1 con un solo Automa. */
   selectedSchoolId?: WitcherSchoolId;
   /** @deprecated Migración desde saves v1 con un solo Automa. */
@@ -85,6 +86,48 @@ function resolveUseBombs(parsed: Partial<AutomaSnapshot>, defaults: AutomaSnapsh
   return defaults.useBombs;
 }
 
+/** Asigna mazo Acción global antiguo al primer Automa si aún no tiene el suyo. */
+function migrateSharedActionDeck(
+  players: AutomaPlayerState[],
+  parsed: Partial<AutomaSnapshot>
+): AutomaPlayerState[] {
+  const sharedDeck = parsed.actionDeck;
+  const sharedDiscard = parsed.actionDiscard;
+  if (!sharedDeck?.length && !sharedDiscard?.length) {
+    return players;
+  }
+
+  const firstHasOwnDeck = (players[0]?.actionDeck?.length ?? 0) > 0;
+  if (firstHasOwnDeck) {
+    return players;
+  }
+
+  return players.map((player, index) =>
+    index === 0
+      ? {
+          ...player,
+          actionDeck: sharedDeck ?? [],
+          actionDiscard: sharedDiscard ?? [],
+        }
+      : player
+  );
+}
+
+/** Corrige textos antiguos del registro: «Mazo Acción compartido». */
+function migrateSharedActionLogWording(players: AutomaPlayerState[]): AutomaPlayerState[] {
+  return players.map((player) => ({
+    ...player,
+    logs: player.logs.map((line) =>
+      line
+        .replace(/Mazo Acción compartido:/gi, "Acción por Automa:")
+        .replace(
+          /mazo de Acción es compartido/gi,
+          "cada Automa tiene su propio mazo de Acción"
+        )
+    ),
+  }));
+}
+
 export function createDefaultAutomaSnapshot(): AutomaSnapshot {
   return {
     setupMode: true,
@@ -98,8 +141,6 @@ export function createDefaultAutomaSnapshot(): AutomaSnapshot {
     useLegendaryHunt: false,
     turnCount: 1,
     currentTab: "turn",
-    actionDeck: [],
-    actionDiscard: [],
     automaPlayers: createDefaultPlayers(),
     activeAutomaIndex: 0,
   };
@@ -120,6 +161,8 @@ function migrateLegacySnapshot(parsed: Partial<AutomaSnapshot>): AutomaSnapshot 
     schoolId,
     automa: parsed.automa,
     lockedAttributes: parsed.lockedAttributes,
+    actionDeck: parsed.actionDeck,
+    actionDiscard: parsed.actionDiscard,
     challengeDeck: parsed.challengeDeck,
     challengeDiscard: parsed.challengeDiscard,
     level3ChallengeReserve: parsed.level3ChallengeReserve,
@@ -138,8 +181,6 @@ function migrateLegacySnapshot(parsed: Partial<AutomaSnapshot>): AutomaSnapshot 
     useBombs,
     automaPlayers: [legacyPlayer],
     activeAutomaIndex: 0,
-    actionDeck: parsed.actionDeck ?? defaults.actionDeck,
-    actionDiscard: parsed.actionDiscard ?? defaults.actionDiscard,
   };
 }
 
@@ -166,7 +207,7 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
         ? parsed.setupSchoolIds
         : parsed.automaPlayers.map((player) => player.schoolId);
 
-    const automaPlayers = parsed.automaPlayers.map((player, index) => {
+    let automaPlayers = parsed.automaPlayers.map((player, index) => {
       const schoolId = player.schoolId ?? setupSchoolIds[index] ?? "wolf";
       const base = createAutomaPlayerState(
         index,
@@ -176,6 +217,9 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
       );
       return mergeAutomaPlayerState(base, player);
     });
+    automaPlayers = migrateSharedActionLogWording(
+      migrateSharedActionDeck(automaPlayers, parsed)
+    );
 
     const activeAutomaIndex = Math.min(
       Math.max(parsed.activeAutomaIndex ?? 0, 0),
@@ -190,8 +234,6 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
       useBombs,
       automaPlayers,
       activeAutomaIndex,
-      actionDeck: parsed.actionDeck ?? defaults.actionDeck,
-      actionDiscard: parsed.actionDiscard ?? defaults.actionDiscard,
     };
   } catch {
     return createDefaultAutomaSnapshot();

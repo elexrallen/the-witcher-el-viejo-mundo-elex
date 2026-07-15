@@ -64,7 +64,7 @@ function DeckTable({
   return (
     <div className="setup-deck-table grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
       <div className="bg-zinc-900/40 p-3 rounded-lg border border-zinc-850">
-        <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN (compartido)</span>
+        <span className="text-zinc-200 font-bold block mb-2">Mazo de ACCIÓN (por Automa)</span>
         <ul className="space-y-0.5 text-zinc-400">
           <li>Total catalogadas: <strong className="text-zinc-200">{actionCount}</strong></li>
           <li>Genéricas: {genericActionCount} · Escuela: {schoolActionCount}</li>
@@ -76,7 +76,7 @@ function DeckTable({
             )}
           </li>
           <li className="text-[10px]">
-            Apilado: niv. III abajo → II → I arriba (roba desde I)
+            Apilado: niv. III abajo → II → I arriba (roba desde I). Un mazo por Automa.
           </li>
         </ul>
       </div>
@@ -211,11 +211,10 @@ export default function SetupWizard(props: SetupWizardProps) {
                       );
                     })}
                   </div>
-                  {maxPlayerCount < 4 && (
-                    <p className="text-[10px] text-zinc-500 mt-2">
-                      Máximo {maxPlayerCount} con el catálogo actual y la dificultad elegida (cada uno necesita mazo Desafío propio).
-                    </p>
-                  )}
+                  <p className="text-[10px] text-zinc-500 mt-2">
+                    Cada Automa tendrá su propio mazo de Acción y de Desafío (movimientos independientes,
+                    con posibilidad de cruzarse y combatir entre ellos).
+                  </p>
                 </div>
 
                 <div>
@@ -279,7 +278,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                 </button>
                 {showBonusTip && (
                   <p className="text-xs text-zinc-400 leading-relaxed bg-zinc-950/60 border border-zinc-850 rounded-xl p-3">
-                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza. Puedes simular varios brujos: un mazo Desafío por Automa y un mazo Acción compartido.
+                    En combate, si la carta muestra el símbolo de escuela, el Automa recibe el bono pasivo de su fortaleza. Puedes simular varios brujos: cada Automa tiene su mazo de Acción y de Desafío propios.
                   </p>
                 )}
               </div>
@@ -351,7 +350,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                   </p>
                   {playerCount > 1 && (
                     <p className="text-xs text-zinc-500">
-                      Turnos alternados: cada Automa juega su fase completa antes de pasar al siguiente. Mazo Acción compartido.
+                      Turnos alternados: cada Automa juega su fase completa (con su mazo de Acción) antes de pasar al siguiente.
                     </p>
                   )}
                 </div>

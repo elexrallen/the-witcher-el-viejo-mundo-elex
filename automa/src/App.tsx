@@ -3,15 +3,14 @@ import { ACTION_CARDS, CHALLENGE_CARDS, getCatalogStats } from "./data/cards";
 import { WITCHER_SCHOOLS } from "./data/schools";
 import {
   WitcherSchoolId,
-  ActionCard,
   ChallengeCard,
   AutomaPlayerState,
   CombatState,
 } from "./types";
 import { shuffleArray } from "./utils/shuffle";
 import {
+  buildActionDecksForPlayers,
   buildChallengeDecksForPlayers,
-  buildDecksFromCatalog,
   getManualDeckTotals,
   getMaxAutomaPlayers,
 } from "./utils/deckBuilder";
@@ -35,6 +34,7 @@ import {
 } from "./utils/legendaryHuntRules";
 import { findMonsterSpecialAttack } from "./utils/monsterSpecialAttacks";
 import { closeAllOpenDialogs } from "./utils/dialog";
+import { applyDamageToCombatDeck } from "./utils/automaVsAutoma";
 import {
   ATTRIBUTE_LABELS,
   getMeditationTrophyAttribute,
@@ -77,13 +77,13 @@ export default function App() {
 
   const [turnCount, setTurnCount] = useState(initialSnapshot.turnCount);
   const [currentTab, setCurrentTab] = useState<GameTab>(initialSnapshot.currentTab);
-  const [actionDeck, setActionDeck] = useState<ActionCard[]>(initialSnapshot.actionDeck);
-  const [actionDiscard, setActionDiscard] = useState<ActionCard[]>(initialSnapshot.actionDiscard);
   const [startError, setStartError] = useState<string | null>(null);
 
   const activePlayer = automaPlayers[activeAutomaIndex] ?? automaPlayers[0];
   const automa = activePlayer.automa;
   const lockedAttributes = activePlayer.lockedAttributes;
+  const actionDeck = activePlayer.actionDeck;
+  const actionDiscard = activePlayer.actionDiscard;
   const challengeDeck = activePlayer.challengeDeck;
   const challengeDiscard = activePlayer.challengeDiscard;
   const level3ChallengeReserve = activePlayer.level3ChallengeReserve;
@@ -96,6 +96,8 @@ export default function App() {
   const {
     setAutoma,
     setLockedAttributes,
+    setActionDeck,
+    setActionDiscard,
     setChallengeDeck,
     setChallengeDiscard,
     setLevel3ChallengeReserve,
@@ -123,8 +125,6 @@ export default function App() {
         useLegendaryHunt,
         turnCount,
         currentTab,
-        actionDeck,
-        actionDiscard,
         automaPlayers,
         activeAutomaIndex,
       });
@@ -148,8 +148,6 @@ export default function App() {
     useLegendaryHunt,
     turnCount,
     currentTab,
-    actionDeck,
-    actionDiscard,
     automaPlayers,
     activeAutomaIndex,
   ]);
@@ -258,7 +256,7 @@ export default function App() {
       return;
     }
 
-    const { actionDeck: finalActions } = buildDecksFromCatalog({
+    const { actionDecks } = buildActionDecksForPlayers(playerCount, {
       useLegendaryHunt,
       difficulty,
     });
@@ -278,6 +276,8 @@ export default function App() {
         );
         return {
           ...player,
+          actionDeck: actionDecks[index] ?? [],
+          actionDiscard: [],
           challengeDeck: challengeDecks[index] ?? [],
           level3ChallengeReserve: level3Reserves[index] ?? [],
           logs: [`${player.label} entra en la partida.`],
@@ -296,7 +296,8 @@ export default function App() {
         : 0;
 
     const schoolSummary = players.map((player) => player.label).join(", ");
-    const startLog = `Partida iniciada — ${playerCount} Automa(s): ${schoolSummary} (${difficulty}). Mazo Acción compartido: ${finalActions.length} cartas; Desafío por Automa: ${manual.challengeTotal} + ${level3Reserves[0]?.length ?? 3} reserva (manual: ${manual.actionTotal}${lhCount ? `+${lhCount} LH` : ""} / ${manual.challengeTotal}). Catálogo: ${stats.actionCount} acc. + ${stats.challengeCount} desaf.`;
+    const actionLen = actionDecks[0]?.length ?? manual.actionTotal;
+    const startLog = `Partida iniciada — ${playerCount} Automa(s): ${schoolSummary} (${difficulty}). Cada Automa: Acción ${actionLen} cartas + Desafío ${manual.challengeTotal} (+ ${level3Reserves[0]?.length ?? 3} reserva trofeos)${lhCount ? ` · LH +${lhCount}/Automa` : ""} (manual ${manual.actionTotal}/${manual.challengeTotal}). Catálogo: ${stats.actionCount} acc. + ${stats.challengeCount} desaf.`;
 
     setAutomaPlayers(
       players.map((player, index) => ({
@@ -308,8 +309,6 @@ export default function App() {
       }))
     );
     setActiveAutomaIndex(0);
-    setActionDeck(finalActions);
-    setActionDiscard([]);
     setTurnCount(1);
     setSetupMode(false);
     setCurrentTab("turn");
@@ -570,13 +569,27 @@ export default function App() {
     }
   };
 
-  const handleStartCombat = (opponentType: "monster" | "witcher", name: string) => {
+  const handleStartCombat = (
+    opponentType: "monster" | "witcher",
+    name: string,
+    options?: { opponentAutomaIndex?: number | null }
+  ) => {
     closeAllOpenDialogs();
     const combinedCombatDeck = shuffleArray([...challengeDeck, ...challengeDiscard]);
     const openingShield = capShieldLevel(
       automa.shieldLevel,
       automa.attributes.defense
     );
+    const rivalIndex = options?.opponentAutomaIndex ?? null;
+    const rival =
+      rivalIndex != null && rivalIndex >= 0 ? automaPlayers[rivalIndex] : null;
+    const isAutomaVsAutoma = opponentType === "witcher" && Boolean(rival);
+    const rivalCombatDeck = rival
+      ? shuffleArray([...rival.challengeDeck, ...rival.challengeDiscard])
+      : [];
+    const rivalOpeningShield = rival
+      ? capShieldLevel(rival.automa.shieldLevel, rival.automa.attributes.defense)
+      : 0;
     const isLegendaryCombat =
       useLegendaryHunt && isLegendaryMonsterOpponent(name);
     const legendaryEffectiveLife = isLegendaryCombat
@@ -613,9 +626,26 @@ export default function App() {
       lastReactionTriggered: null,
       pendingCounterattack: 0,
       lastDamageDiscards: [],
-      fightLog: [`Combate vs ${name}. Mazo: ${combinedCombatDeck.length} cartas. Escudo inicial: ${openingShield}.`],
+      isAutomaVsAutoma,
+      opponentAutomaIndex: isAutomaVsAutoma ? rivalIndex : null,
+      opponentCombatDeck: rivalCombatDeck,
+      opponentCombatDiscard: [],
+      opponentShieldsThisTurn: rivalOpeningShield,
+      opponentRevealedCard: null,
+      fightLog: isAutomaVsAutoma
+        ? [
+            `Combate Automa vs Automa: ${activePlayer.label} vs ${name}.`,
+            `Mazos: tú ${combinedCombatDeck.length} · rival ${rivalCombatDeck.length}. Escudos: ${openingShield} / ${rivalOpeningShield}.`,
+          ]
+        : [
+            `Combate vs ${name}. Mazo: ${combinedCombatDeck.length} cartas. Escudo inicial: ${openingShield}.`,
+          ],
     });
-    addLog(`¡COMBATE contra ${name.toUpperCase()}!`);
+    addLog(
+      isAutomaVsAutoma
+        ? `¡COMBATE AUTOMA vs AUTOMA contra ${name.toUpperCase()}!`
+        : `¡COMBATE contra ${name.toUpperCase()}!`
+    );
     if (isLegendaryCombat && legendaryEffectiveLife !== undefined) {
       addLog(
         `Monstruo Legendario — configura reserva de vida: ${formatLegendaryLifeSummary(automa)}.`
@@ -975,18 +1005,159 @@ export default function App() {
       bombs: consumables.bombs,
     }));
 
+    const totalVsRival = lastDamage + lastBonusOpponentDamage;
+
+    setCombat((prev) => {
+      let fightLog = [...allFightLogs, ...prev.fightLog];
+      let opponentCombatDeck = prev.opponentCombatDeck ?? [];
+      let opponentCombatDiscard = prev.opponentCombatDiscard ?? [];
+      let opponentShieldsThisTurn = prev.opponentShieldsThisTurn ?? 0;
+      let pendingCounterattack = prev.pendingCounterattack ?? 0;
+
+      let nextDeck = deck;
+      let nextDiscard = discard;
+      let nextShields = lastShield;
+
+      if (prev.isAutomaVsAutoma && totalVsRival > 0) {
+        const rivalIdx = prev.opponentAutomaIndex;
+        const rivalDef =
+          rivalIdx != null && automaPlayers[rivalIdx]
+            ? automaPlayers[rivalIdx].automa.attributes.defense
+            : 1;
+        const hit = applyDamageToCombatDeck(
+          opponentCombatDeck,
+          opponentCombatDiscard,
+          opponentShieldsThisTurn,
+          totalVsRival,
+          rivalDef,
+          "Rival Automa"
+        );
+        opponentCombatDeck = hit.deck;
+        opponentCombatDiscard = hit.discard;
+        opponentShieldsThisTurn = hit.shieldsAfterHit;
+        fightLog = [...hit.logs, ...fightLog];
+        if (hit.defeated) {
+          fightLog = [
+            "Rival Automa sin cartas — puedes declarar victoria.",
+            ...fightLog,
+          ];
+        }
+        // Reacciones del rival al recibir daño → contraatacan al Automa activo.
+        if (hit.pendingCounterattack > 0) {
+          const counter = applyDamageToCombatDeck(
+            nextDeck,
+            nextDiscard,
+            nextShields,
+            hit.pendingCounterattack,
+            automa.attributes.defense,
+            "Contraataque rival"
+          );
+          nextDeck = counter.deck;
+          nextDiscard = counter.discard;
+          nextShields = counter.shieldsAfterHit;
+          fightLog = [...counter.logs, ...fightLog];
+        }
+      }
+
+      return {
+        ...prev,
+        combatDeck: nextDeck,
+        combatDiscard: nextDiscard,
+        revealedCard: lastCard,
+        damageInflictedThisTurn: lastDamage,
+        shieldsActiveThisTurn: nextShields,
+        bonusOpponentDamageThisTurn: lastBonusOpponentDamage,
+        pendingAttackDamageBonus: combatEffects.pendingAttackDamageBonus,
+        ignoreNextOpponentDamage: combatEffects.ignoreNextOpponentDamage,
+        opponentCombatDeck,
+        opponentCombatDiscard,
+        opponentShieldsThisTurn,
+        pendingCounterattack,
+        fightLog,
+      };
+    });
+  };
+
+  /** Turno de ataque del Automa rival (brujo): revela carta Desafío y aplica daño al activo. */
+  const handleRivalAutomaAttack = () => {
+    if (!combat.isAutomaVsAutoma) return;
+    const rivalDeck = [...(combat.opponentCombatDeck ?? [])];
+    if (rivalDeck.length === 0) {
+      addLog("Rival Automa derrotado — sin cartas.");
+      return;
+    }
+
+    const card = rivalDeck[0];
+    const restDeck = rivalDeck.slice(1);
+    const rivalDiscard = [...(combat.opponentCombatDiscard ?? []), card];
+    let damage = card.damage;
+    let shields = card.shields;
+
+    if (card.schoolSpecialEffect) {
+      const rivalIdx = combat.opponentAutomaIndex;
+      const rivalPlayer =
+        rivalIdx != null ? automaPlayers[rivalIdx] : null;
+      const rivalSchool = rivalPlayer
+        ? WITCHER_SCHOOLS.find((s) => s.id === rivalPlayer.schoolId)
+        : null;
+      if (rivalSchool?.specialCard) {
+        const spec =
+          card.schoolSpecialEffect === 1
+            ? rivalSchool.specialCard.special1
+            : card.schoolSpecialEffect === 2
+              ? rivalSchool.specialCard.special2
+              : rivalSchool.specialCard.special3;
+        damage = spec.damage;
+        shields = spec.shields;
+      }
+    }
+
+    if (combat.ignoreNextOpponentDamage) {
+      setCombat((prev) => ({
+        ...prev,
+        opponentCombatDeck: restDeck,
+        opponentCombatDiscard: rivalDiscard,
+        opponentRevealedCard: card,
+        opponentShieldsThisTurn: Math.max(prev.opponentShieldsThisTurn ?? 0, shields),
+        ignoreNextOpponentDamage: false,
+        fightLog: [
+          `Ataque rival (${card.id}): ${damage} daño ignorado (Oso Especial 3).`,
+          ...prev.fightLog,
+        ],
+      }));
+      addLog(`Rival Automa atacó ${damage} — ignorado (Oso Especial 3).`);
+      return;
+    }
+
+    const hit = applyDamageToCombatDeck(
+      combat.combatDeck,
+      combat.combatDiscard,
+      combat.shieldsActiveThisTurn,
+      damage,
+      automa.attributes.defense,
+      "Automa activo"
+    );
+
     setCombat((prev) => ({
       ...prev,
-      combatDeck: deck,
-      combatDiscard: discard,
-      revealedCard: lastCard,
-      damageInflictedThisTurn: lastDamage,
-      shieldsActiveThisTurn: lastShield,
-      bonusOpponentDamageThisTurn: lastBonusOpponentDamage,
-      pendingAttackDamageBonus: combatEffects.pendingAttackDamageBonus,
-      ignoreNextOpponentDamage: combatEffects.ignoreNextOpponentDamage,
-      fightLog: [...allFightLogs, ...prev.fightLog],
+      opponentCombatDeck: restDeck,
+      opponentCombatDiscard: rivalDiscard,
+      opponentRevealedCard: card,
+      opponentShieldsThisTurn: Math.max(prev.opponentShieldsThisTurn ?? 0, shields),
+      combatDeck: hit.deck,
+      combatDiscard: hit.discard,
+      shieldsActiveThisTurn: hit.shieldsAfterHit,
+      pendingCounterattack: (prev.pendingCounterattack ?? 0) + hit.pendingCounterattack,
+      fightLog: [
+        `Ataque rival (${card.id}): ${damage} daño, ${shields} escudo. Restan ${restDeck.length}.`,
+        ...hit.logs,
+        ...prev.fightLog,
+      ],
     }));
+    addLog(`Rival Automa atacó con ${card.id}: ${damage} daño.`);
+    if (hit.defeated) {
+      addLog("Automa activo sin cartas — puedes declarar derrota.");
+    }
   };
 
   const handleReceiveDamage = (damageInput: number) => {
@@ -1083,6 +1254,35 @@ export default function App() {
     setCombat((prev) => {
       const amount = prev.pendingCounterattack ?? 0;
       if (amount <= 0) return prev;
+
+      if (prev.isAutomaVsAutoma) {
+        const rivalIdx = prev.opponentAutomaIndex;
+        const rivalDef =
+          rivalIdx != null && automaPlayers[rivalIdx]
+            ? automaPlayers[rivalIdx].automa.attributes.defense
+            : 1;
+        const hit = applyDamageToCombatDeck(
+          prev.opponentCombatDeck ?? [],
+          prev.opponentCombatDiscard ?? [],
+          prev.opponentShieldsThisTurn ?? 0,
+          amount,
+          rivalDef,
+          "Contraataque → rival"
+        );
+        return {
+          ...prev,
+          pendingCounterattack: 0,
+          opponentCombatDeck: hit.deck,
+          opponentCombatDiscard: hit.discard,
+          opponentShieldsThisTurn: hit.shieldsAfterHit,
+          fightLog: [
+            `✓ Contraataque ${amount} aplicado al Automa rival.`,
+            ...hit.logs,
+            ...prev.fightLog,
+          ],
+        };
+      }
+
       return {
         ...prev,
         pendingCounterattack: 0,
@@ -1092,12 +1292,25 @@ export default function App() {
         ],
       };
     });
-    addLog("Daño de reacción aplicado al oponente en mesa.");
+    addLog(
+      combat.isAutomaVsAutoma
+        ? "Contraataque aplicado al Automa rival."
+        : "Daño de reacción aplicado al oponente en mesa."
+    );
   };
 
   const handleEndCombat = (automaWon: boolean) => {
     const combined = [...combat.combatDeck, ...combat.combatDiscard];
     const restoredDeck = combined.length > 0 ? shuffleArray(combined) : [];
+    const rivalIndex = combat.opponentAutomaIndex;
+    const isDual = Boolean(combat.isAutomaVsAutoma && rivalIndex != null);
+
+    const rivalCombined = [
+      ...(combat.opponentCombatDeck ?? []),
+      ...(combat.opponentCombatDiscard ?? []),
+    ];
+    const rivalRestored =
+      rivalCombined.length > 0 ? shuffleArray(rivalCombined) : [];
 
     setChallengeDeck(restoredDeck);
     setChallengeDiscard([]);
@@ -1105,19 +1318,59 @@ export default function App() {
     const resetShield = getMaxShieldLevel(automa.attributes.defense);
     setAutoma((p) => ({ ...p, shieldLevel: resetShield }));
 
+    if (isDual && rivalIndex != null) {
+      setAutomaPlayers((prev) =>
+        prev.map((player, index) => {
+          if (index !== rivalIndex) return player;
+          const rivalShield = getMaxShieldLevel(player.automa.attributes.defense);
+          const rivalWon = !automaWon;
+          return {
+            ...player,
+            challengeDeck: rivalRestored,
+            challengeDiscard: [],
+            automa: {
+              ...player.automa,
+              shieldLevel: rivalShield,
+              trophies: rivalWon
+                ? Math.min(4, player.automa.trophies + 1)
+                : player.automa.trophies,
+            },
+            logs: [
+              rivalWon
+                ? `Combate vs ${activePlayer.label}: victoria (+1 trofeo).`
+                : `Combate vs ${activePlayer.label}: derrota.`,
+              ...player.logs,
+            ],
+          };
+        })
+      );
+    }
+
     setCombat((prev) => ({ ...prev, isActive: false }));
     addLog(
       `Fin de combate — mazo Desafío ${restoredDeck.length} carta(s) (barajado). Escudo restaurado a ${resetShield}.`
     );
+    if (isDual) {
+      addLog(
+        `Rival Automa: mazo Desafío restaurado (${rivalRestored.length} carta(s)).`
+      );
+    }
 
     if (automaWon) {
       handleAddTrophy();
-      addLog("Combate ganado por el Automa.");
+      addLog(
+        isDual
+          ? "Combate ganado: Automa activo obtiene trofeo; el rival no."
+          : "Combate ganado por el Automa."
+      );
       if (combat.isLegendaryMonsterCombat) {
         setAutoma((p) => ({ ...p, legendaryMonsterDefeated: true }));
         addLog("Monstruo Legendario derrotado — las cartas LH irán al descarte.");
       }
     } else {
+      if (isDual) {
+        addLog("Combate perdido: el Automa rival obtiene el trofeo.");
+      }
       if (combat.isLegendaryMonsterCombat) {
         const { next, drewFromReserve } = applyLegendaryMonsterLossPenalty(automa);
         setAutoma(next);
@@ -1186,6 +1439,15 @@ export default function App() {
             combat={combat}
             automa={automa}
             activeSchool={activeSchoolObj}
+            rivalSchool={
+              combat.isAutomaVsAutoma && combat.opponentAutomaIndex != null
+                ? WITCHER_SCHOOLS.find(
+                    (school) =>
+                      school.id ===
+                      automaPlayers[combat.opponentAutomaIndex!]?.schoolId
+                  ) ?? null
+                : null
+            }
             legendaryMonsterId={automa.legendaryMonsterId}
             lockedAttributes={lockedAttributes}
             useBombs={useBombs}
@@ -1197,6 +1459,7 @@ export default function App() {
               if (automa.trophies > 0) setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
             }}
             onAttack={handleAutomaAttackTurn}
+            onRivalAttack={handleRivalAutomaAttack}
             onReceiveDamage={handleReceiveDamage}
             onEndCombat={handleEndCombat}
             onDiscardTopCombatCard={handleDiscardTopCombatCard}

@@ -72,6 +72,26 @@ export function createActivePlayerSetters(
         (prev) => (typeof updater === "function" ? updater(prev) : updater)
       );
     },
+    setActionDeck: (
+      updater: ActionCard[] | ((prev: ActionCard[]) => ActionCard[])
+    ) => {
+      updateActivePlayerField(
+        setAutomaPlayers,
+        activeIndex(),
+        "actionDeck",
+        (prev) => (typeof updater === "function" ? updater(prev) : updater)
+      );
+    },
+    setActionDiscard: (
+      updater: ActionCard[] | ((prev: ActionCard[]) => ActionCard[])
+    ) => {
+      updateActivePlayerField(
+        setAutomaPlayers,
+        activeIndex(),
+        "actionDiscard",
+        (prev) => (typeof updater === "function" ? updater(prev) : updater)
+      );
+    },
     setChallengeDeck: (
       updater: ChallengeCard[] | ((prev: ChallengeCard[]) => ChallengeCard[])
     ) => {

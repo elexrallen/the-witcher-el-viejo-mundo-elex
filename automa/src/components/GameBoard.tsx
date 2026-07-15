@@ -44,7 +44,11 @@ type GameBoardProps = {
   onApplyBonuses: () => void;
   onMeditate: () => void;
   onExplore: () => void;
-  onStartCombat: (opponentType: "monster" | "witcher", name: string) => void;
+  onStartCombat: (
+    opponentType: "monster" | "witcher",
+    name: string,
+    options?: { opponentAutomaIndex?: number | null }
+  ) => void;
   onEndTurn: () => void;
   onClearLogs: () => void;
   onAdvanceToPhase2: () => void;
@@ -151,6 +155,8 @@ export default function GameBoard(props: GameBoardProps) {
               actionDeckLength={props.actionDeckLength}
               challengeDeckLength={props.challengeDeckLength}
               automa={props.automa}
+              automaPlayers={props.automaPlayers}
+              activeAutomaIndex={props.activeAutomaIndex}
               activeActionCard={props.activeActionCard}
               bonusApplied={props.bonusApplied}
               logs={props.logs}

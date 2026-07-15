@@ -15,6 +15,8 @@ type CombatViewProps = {
   combat: CombatState;
   automa: AutomaState;
   activeSchool: WitcherSchool;
+  /** Escuela del Automa rival (combate Automa vs Automa). */
+  rivalSchool?: WitcherSchool | null;
   legendaryMonsterId?: string;
   lockedAttributes: Record<string, boolean>;
   useBombs: boolean;
@@ -24,6 +26,7 @@ type CombatViewProps = {
   onAutomaChange: (updater: (prev: AutomaState) => AutomaState) => void;
   onTrophyDecrease: () => void;
   onAttack: () => void;
+  onRivalAttack?: () => void;
   onReceiveDamage: (damage: number) => void;
   onEndCombat: (automaWon: boolean) => void;
   onDiscardTopCombatCard: () => void;
@@ -61,6 +64,11 @@ function CombatStatsBar({
       <span className="combat-stats-bar__chip">
         Mazo <strong>{combat.combatDeck.length}</strong>
       </span>
+      {combat.isAutomaVsAutoma && (
+        <span className="combat-stats-bar__chip combat-stats-bar__chip--damage">
+          Rival <strong>{combat.opponentCombatDeck?.length ?? 0}</strong>
+        </span>
+      )}
     </div>
   );
 }
@@ -116,6 +124,7 @@ export default function CombatView({
   combat,
   automa,
   activeSchool,
+  rivalSchool = null,
   legendaryMonsterId,
   lockedAttributes,
   useBombs,
@@ -125,6 +134,7 @@ export default function CombatView({
   onAutomaChange,
   onTrophyDecrease,
   onAttack,
+  onRivalAttack,
   onReceiveDamage,
   onEndCombat,
   onDiscardTopCombatCard,
@@ -184,7 +194,11 @@ export default function CombatView({
           </h2>
         </div>
         <span className="text-[10px] font-mono text-red-400 bg-red-950/60 px-2.5 py-0.5 rounded-full border border-red-900/50 uppercase font-bold">
-          {combat.opponentType === "monster" ? "Monstruo" : "Brujo"}
+          {combat.isAutomaVsAutoma
+            ? "Automa vs Automa"
+            : combat.opponentType === "monster"
+              ? "Monstruo"
+              : "Brujo"}
         </span>
       </div>
 
@@ -214,6 +228,24 @@ export default function CombatView({
             style={{ width: `${Math.min(100, (combat.combatDeck.length / 12) * 100)}%` }}
           />
         </div>
+        {combat.isAutomaVsAutoma && (
+          <>
+            <div className="flex justify-between text-xs text-zinc-400 mt-2">
+              <span className="font-bold">Mazo del rival ({combat.opponentName})</span>
+              <span className="font-mono font-black text-white">
+                {combat.opponentCombatDeck?.length ?? 0} cartas · escudo {combat.opponentShieldsThisTurn ?? 0}
+              </span>
+            </div>
+            <div className="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800">
+              <div
+                className="bg-amber-600 h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min(100, ((combat.opponentCombatDeck?.length ?? 0) / 12) * 100)}%`,
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       <CombatReactionBanner
@@ -229,27 +261,48 @@ export default function CombatView({
           className="py-3 min-h-[var(--touch-min)] bg-red-600 hover:bg-red-500 disabled:bg-zinc-800 text-white font-black rounded-xl flex items-center justify-center gap-2 text-sm font-display uppercase"
           id="combat-attack-btn"
         >
-          <WitcherIcon name="sword" size={18} /> Atacar (Automa)
+          <WitcherIcon name="sword" size={18} /> Atacar ({activeSchool.name})
         </button>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="Daño"
-            min="1"
-            value={damageInput}
-            onChange={(e) => setDamageInput(e.target.value)}
-            className="flex-1 bg-zinc-950 text-sm border border-zinc-800 rounded-xl px-3 py-2 text-center font-mono text-red-400 min-h-[var(--touch-min)]"
-          />
+        {combat.isAutomaVsAutoma && onRivalAttack ? (
           <button
             type="button"
-            onClick={applyDamage}
-            className="px-4 min-h-[var(--touch-min)] bg-zinc-900 text-red-400 border border-red-900/40 rounded-xl font-bold text-xs uppercase font-display"
-            id="combat-receive-damage-btn"
+            onClick={onRivalAttack}
+            disabled={(combat.opponentCombatDeck?.length ?? 0) === 0}
+            className="py-3 min-h-[var(--touch-min)] bg-amber-700 hover:bg-amber-600 disabled:bg-zinc-800 text-white font-black rounded-xl flex items-center justify-center gap-2 text-sm font-display uppercase"
+            id="combat-rival-attack-btn"
           >
-            Daño
+            <WitcherIcon name="sword" size={18} /> Atacar ({rivalSchool?.name ?? "rival"})
           </button>
-        </div>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="Daño"
+              min="1"
+              value={damageInput}
+              onChange={(e) => setDamageInput(e.target.value)}
+              className="flex-1 bg-zinc-950 text-sm border border-zinc-800 rounded-xl px-3 py-2 text-center font-mono text-red-400 min-h-[var(--touch-min)]"
+            />
+            <button
+              type="button"
+              onClick={applyDamage}
+              className="px-4 min-h-[var(--touch-min)] bg-zinc-900 text-red-400 border border-red-900/40 rounded-xl font-bold text-xs uppercase font-display"
+              id="combat-receive-damage-btn"
+            >
+              Daño
+            </button>
+          </div>
+        )}
       </div>
+
+      {combat.isAutomaVsAutoma && combat.opponentRevealedCard && (
+        <div className="mt-3 p-3 rounded-xl bg-amber-950/20 border border-amber-900/40">
+          <p className="text-[10px] uppercase font-mono text-amber-400 font-bold mb-2">
+            Última carta del rival
+          </p>
+          <WitcherCard card={combat.opponentRevealedCard} type="challenge" school={activeSchool} />
+        </div>
+      )}
 
       <RevealedCombatCard
         combat={combat}
@@ -337,7 +390,7 @@ export default function CombatView({
               className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-emerald-950 text-emerald-400 font-display font-black rounded-xl text-xs uppercase"
               id="combat-win-btn"
             >
-              Automa gana
+              {activeSchool.name} gana
             </button>
             <button
               type="button"
@@ -345,7 +398,9 @@ export default function CombatView({
               className="flex-1 py-3 min-h-[var(--touch-min)] bg-zinc-900 border border-red-950 text-red-400 font-display font-black rounded-xl text-xs uppercase"
               id="combat-lose-btn"
             >
-              Automa pierde
+              {combat.isAutomaVsAutoma && rivalSchool
+                ? `${rivalSchool.name} gana`
+                : `${activeSchool.name} pierde`}
             </button>
           </div>
         </div>

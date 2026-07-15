@@ -1,7 +1,6 @@
 import {
   ACTION_CARDS,
   CHALLENGE_CARDS,
-  getCatalogStats,
   LEVEL_3_CHALLENGE_RESERVE,
   SCHOOL_ACTION_CARDS,
   SCHOOL_CHALLENGE_CARDS,
@@ -137,6 +136,90 @@ function pickByLevelExcluding<T extends { id: string }>(
   return picked;
 }
 
+function cloneCardById<T extends { id: string }>(card: T, suffix: string): T {
+  return { ...card, id: `${card.id}${suffix}` };
+}
+
+/**
+ * Elige cartas por nivel priorizando IDs aún no usados.
+ * Si el catálogo no alcanza (prototipo incompleto), rellena reutilizando
+ * clones del pool completo para no dejar mazos a medias.
+ */
+function pickByLevelPreferUnique<T extends ActionCard | ChallengeCard>(
+  pool: T[],
+  counts: LevelCounts,
+  usedIds: Set<string>,
+  reuseSuffix: string
+): T[] {
+  const unique = pickByLevelExcluding(pool, counts, usedIds);
+  const got: LevelCounts = { 1: 0, 2: 0, 3: 0 };
+  for (const card of unique) {
+    got[normalizeLevel(card.level)] += 1;
+  }
+
+  const shortfall: LevelCounts = {
+    1: Math.max(0, counts[1] - got[1]),
+    2: Math.max(0, counts[2] - got[2]),
+    3: Math.max(0, counts[3] - got[3]),
+  };
+  if (shortfall[1] + shortfall[2] + shortfall[3] === 0) {
+    return unique;
+  }
+
+  const fillers = pickByLevel(pool, shortfall).map((card, index) =>
+    cloneCardById(card, `${reuseSuffix}-${index}`)
+  );
+  return [...unique, ...fillers];
+}
+
+function pickTrophyReserve(
+  pool: ChallengeCard[],
+  usedIds: Set<string>,
+  count: number,
+  reuseSuffix: string
+): ChallengeCard[] {
+  const available = pool.filter((card) => !usedIds.has(card.id));
+  const unique = pickRandom(available, count);
+  for (const card of unique) {
+    usedIds.add(card.id);
+  }
+  if (unique.length >= count) {
+    return unique;
+  }
+
+  const fillers = pickRandom(pool, count - unique.length).map((card, index) =>
+    cloneCardById(card, `${reuseSuffix}-tr-${index}`)
+  );
+  return [...unique, ...fillers];
+}
+
+function pickLegendaryHuntForPlayer(
+  difficulty: DeckDifficulty,
+  usedIds: Set<string>,
+  reuseSuffix: string
+): ActionCard[] {
+  const count = difficulty === "easy" ? 1 : difficulty === "difficult" ? 3 : 2;
+  if (count <= 0 || LEGENDARY_HUNT_ACTION_CARDS.length === 0) {
+    return [];
+  }
+
+  const available = LEGENDARY_HUNT_ACTION_CARDS.filter((card) => !usedIds.has(card.id));
+  const unique = pickRandom(available, count);
+  for (const card of unique) {
+    usedIds.add(card.id);
+  }
+  if (unique.length >= count) {
+    return unique;
+  }
+
+  return [
+    ...unique,
+    ...pickRandom(LEGENDARY_HUNT_ACTION_CARDS, count - unique.length).map((card, index) =>
+      cloneCardById(card, `${reuseSuffix}-lh-${index}`)
+    ),
+  ];
+}
+
 /** Cartas Desafío necesarias por Automa (mazo + reserva de trofeos). */
 export function getChallengeCardsPerAutoma(difficulty: DeckDifficulty): number {
   const table = MANUAL_DECK_TABLES[difficulty];
@@ -144,19 +227,13 @@ export function getChallengeCardsPerAutoma(difficulty: DeckDifficulty): number {
   return sum(table.challenge.generic) + sum(table.challenge.school) + TROPHY_RESERVE_COUNT;
 }
 
-/** Máximo de Automas según catálogo disponible (sin duplicar cartas Desafío). */
-export function getMaxAutomaPlayers(difficulty: DeckDifficulty): number {
-  const stats = getCatalogStats();
-  const perAutoma = getChallengeCardsPerAutoma(difficulty);
-  if (perAutoma <= 0) {
-    return 1;
-  }
-  return Math.max(1, Math.min(4, Math.floor(stats.challengeCount / perAutoma)));
-}
-
-function pickLegendaryHuntCards(difficulty: DeckDifficulty): ActionCard[] {
-  const count = difficulty === "easy" ? 1 : difficulty === "difficult" ? 3 : 2;
-  return pickRandom(LEGENDARY_HUNT_ACTION_CARDS, count);
+/**
+ * Máximo de Automas configurables.
+ * Las cartas de escuela se reutilizan por Automa (en física cada escuela tiene las suyas).
+ * Las genéricas se reparten sin duplicar mientras el catálogo alcance; si no, se clonan.
+ */
+export function getMaxAutomaPlayers(_difficulty?: DeckDifficulty): number {
+  return 4;
 }
 
 /**
@@ -175,74 +252,76 @@ function stackActionDeck(
   ];
 }
 
+export type BuiltMultiActionDecks = {
+  actionDecks: ActionCard[][];
+};
+
 /**
- * Construye mazos según dificultad (manual V1.4).
- * Reserva de trofeos: 3 cartas Desafío genéricas Lvl III.
+ * Construye un mazo de Acción por Automa.
+ * - Escuela: pool completo para cada Automa.
+ * - Genéricas / Cacería Legendaria: sin duplicar mientras haya cartas; si no, se clonan.
  */
-export function buildDecksFromCatalog(options?: DeckBuildOptions): BuiltDecks {
+export function buildActionDecksForPlayers(
+  playerCount: number,
+  options?: DeckBuildOptions
+): BuiltMultiActionDecks {
   const difficulty: DeckDifficulty = options?.difficulty ?? "intermediate";
   const table = MANUAL_DECK_TABLES[difficulty];
+  const usedIds = new Set<string>();
+  const lhUsedIds = new Set<string>();
 
   const genericActionPool = [...ACTION_CARDS];
   const schoolActionPool = [...SCHOOL_ACTION_CARDS];
-  const genericChallengePool = [...CHALLENGE_CARDS];
-  const genericChallengeL3Pool = [...LEVEL_3_CHALLENGE_RESERVE];
-  const schoolChallengePool = [...SCHOOL_CHALLENGE_CARDS];
+  const actionDecks: ActionCard[][] = [];
 
-  const trophyReserve = pickRandom(genericChallengeL3Pool, TROPHY_RESERVE_COUNT);
-  const trophyIds = new Set(trophyReserve.map((card) => card.id));
-  const genericL3ForDeck = genericChallengeL3Pool.filter(
-    (card) => !trophyIds.has(card.id)
-  );
+  for (let i = 0; i < playerCount; i++) {
+    const reuseSuffix = `__a${i + 1}`;
+    const selectedActionGeneric = pickByLevelPreferUnique(
+      genericActionPool,
+      table.action.generic,
+      usedIds,
+      reuseSuffix
+    );
+    const selectedActionSchool = pickByLevel(schoolActionPool, table.action.school);
 
-  const genericChallengeFullPool = [
-    ...genericChallengePool,
-    ...genericL3ForDeck,
-  ];
+    const actionByLevel: Record<1 | 2 | 3, ActionCard[]> = { 1: [], 2: [], 3: [] };
+    for (const card of [...selectedActionGeneric, ...selectedActionSchool]) {
+      actionByLevel[normalizeLevel(card.level)].push(card);
+    }
 
-  const selectedActionGeneric = pickByLevel(genericActionPool, table.action.generic);
-  const selectedActionSchool = pickByLevel(schoolActionPool, table.action.school);
-  const selectedChallengeGeneric = pickByLevel(
-    genericChallengeFullPool,
-    table.challenge.generic
-  );
-  const selectedChallengeSchool = pickByLevel(
-    schoolChallengePool,
-    table.challenge.school
-  );
+    if (options?.useLegendaryHunt) {
+      actionByLevel[3].push(
+        ...pickLegendaryHuntForPlayer(difficulty, lhUsedIds, reuseSuffix)
+      );
+    }
 
-  const actionByLevel: Record<1 | 2 | 3, ActionCard[]> = { 1: [], 2: [], 3: [] };
-  for (const card of [...selectedActionGeneric, ...selectedActionSchool]) {
-    actionByLevel[normalizeLevel(card.level)].push(card);
+    actionDecks.push(
+      stackActionDeck(actionByLevel[1], actionByLevel[2], actionByLevel[3])
+    );
   }
 
-  const lhCards =
-    options?.useLegendaryHunt && LEGENDARY_HUNT_ACTION_CARDS.length > 0
-      ? pickLegendaryHuntCards(difficulty)
-      : [];
-  actionByLevel[3].push(...lhCards);
+  return { actionDecks };
+}
 
-  const actionDeck = stackActionDeck(
-    actionByLevel[1],
-    actionByLevel[2],
-    actionByLevel[3]
-  );
-
-  const challengeDeck = shuffleArray([
-    ...selectedChallengeGeneric,
-    ...selectedChallengeSchool,
-  ]);
+/**
+ * Construye mazos según dificultad (manual V1.4) para un solo Automa.
+ * Reserva de trofeos: 3 cartas Desafío genéricas Lvl III.
+ */
+export function buildDecksFromCatalog(options?: DeckBuildOptions): BuiltDecks {
+  const { actionDecks } = buildActionDecksForPlayers(1, options);
+  const { challengeDecks, level3Reserves } = buildChallengeDecksForPlayers(1, options);
 
   return {
-    actionDeck,
-    challengeDeck,
-    level3Reserve: trophyReserve,
+    actionDeck: actionDecks[0] ?? [],
+    challengeDeck: challengeDecks[0] ?? [],
+    level3Reserve: level3Reserves[0] ?? [],
   };
 }
 
 /**
- * Construye un mazo Desafío independiente por Automa, sin repetir cartas entre ellos.
- * El mazo de Acción sigue siendo compartido (usar buildDecksFromCatalog).
+ * Construye un mazo Desafío por Automa.
+ * - Escuela: pool completo para cada Automa (físicamente cada escuela tiene las suyas).
+ * - Genéricas / reserva de trofeos: sin duplicar mientras haya cartas; si no alcanzan, se clonan.
  */
 export function buildChallengeDecksForPlayers(
   playerCount: number,
@@ -255,33 +334,30 @@ export function buildChallengeDecksForPlayers(
   const genericChallengePool = [...CHALLENGE_CARDS];
   const genericChallengeL3Pool = [...LEVEL_3_CHALLENGE_RESERVE];
   const schoolChallengePool = [...SCHOOL_CHALLENGE_CARDS];
+  const genericFullPool = [...genericChallengePool, ...genericChallengeL3Pool];
 
   const challengeDecks: ChallengeCard[][] = [];
   const level3Reserves: ChallengeCard[][] = [];
 
   for (let i = 0; i < playerCount; i++) {
-    const trophyReserve = pickRandom(
-      genericChallengeL3Pool.filter((card) => !usedIds.has(card.id)),
-      TROPHY_RESERVE_COUNT
+    const reuseSuffix = `__a${i + 1}`;
+    const trophyReserve = pickTrophyReserve(
+      genericChallengeL3Pool,
+      usedIds,
+      TROPHY_RESERVE_COUNT,
+      reuseSuffix
     );
-    for (const card of trophyReserve) {
-      usedIds.add(card.id);
-    }
 
-    const genericChallengeFullPool = [
-      ...genericChallengePool.filter((card) => !usedIds.has(card.id)),
-      ...genericChallengeL3Pool.filter((card) => !usedIds.has(card.id)),
-    ];
-
-    const selectedChallengeGeneric = pickByLevelExcluding(
-      genericChallengeFullPool,
+    const selectedChallengeGeneric = pickByLevelPreferUnique(
+      genericFullPool,
       table.challenge.generic,
-      usedIds
+      usedIds,
+      reuseSuffix
     );
-    const selectedChallengeSchool = pickByLevelExcluding(
+    // Cartas de escuela: cada Automa elige de todo el pool (no se "gastan" entre Automas).
+    const selectedChallengeSchool = pickByLevel(
       schoolChallengePool,
-      table.challenge.school,
-      usedIds
+      table.challenge.school
     );
 
     challengeDecks.push(

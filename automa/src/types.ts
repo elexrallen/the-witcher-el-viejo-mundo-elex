@@ -226,6 +226,9 @@ export interface AutomaPlayerState {
   schoolId: WitcherSchoolId;
   automa: AutomaState;
   lockedAttributes: Record<string, boolean>;
+  /** Mazo de Acción propio (independiente por Automa). */
+  actionDeck: ActionCard[];
+  actionDiscard: ActionCard[];
   challengeDeck: ChallengeCard[];
   challengeDiscard: ChallengeCard[];
   level3ChallengeReserve: ChallengeCard[];
@@ -270,4 +273,13 @@ export interface CombatState {
   pendingCounterattack?: number;
   /** Cartas descartadas en el último golpe recibido. */
   lastDamageDiscards?: { card: ChallengeCard; reactionTriggered: boolean }[];
+  /** Combate contra otro Automa (brujo virtual). */
+  isAutomaVsAutoma?: boolean;
+  /** Índice del Automa rival en `automaPlayers`. */
+  opponentAutomaIndex?: number | null;
+  /** Mazo / descarte de combate del Automa rival. */
+  opponentCombatDeck?: ChallengeCard[];
+  opponentCombatDiscard?: ChallengeCard[];
+  opponentShieldsThisTurn?: number;
+  opponentRevealedCard?: ChallengeCard | null;
 }
