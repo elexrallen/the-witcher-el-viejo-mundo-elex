@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { WitcherIcon } from "./WitcherIcon";import { ActionCard, WitcherSchool } from "../types";
-import WitcherCard from "./WitcherCard";
+import { WitcherIcon } from "./WitcherIcon";
+import { ActionCard, WitcherSchool } from "../types";
+import ActionCardTurnPreview from "./ActionCardTurnPreview";
 import PhaseStepper from "./PhaseStepper";
 import { canMeditate, getMeditationTrophyAttribute, ATTRIBUTE_LABELS } from "../utils/meditation";
 import {
@@ -13,6 +14,7 @@ import {
 import { COMBAT_MONSTER_OPTIONS } from "../utils/monsterSpecialAttacks";
 import { formatMovementGuide, formatDestination, formatTieBreak } from "../utils/actionCard";
 import { formatCombatCondition } from "../utils/combatCondition";
+import { closeAllOpenDialogs } from "../utils/dialog";
 import { AutomaState } from "../types";
 
 type TurnFlowProps = {
@@ -108,11 +110,8 @@ export default function TurnFlow({
       <PhaseStepper currentPhase={turnPhase} />
 
       {activeActionCard && turnPhase > 1 && (
-        <div className="turn-flow__card-hero flex justify-center py-2">
-          <div className="space-y-1 text-center">
-            <WitcherCard card={activeActionCard} type="action" />
-            <span className="text-[9px] font-mono text-zinc-500 uppercase">ID: {activeActionCard.id}</span>
-          </div>
+        <div className="turn-flow__card-hero py-2">
+          <ActionCardTurnPreview card={activeActionCard} />
         </div>
       )}
 
@@ -277,7 +276,10 @@ export default function TurnFlow({
                 </div>
                 <button
                   type="button"
-                  onClick={() => onStartCombat(opponentType, opponentName)}
+                  onClick={() => {
+                    closeAllOpenDialogs();
+                    onStartCombat(opponentType, opponentName);
+                  }}
                   disabled={!combatAvailable}
                   className="w-full py-2.5 min-h-[var(--touch-min)] bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-900/40 rounded-xl text-xs font-bold uppercase disabled:opacity-40"
                   id="option-combat-btn"

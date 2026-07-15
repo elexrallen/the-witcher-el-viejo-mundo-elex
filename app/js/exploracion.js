@@ -11,7 +11,9 @@ import {
 } from "./partida.js";
 import {
   bindInstructionToggle,
+  expandInstruction,
   hideProgress,
+  isMobileViewport,
   renderRoleBanner,
   setPlayMode,
   showToast,
@@ -119,6 +121,14 @@ const els = {
   btnNext: document.getElementById("btn-next"),
   zoomDialog: document.getElementById("zoom-dialog"),
   zoomImage: document.getElementById("zoom-image"),
+  zoomRevealRoot: document.getElementById("zoom-reveal-root"),
+  zoomShade: document.getElementById("zoom-shade"),
+  zoomRevealLine: document.getElementById("zoom-reveal-line"),
+  zoomRevealSlider: document.getElementById("zoom-reveal-slider"),
+  zoomRevealHint: document.getElementById("zoom-reveal-hint"),
+  zoomBtnDirection: document.getElementById("zoom-btn-direction"),
+  zoomBtnReset: document.getElementById("zoom-btn-reset"),
+  zoomBtnFull: document.getElementById("zoom-btn-full"),
   btnCloseZoom: document.getElementById("btn-close-zoom"),
 };
 
@@ -141,7 +151,18 @@ async function init() {
     hint: els.cardRevealHint,
     resetButton: els.btnRevealReset,
     directionButton: els.btnRevealDirection,
-    zoomImage: els.zoomImage,
+    modal: {
+      dialog: els.zoomDialog,
+      root: els.zoomRevealRoot,
+      image: els.zoomImage,
+      shade: els.zoomShade,
+      line: els.zoomRevealLine,
+      slider: els.zoomRevealSlider,
+      hint: els.zoomRevealHint,
+      directionButton: els.zoomBtnDirection,
+      resetButton: els.zoomBtnReset,
+      fullButton: els.zoomBtnFull,
+    },
   });
   loadPersistedState();
   renderExpansions();
@@ -319,12 +340,36 @@ function cardHasChoices(card) {
   return structured.format === "choices" || Boolean(structured.choice_a && structured.choice_b);
 }
 
+function truncateChoiceText(text, maxLength = 72) {
+  if (!text) {
+    return "";
+  }
+  const normalized = String(text).replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  return `${normalized.slice(0, maxLength - 1).trim()}…`;
+}
+
+function updateChoiceLabels(card) {
+  const structured = card?.structured || {};
+  const labelA = truncateChoiceText(structured.choice_a) || "Opción A";
+  const labelB = truncateChoiceText(structured.choice_b) || "Opción B";
+  els.choiceA.textContent = labelA;
+  els.choiceB.textContent = labelB;
+  els.choiceA.title = structured.choice_a || "Opción A";
+  els.choiceB.title = structured.choice_b || "Opción B";
+}
+
 function setInstruction(key) {
   const copy = INSTRUCTIONS[key];
   els.instruction.innerHTML = `
     <h3 class="instruction__title">${copy.title}</h3>
     <p class="instruction__body">${copy.body}</p>
   `;
+  if (isMobileViewport()) {
+    expandInstruction(els.instruction, els.btnToggleInstruction);
+  }
 }
 
 function updateRoleBanner(phase) {
@@ -425,10 +470,7 @@ function openZoom() {
   if (!state.currentCard || !cardReveal?.isVisible()) {
     return;
   }
-  if (els.zoomImage) {
-    els.zoomImage.style.clipPath = cardReveal.getClipPath();
-  }
-  els.zoomDialog.showModal();
+  cardReveal.openModal();
 }
 
 function showPlaceholder(title, text) {
@@ -631,6 +673,10 @@ function openCardScreen(location) {
   refreshPlayBarHeight();
   els.panelSettings.setAttribute("hidden", "");
 
+  if (isMobileViewport()) {
+    expandInstruction(els.instruction, els.btnToggleInstruction);
+  }
+
   drawAndPrepare(location);
   updateDeckStatus();
   renderResumeBanner();
@@ -667,10 +713,10 @@ function prepareCard(location, card) {
   updateProgress(els.deckProgress, deck.draw.length, cards.length);
 
   setCardImage(card);
+  cardReveal?.setDirection("down");
   hideCardImage();
   els.choices.hidden = true;
-  els.choiceA.textContent = "Opción A";
-  els.choiceB.textContent = "Opción B";
+  updateChoiceLabels(card);
   els.btnNext.hidden = true;
 
   updatePhaseSteps(hasChoices);
@@ -725,6 +771,7 @@ function showChoosePhase() {
   setInstruction("choose");
   updateRoleBanner("choose");
   updatePhaseSteps(true);
+  updateChoiceLabels(state.currentCard);
   els.choices.hidden = false;
   els.btnNext.hidden = true;
   refreshPlayBarHeight();
@@ -739,9 +786,9 @@ function revealOutcome(choice) {
   showCardImage();
   if (choice === "B") {
     cardReveal?.setDirection("up");
-    cardReveal?.reset();
   } else {
     cardReveal?.setDirection("down");
+    cardReveal?.revealAll();
   }
   refreshPlayBarHeight();
   els.btnNext.hidden = false;

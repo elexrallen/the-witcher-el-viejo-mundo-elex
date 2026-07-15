@@ -11,6 +11,7 @@ export function initCardReveal({
   resetButton,
   directionButton,
   zoomImage,
+  modal,
   onRevealChange,
 }) {
   let reveal = 0;
@@ -18,9 +19,27 @@ export function initCardReveal({
   let direction = "down";
 
   const HINT_DOWN =
-    "Desliza la barra hacia abajo para revelar la carta de arriba a abajo.";
+    "Desliza hacia abajo para revelar la carta de arriba a abajo.";
   const HINT_UP =
-    "Desliza la barra hacia abajo para revelar de abajo arriba (útil para la opción B).";
+    "Desliza hacia abajo para revelar de abajo arriba (útil para la opción B).";
+
+  const viewports = [
+    { image, shade, line, slider, hint, directionButton, resetButton },
+  ];
+
+  if (modal?.image) {
+    viewports.push({
+      image: modal.image,
+      shade: modal.shade ?? null,
+      line: modal.line ?? null,
+      slider: modal.slider ?? null,
+      hint: modal.hint ?? null,
+      directionButton: modal.directionButton ?? null,
+      resetButton: modal.resetButton ?? null,
+    });
+  } else if (zoomImage) {
+    viewports.push({ image: zoomImage, shade: null, line: null, slider: null, hint: null, directionButton: null, resetButton: null });
+  }
 
   function getClipPath(percent = reveal) {
     if (percent >= 100) {
@@ -36,19 +55,26 @@ export function initCardReveal({
     if (root) {
       root.classList.toggle("card-reveal--from-bottom", direction === "up");
     }
-    if (directionButton) {
-      directionButton.setAttribute("aria-pressed", direction === "up" ? "true" : "false");
-      directionButton.title =
-        direction === "up"
-          ? "Revelando desde abajo — pulsa para revelar desde arriba"
-          : "Revelando desde arriba — pulsa para revelar desde abajo";
-      directionButton.setAttribute(
-        "aria-label",
-        direction === "up" ? "Revelar desde arriba" : "Revelar desde abajo",
-      );
+    if (modal?.root) {
+      modal.root.classList.toggle("card-reveal--from-bottom", direction === "up");
     }
-    if (hint && !root?.classList.contains("card-reveal--active")) {
-      hint.textContent = direction === "up" ? HINT_UP : HINT_DOWN;
+
+    for (const viewport of viewports) {
+      if (viewport.directionButton) {
+        viewport.directionButton.setAttribute("aria-pressed", direction === "up" ? "true" : "false");
+        viewport.directionButton.textContent = direction === "up" ? "↓" : "↑";
+        viewport.directionButton.title =
+          direction === "up"
+            ? "Revelando desde abajo — pulsa para revelar desde arriba"
+            : "Revelando desde arriba — pulsa para revelar desde abajo";
+        viewport.directionButton.setAttribute(
+          "aria-label",
+          direction === "up" ? "Revelar desde arriba" : "Revelar desde abajo",
+        );
+      }
+      if (viewport.hint) {
+        viewport.hint.textContent = direction === "up" ? HINT_UP : HINT_DOWN;
+      }
     }
   }
 
@@ -58,66 +84,108 @@ export function initCardReveal({
     }
     root.classList.toggle("card-reveal--active", reveal > 0);
     root.classList.toggle("card-reveal--full", reveal >= 100);
+    if (modal?.root) {
+      modal.root.classList.toggle("card-reveal--active", reveal > 0);
+      modal.root.classList.toggle("card-reveal--full", reveal >= 100);
+    }
+  }
+
+  function paintViewport(viewport, clip) {
+    if (!viewport.image) {
+      return;
+    }
+
+    viewport.image.style.clipPath = clip;
+
+    if (viewport.shade) {
+      if (direction === "up") {
+        viewport.shade.style.top = "0";
+        viewport.shade.style.bottom = "auto";
+        viewport.shade.style.height = `${100 - reveal}%`;
+      } else {
+        viewport.shade.style.top = `${reveal}%`;
+        viewport.shade.style.bottom = "0";
+        viewport.shade.style.height = "";
+      }
+    }
+
+    if (viewport.line) {
+      if (direction === "up") {
+        viewport.line.style.top = `${100 - reveal}%`;
+        viewport.line.style.bottom = "auto";
+      } else {
+        viewport.line.style.top = `${reveal}%`;
+        viewport.line.style.bottom = "auto";
+      }
+      viewport.line.hidden = reveal <= 0;
+    }
+
+    if (viewport.slider) {
+      viewport.slider.value = String(reveal);
+      viewport.slider.setAttribute("aria-valuenow", String(reveal));
+    }
   }
 
   function applyReveal(percent) {
     reveal = Math.min(100, Math.max(0, Math.round(percent)));
     const clip = getClipPath(reveal);
 
-    if (shade) {
-      if (direction === "up") {
-        shade.style.top = "0";
-        shade.style.bottom = "auto";
-        shade.style.height = `${100 - reveal}%`;
-      } else {
-        shade.style.top = `${reveal}%`;
-        shade.style.bottom = "0";
-        shade.style.height = "";
-      }
-    }
-
-    if (line) {
-      if (direction === "up") {
-        line.style.top = `${100 - reveal}%`;
-        line.style.bottom = "auto";
-      } else {
-        line.style.top = `${reveal}%`;
-        line.style.bottom = "auto";
-      }
-      line.hidden = reveal <= 0;
-    }
-
-    image.style.clipPath = clip;
-    if (zoomImage) {
-      zoomImage.style.clipPath = clip;
-    }
-
-    if (slider) {
-      slider.value = String(reveal);
-      slider.setAttribute("aria-valuenow", String(reveal));
+    for (const viewport of viewports) {
+      paintViewport(viewport, clip);
     }
 
     updateHintVisibility();
+    updateDirectionUI();
     onRevealChange?.(reveal);
   }
 
-  if (slider) {
-    slider.addEventListener("input", () => {
-      applyReveal(Number.parseInt(slider.value, 10));
-    });
-  }
-
-  if (resetButton) {
-    resetButton.addEventListener("click", (event) => {
-      event.stopPropagation();
+  function setDirection(nextDirection) {
+    if (nextDirection !== "down" && nextDirection !== "up") {
+      return;
+    }
+    if (nextDirection !== direction) {
+      direction = nextDirection;
       applyReveal(0);
-    });
+      return;
+    }
+    direction = nextDirection;
+    applyReveal(reveal);
   }
 
-  if (directionButton) {
-    directionButton.addEventListener("click", (event) => {
+  function toggleDirection() {
+    setDirection(direction === "down" ? "up" : "down");
+  }
+
+  function bindViewportControls(viewport) {
+    if (viewport.slider) {
+      viewport.slider.addEventListener("input", () => {
+        applyReveal(Number.parseInt(viewport.slider.value, 10));
+      });
+    }
+
+    if (viewport.resetButton) {
+      viewport.resetButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        applyReveal(0);
+      });
+    }
+
+    if (viewport.directionButton) {
+      viewport.directionButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleDirection();
+      });
+    }
+  }
+
+  for (const viewport of viewports) {
+    bindViewportControls(viewport);
+  }
+
+  if (modal?.fullButton) {
+    modal.fullButton.addEventListener("click", (event) => {
       event.stopPropagation();
-      setDirection(direction === "down" ? "up" : "down");
+      applyReveal(100);
     });
   }
 
@@ -125,14 +193,16 @@ export function initCardReveal({
 
   return {
     setImage(src) {
-      image.src = src;
-      if (zoomImage) {
-        zoomImage.src = src;
+      for (const viewport of viewports) {
+        if (viewport.image) {
+          viewport.image.src = src;
+        }
       }
       applyReveal(0);
-      if (hint) {
-        hint.hidden = false;
-        hint.textContent = direction === "up" ? HINT_UP : HINT_DOWN;
+      for (const viewport of viewports) {
+        if (viewport.hint) {
+          viewport.hint.hidden = false;
+        }
       }
     },
 
@@ -160,14 +230,9 @@ export function initCardReveal({
       return direction;
     },
 
-    setDirection(nextDirection) {
-      if (nextDirection !== "down" && nextDirection !== "up") {
-        return;
-      }
-      direction = nextDirection;
-      updateDirectionUI();
-      applyReveal(reveal);
-    },
+    setDirection,
+
+    toggleDirection,
 
     show() {
       if (root) {
@@ -184,6 +249,18 @@ export function initCardReveal({
 
     isVisible() {
       return Boolean(root && !root.hidden);
+    },
+
+    openModal() {
+      if (modal?.dialog) {
+        modal.dialog.showModal();
+      }
+    },
+
+    closeModal() {
+      if (modal?.dialog) {
+        modal.dialog.close();
+      }
     },
   };
 }

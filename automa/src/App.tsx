@@ -27,6 +27,12 @@ import {
   DEFAULT_LEGENDARY_MONSTER_BASE_LIFE,
 } from "./utils/legendaryHuntRules";
 import { findMonsterSpecialAttack } from "./utils/monsterSpecialAttacks";
+import { closeAllOpenDialogs } from "./utils/dialog";
+import {
+  ATTRIBUTE_LABELS,
+  EMPTY_MEDITATION_TROPHIES,
+  getMeditationTrophyAttribute,
+} from "./utils/meditation";
 import AppHeader from "./components/AppHeader";
 import SetupWizard from "./components/SetupWizard";
 import GameBoard, { GameTab } from "./components/GameBoard";
@@ -67,6 +73,7 @@ export default function App() {
   const [bonusApplied, setBonusApplied] = useState(initialSnapshot.bonusApplied);
   const [combat, setCombat] = useState<CombatState>(initialSnapshot.combat);
   const [logs, setLogs] = useState<string[]>(initialSnapshot.logs);
+  const [startError, setStartError] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -179,8 +186,11 @@ export default function App() {
   };
 
   const handleStartGame = () => {
+    setStartError(null);
     if (ACTION_CARDS.length === 0 || CHALLENGE_CARDS.length === 0) {
-      addLog("No hay cartas catalogadas suficientes para iniciar partida.");
+      const message = "No hay cartas catalogadas suficientes para iniciar partida.";
+      addLog(message);
+      setStartError(message);
       return;
     }
 
@@ -455,6 +465,7 @@ export default function App() {
   };
 
   const handleStartCombat = (opponentType: "monster" | "witcher", name: string) => {
+    closeAllOpenDialogs();
     const combinedCombatDeck = shuffleArray([...challengeDeck, ...challengeDiscard]);
     const openingShield = capShieldLevel(
       automa.shieldLevel,
@@ -1022,6 +1033,7 @@ export default function App() {
             onLegendaryHuntChange={setUseLegendaryHunt}
             selectedSchool={selectedSchoolObj}
             onStart={handleStartGame}
+            startError={startError}
           />
         ) : combat.isActive ? (
           <CombatView

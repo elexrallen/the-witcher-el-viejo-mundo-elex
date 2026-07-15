@@ -3,6 +3,7 @@ import { WitcherIcon, SchoolIcon, type WitcherIconName } from "./WitcherIcon";
 import { WitcherSchoolId, WitcherSchool } from "../types";
 import { WITCHER_SCHOOLS } from "../data/schools";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
+import SchoolCardSetupPreview from "./SchoolCardSetupPreview";
 import PlayerAssistantLinks from "./PlayerAssistantLinks";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
@@ -25,6 +26,7 @@ type SetupWizardProps = {
   onLegendaryHuntChange: (v: boolean) => void;
   selectedSchool: WitcherSchool;
   onStart: () => void;
+  startError?: string | null;
 };
 
 const STEPS = ["Escuela", "Dificultad", "Módulos", "Resumen"];
@@ -115,6 +117,7 @@ export default function SetupWizard(props: SetupWizardProps) {
     onLegendaryHuntChange,
     selectedSchool,
     onStart,
+    startError,
   } = props;
 
   const bonusLabel = (id: WitcherSchoolId) => {
@@ -136,7 +139,7 @@ export default function SetupWizard(props: SetupWizardProps) {
     <main className="setup-wizard flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6" id="setup-view">
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         <div className="flex-1 w-full">
-          <div className="panel automa-panel-accent border-2 border-zinc-800 rounded-2xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div className={`panel automa-panel-accent border-2 border-zinc-800 rounded-2xl p-5 sm:p-8 shadow-2xl relative ${step === 3 ? "overflow-visible" : "overflow-hidden"}`}>
             <div className="text-center mb-6">
               <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display uppercase">
                 Preparación del Automa V1.4
@@ -255,7 +258,12 @@ export default function SetupWizard(props: SetupWizardProps) {
                     {[useDicePoker && "Póker", useBombs && "Bombas", useMutagens && "Mutágenos", useSkellige && "Skellige", useLegendaryHunt && "Cacería"].filter(Boolean).join(", ") || "Ninguno"}
                   </p>
                 </div>
-                {!isMobile && <div className="flex justify-center"><SpecialSchoolCardComponent school={selectedSchool} /></div>}
+                <SchoolCardSetupPreview school={selectedSchool} />
+                {startError && (
+                  <p className="text-sm text-red-400 bg-red-950/40 border border-red-900/50 rounded-lg px-3 py-2" role="alert">
+                    {startError}
+                  </p>
+                )}
                 <button type="button" onClick={onStart} className="w-full btn btn--primary font-display uppercase tracking-wider flex items-center justify-center gap-2 min-h-[var(--touch-min)]" id="start-game-btn">
                   <WitcherIcon name="play" size={22} />
                   Iniciar Misión en Solitario
@@ -275,14 +283,10 @@ export default function SetupWizard(props: SetupWizardProps) {
             </div>
           </div>
 
-          {isMobile && step === 3 && (
-            <div className="mt-4 flex justify-center"><SpecialSchoolCardComponent school={selectedSchool} /></div>
-          )}
-
           <div className="mt-6"><PlayerAssistantLinks compact /></div>
         </div>
 
-        {!isMobile && (
+        {!isMobile && step !== 3 && (
           <div className="w-full lg:w-[340px] shrink-0 flex flex-col items-center bg-zinc-950/60 border border-zinc-850 p-6 rounded-2xl gap-4">
             <span className="text-[10px] uppercase tracking-widest text-orange-400 font-mono font-black">Carta de Habilidad Especial</span>
             <SpecialSchoolCardComponent school={selectedSchool} />

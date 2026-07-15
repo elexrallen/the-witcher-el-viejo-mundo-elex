@@ -5,11 +5,14 @@
 
 import React from 'react';
 import { WitcherSchool } from '../types';
+import { assetUrl } from '../utils/assets';
+import CardImagePreview from './CardImagePreview';
 import { WitcherIcon, SchoolMedallion } from './WitcherIcon';
 
 interface SpecialSchoolCardComponentProps {
   school: WitcherSchool;
   activeSpecialIndex?: 1 | 2 | 3 | null;
+  hideImage?: boolean;
 }
 
 function ShuffleDiscardBadge({ count = 1, className = 'text-emerald-700' }: { count?: number; className?: string }) {
@@ -133,7 +136,11 @@ function MutagenLabel({ color, label }: { color: 'blue' | 'red' | 'green'; label
   );
 }
 
-export default function SpecialSchoolCardComponent({ school, activeSpecialIndex = null }: SpecialSchoolCardComponentProps) {
+export default function SpecialSchoolCardComponent({
+  school,
+  activeSpecialIndex = null,
+  hideImage = false,
+}: SpecialSchoolCardComponentProps) {
   const spec = school.specialCard;
   if (!spec) return null;
 
@@ -151,7 +158,7 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
 
   return (
     <div
-      className="w-full max-w-[340px] bg-[#f2e7d3] border-4 border-[#8b6e4e] text-zinc-900 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col p-5 font-sans"
+      className="w-full max-w-[340px] bg-[#f2e7d3] border-4 border-[#8b6e4e] text-zinc-900 rounded-2xl shadow-2xl relative flex flex-col p-5 font-sans"
       id={`special-card-${school.id}`}
       style={{
         boxShadow: '0 20px 40px rgba(0,0,0,0.4), inset 0 0 40px rgba(139,110,78,0.15)',
@@ -162,11 +169,12 @@ export default function SpecialSchoolCardComponent({ school, activeSpecialIndex 
       {/* Aesthetic Border Linework */}
       <div className="absolute inset-2 border border-[#8b6e4e]/20 rounded-lg pointer-events-none" />
 
-      {(school.specialCardImagePath ?? spec.imagePath) && (
-        <img
-          src={school.specialCardImagePath ?? spec.imagePath}
+      {(school.specialCardImagePath ?? spec.imagePath) && !hideImage && (
+        <CardImagePreview
+          src={assetUrl(school.specialCardImagePath ?? spec.imagePath!)}
           alt={`Carta de habilidades — ${school.name}`}
-          className="w-full rounded-lg mb-3 border border-[#8b6e4e]/40 object-cover max-h-36 -mt-1"
+          className="w-full rounded-lg border border-[#8b6e4e]/40 object-contain max-h-36 -mt-1"
+          buttonClassName="mb-3 -mt-1"
         />
       )}
 

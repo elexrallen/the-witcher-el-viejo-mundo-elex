@@ -202,7 +202,10 @@
       <span data-icon="stash" data-icon-size="18" aria-hidden="true"></span>
       <span class="hide-on-narrow">Cartas en mesa</span>
     </button>
-    <button type="button" class="btn btn--secondary" id="btn-zoom">Ampliar</button>
+    <button type="button" class="btn btn--secondary" id="btn-zoom">
+      <span class="btn-text-full">Ver carta ampliada</span>
+      <span class="btn-text-short" aria-hidden="true">Ampliar</span>
+    </button>
     <button type="button" class="btn btn--primary" id="btn-next">Siguiente (#<span id="btn-next-label">2</span>)</button>
   </footer>
 
@@ -218,8 +221,47 @@
 
   <dialog class="zoom-dialog" id="zoom-dialog">
     <button type="button" class="zoom-dialog__close" id="btn-close-zoom" aria-label="Cerrar">✕</button>
-    <div class="zoom-dialog__viewport">
-      <img id="zoom-image" class="zoom-dialog__img" alt="Carta ampliada">
+    <div class="zoom-dialog__layout card-reveal" id="zoom-reveal-root">
+      <div class="zoom-dialog__viewport">
+        <img id="zoom-image" class="zoom-dialog__img card-reveal__img" alt="Carta ampliada">
+        <div class="card-reveal__shade" id="zoom-shade" aria-hidden="true"></div>
+        <div class="card-reveal__line" id="zoom-reveal-line" aria-hidden="true" hidden></div>
+      </div>
+      <div class="zoom-dialog__toolbar">
+        <p class="zoom-dialog__hint card-reveal__hint" id="zoom-reveal-hint">
+          Desliza la barra para revelar la carta.
+        </p>
+        <div class="zoom-dialog__controls">
+          <input
+            type="range"
+            id="zoom-reveal-slider"
+            class="zoom-dialog__slider"
+            min="0"
+            max="100"
+            value="0"
+            step="1"
+            aria-label="Revelar carta ampliada"
+          >
+          <button
+            type="button"
+            class="card-reveal__direction"
+            id="zoom-btn-direction"
+            aria-pressed="false"
+            aria-label="Revelar desde abajo"
+            title="Revelar desde abajo"
+          >↑</button>
+          <button
+            type="button"
+            class="card-reveal__reset"
+            id="zoom-btn-reset"
+            aria-label="Ocultar carta"
+            title="Ocultar"
+          >↺</button>
+          <button type="button" class="btn btn--secondary zoom-dialog__full" id="zoom-btn-full">
+            Ver completa
+          </button>
+        </div>
+      </div>
     </div>
   </dialog>
 

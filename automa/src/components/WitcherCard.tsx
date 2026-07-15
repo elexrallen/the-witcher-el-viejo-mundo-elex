@@ -7,6 +7,8 @@ import React from 'react';
 import { ActionCard, ChallengeCard, WitcherSchool } from '../types';
 import { formatMovementPM, formatDestination } from '../utils/actionCard';
 import { getCardMutagens, formatMutagenList } from '../utils/mutagens';
+import { assetUrl } from '../utils/assets';
+import CardImagePreview from './CardImagePreview';
 import { WitcherIcon, SchoolIcon } from './WitcherIcon';
 
 interface WitcherCardProps {
@@ -14,9 +16,10 @@ interface WitcherCardProps {
   type: 'action' | 'challenge';
   school?: WitcherSchool;
   compact?: boolean;
+  hideImage?: boolean;
 }
 
-export default function WitcherCard({ card, type, school, compact = false }: WitcherCardProps) {
+export default function WitcherCard({ card, type, school, compact = false, hideImage = false }: WitcherCardProps) {
   const getLevelBadgeColor = (lvl: string | number) => {
     switch (lvl) {
       case 'generic': return 'bg-neutral-850 text-neutral-400 border-neutral-700';
@@ -57,11 +60,10 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             <WitcherIcon name="legendary" size={12} /> LH
           </div>
         )}
-        {actCard.imagePath && !compact && (
-          <img
-            src={actCard.imagePath}
+        {actCard.imagePath && !compact && !hideImage && (
+          <CardImagePreview
+            src={assetUrl(actCard.imagePath)}
             alt={`Carta de acción ${actCard.cardNumber ?? actCard.id}`}
-            className="w-full rounded-lg mb-3 border border-zinc-800 object-cover max-h-40"
           />
         )}
         {/* Card Header */}
@@ -229,11 +231,10 @@ export default function WitcherCard({ card, type, school, compact = false }: Wit
             Escuela
           </div>
         )}
-        {chaCard.imagePath && !compact && (
-          <img
-            src={chaCard.imagePath}
+        {chaCard.imagePath && !compact && !hideImage && (
+          <CardImagePreview
+            src={assetUrl(chaCard.imagePath)}
             alt={`Carta de desafío ${chaCard.cardNumber ?? chaCard.id}`}
-            className="w-full rounded-lg mb-3 border border-zinc-800 object-cover max-h-40"
           />
         )}
         {/* Card Header */}

@@ -88,6 +88,14 @@ const els = {
   btnNextLabel: document.getElementById("btn-next-label"),
   zoomDialog: document.getElementById("zoom-dialog"),
   zoomImage: document.getElementById("zoom-image"),
+  zoomRevealRoot: document.getElementById("zoom-reveal-root"),
+  zoomShade: document.getElementById("zoom-shade"),
+  zoomRevealLine: document.getElementById("zoom-reveal-line"),
+  zoomRevealSlider: document.getElementById("zoom-reveal-slider"),
+  zoomRevealHint: document.getElementById("zoom-reveal-hint"),
+  zoomBtnDirection: document.getElementById("zoom-btn-direction"),
+  zoomBtnReset: document.getElementById("zoom-btn-reset"),
+  zoomBtnFull: document.getElementById("zoom-btn-full"),
   btnCloseZoom: document.getElementById("btn-close-zoom"),
   eventPersistent: document.getElementById("event-persistent"),
   eventPersistentBanner: document.getElementById("event-persistent-banner"),
@@ -122,7 +130,18 @@ async function init() {
     hint: els.cardRevealHint,
     resetButton: els.btnRevealReset,
     directionButton: els.btnRevealDirection,
-    zoomImage: els.zoomImage,
+    modal: {
+      dialog: els.zoomDialog,
+      root: els.zoomRevealRoot,
+      image: els.zoomImage,
+      shade: els.zoomShade,
+      line: els.zoomRevealLine,
+      slider: els.zoomRevealSlider,
+      hint: els.zoomRevealHint,
+      directionButton: els.zoomBtnDirection,
+      resetButton: els.zoomBtnReset,
+      fullButton: els.zoomBtnFull,
+    },
     onRevealChange: () => {
       if (state.cardRevealed) {
         renderStashActions();
@@ -538,6 +557,7 @@ function hideCard() {
   state.cardRevealed = false;
   state.currentCard = null;
   els.cardFigure.hidden = true;
+  cardReveal?.setDirection("down");
   cardReveal?.hide();
   els.cardPlaceholder.hidden = false;
   els.cardNumber.textContent = "Sin revelar";
@@ -684,10 +704,9 @@ function openZoom() {
     return;
   }
   if (els.zoomImage) {
-    els.zoomImage.style.clipPath = cardReveal?.getClipPath?.() ?? "none";
     els.zoomImage.alt = `Evento #${state.currentCard.number}`;
   }
-  els.zoomDialog.showModal();
+  cardReveal?.openModal();
 }
 
 function updateJumpControls(deck, number) {
@@ -725,6 +744,7 @@ function renderRevealedCard(deck, card) {
   els.cardPlaceholder.hidden = true;
   els.btnZoom.disabled = false;
   setCardImage(card);
+  cardReveal?.setDirection("down");
   cardReveal?.show();
   renderStashActions();
 }

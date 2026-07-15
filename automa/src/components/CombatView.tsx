@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WitcherIcon } from "./WitcherIcon";
 import { CombatState, WitcherSchool } from "../types";
-import WitcherCard from "./WitcherCard";
+import { useIsMobile } from "../hooks/useMediaQuery";
+import { closeAllOpenDialogs } from "../utils/dialog";import WitcherCard from "./WitcherCard";
 import SpecialSchoolCardComponent from "./SpecialSchoolCardComponent";
 import MonsterSpecialAttackPanel from "./MonsterSpecialAttackPanel";
 import { findMonsterSpecialAttack } from "../utils/monsterSpecialAttacks";
@@ -32,6 +33,10 @@ export default function CombatView({
   const [monsterAttack, setMonsterAttack] = useState<"mordisco" | "embestida" | null>(null);
   const [cardSheetOpen, setCardSheetOpen] = useState(true);
 
+  useEffect(() => {
+    closeAllOpenDialogs();
+    window.scrollTo(0, 0);
+  }, []);
   const applyDamage = () => {
     const val = parseInt(damageInput, 10);
     if (val > 0) {

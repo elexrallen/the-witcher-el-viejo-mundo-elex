@@ -72,6 +72,26 @@ export function bindInstructionToggle(button, panel) {
   setLabel(panel.classList.contains("instruction--collapsed"));
 }
 
+export function expandInstruction(panel, button) {
+  if (!panel) {
+    return;
+  }
+  panel.classList.remove("instruction--collapsed");
+  if (button) {
+    button.setAttribute("aria-expanded", "true");
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    if (isMobile) {
+      button.innerHTML = `${icon("book", { size: 16 })}<span class="instruction-toggle__text">Ocultar</span>`;
+    } else {
+      button.textContent = "Ocultar guía";
+    }
+  }
+}
+
+export function isMobileViewport() {
+  return window.matchMedia("(max-width: 640px)").matches;
+}
+
 export function renderRoleBanner(element, { role, player, detail }) {
   if (!element) {
     return;
