@@ -7,6 +7,7 @@ type BoardDrawerProps = {
   onClose: () => void;
   automa: AutomaState;
   lockedAttributes: Record<string, boolean>;
+  useBombs?: boolean;
   onUpdateAttribute: (attr: "attack" | "defense" | "alchemy" | "special", delta: number) => void;
   onAutoImprove: (type: "highest" | "lowest") => void;
   onAddTrophy: () => void;
@@ -29,6 +30,7 @@ export default function BoardDrawer({
   onClose,
   automa,
   lockedAttributes,
+  useBombs = false,
   onUpdateAttribute,
   onAutoImprove,
   onAddTrophy,
@@ -51,6 +53,7 @@ export default function BoardDrawer({
           <AutomaBoard
             automa={automa}
             lockedAttributes={lockedAttributes}
+            useBombs={useBombs}
             onUpdateAttribute={onUpdateAttribute}
             onAutoImprove={onAutoImprove}
             onAddTrophy={onAddTrophy}

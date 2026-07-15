@@ -20,3 +20,8 @@ export function useMediaQuery(query: string): boolean {
 export function useIsMobile(): boolean {
   return useMediaQuery("(max-width: 640px)");
 }
+
+/** Layout compacto: una columna, tablero en drawer, pestañas fijas bajo la cabecera. */
+export function useCompactGameLayout(): boolean {
+  return useMediaQuery("(max-width: 1023px)");
+}

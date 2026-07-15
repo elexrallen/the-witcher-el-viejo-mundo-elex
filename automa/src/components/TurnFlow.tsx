@@ -109,7 +109,7 @@ export default function TurnFlow({
 
       <PhaseStepper currentPhase={turnPhase} />
 
-      {activeActionCard && turnPhase > 1 && (
+      {activeActionCard && (
         <div className="turn-flow__card-hero py-2">
           <ActionCardTurnPreview card={activeActionCard} />
         </div>

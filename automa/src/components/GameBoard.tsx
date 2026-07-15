@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { WitcherIcon, type WitcherIconName } from "./WitcherIcon";
 import { ActionCard, AutomaPlayerState, AutomaState, ChallengeCard, WitcherSchool } from "../types";
 import AutomaBoard from "./AutomaBoard";
@@ -8,7 +9,7 @@ import TurnFlow from "./TurnFlow";
 import DicePoker from "./DicePoker";
 import ExpansionsPanel from "./ExpansionsPanel";
 import RulesReference from "./RulesReference";
-import { useIsMobile } from "../hooks/useMediaQuery";
+import { useCompactGameLayout, useIsMobile } from "../hooks/useMediaQuery";
 
 export type GameTab = "turn" | "poker" | "expansions" | "rules";
 
@@ -53,6 +54,7 @@ type GameBoardProps = {
 
 export default function GameBoard(props: GameBoardProps) {
   const isMobile = useIsMobile();
+  const compactLayout = useCompactGameLayout();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const tabs: { id: GameTab; label: string; short: string; icon: WitcherIconName; show: boolean }[] = [
@@ -73,42 +75,75 @@ export default function GameBoard(props: GameBoardProps) {
     onTrophyDecrease: props.onTrophyDecrease,
   };
 
+  const visibleTabCount = tabs.filter((tab) => tab.show).length;
+
+  useEffect(() => {
+    const tabNav = document.getElementById("tab-nav");
+    if (!tabNav) {
+      return;
+    }
+
+    const updateHeight = () => {
+      document.documentElement.style.setProperty(
+        "--automa-tab-nav-h",
+        `${Math.ceil(tabNav.getBoundingClientRect().height)}px`
+      );
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(tabNav);
+    window.addEventListener("resize", updateHeight, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [props.currentTab, visibleTabCount, compactLayout]);
+
+  const tabNav = (
+    <div className="tab-nav automa-tab-nav" id="tab-nav" role="navigation" aria-label="Secciones del Automa">
+      <div className="flex overflow-x-auto flex-nowrap gap-1 border-b border-zinc-850 pb-0">
+        {tabs
+          .filter((t) => t.show)
+          .map((tab) => {
+            const isActive = props.currentTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => props.onTabChange(tab.id)}
+                className={`tab-nav__btn shrink-0 px-3 sm:px-4 py-2.5 min-h-[var(--touch-min)] font-display text-xs font-black rounded-t-xl border-t border-x flex items-center gap-1.5 uppercase ${
+                  isActive
+                    ? "bg-zinc-900 border-zinc-800 text-orange-400 border-b-zinc-900"
+                    : "bg-zinc-950 border-transparent text-zinc-500"
+                }`}
+                id={`tab-btn-${tab.id}`}
+              >
+                <WitcherIcon name={tab.icon} size={18} className="shrink-0" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.short}</span>
+              </button>
+            );
+          })}
+      </div>
+    </div>
+  );
+
   return (
     <main className="game-board flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6" id="game-main">
+      {compactLayout && createPortal(tabNav, document.body)}
       <div className="game-board__grid grid grid-cols-1 lg:grid-cols-12 gap-6">
         <section className="game-board__main lg:col-span-8 lg:order-2 order-1 flex flex-col gap-4" id="interaction-dashboard">
+          {!compactLayout && tabNav}
+          {compactLayout && <div className="automa-tab-nav-placeholder" aria-hidden="true" />}
+
+          <div className="game-board__tab-body">
           <AutomaSelector
             players={props.automaPlayers}
             activeIndex={props.activeAutomaIndex}
             onSelect={props.onSelectAutoma}
           />
-          <div className="tab-nav automa-tab-nav sticky z-20 bg-zinc-950/95 backdrop-blur-sm -mx-1 px-1 pt-1" id="tab-nav">
-            <div className="flex overflow-x-auto flex-nowrap gap-1 border-b border-zinc-850 pb-0">
-              {tabs
-                .filter((t) => t.show)
-                .map((tab) => {
-                  const isActive = props.currentTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => props.onTabChange(tab.id)}
-                      className={`tab-nav__btn shrink-0 px-3 sm:px-4 py-2.5 min-h-[var(--touch-min)] font-display text-xs font-black rounded-t-xl border-t border-x flex items-center gap-1.5 uppercase ${
-                        isActive
-                          ? "bg-zinc-900 border-zinc-800 text-orange-400 border-b-zinc-900"
-                          : "bg-zinc-950 border-transparent text-zinc-500"
-                      }`}
-                      id={`tab-btn-${tab.id}`}
-                    >
-                      <WitcherIcon name={tab.icon} size={18} className="shrink-0" />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                      <span className="sm:hidden">{tab.short}</span>
-                    </button>
-                  );
-                })}
-            </div>
-          </div>
-
           {props.currentTab === "turn" && (
             <TurnFlow
               turnPhase={props.turnPhase}
@@ -148,6 +183,7 @@ export default function GameBoard(props: GameBoardProps) {
           )}
 
           {props.currentTab === "rules" && <RulesReference />}
+          </div>
         </section>
 
         {!isMobile && (

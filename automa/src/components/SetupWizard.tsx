@@ -153,28 +153,35 @@ export default function SetupWizard(props: SetupWizardProps) {
     <main className="setup-wizard flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6" id="setup-view">
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         <div className="flex-1 w-full">
-          <div className={`panel automa-panel-accent border-2 border-zinc-800 rounded-2xl p-5 sm:p-8 shadow-2xl relative ${step === 3 ? "overflow-visible" : "overflow-hidden"}`}>
-            <div className="text-center mb-6">
-              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display uppercase">
-                Preparación del Automa V1.4
-              </h2>
-              <p className="text-sm text-zinc-400 mt-2">Paso {step + 1} de {STEPS.length}: {STEPS[step]}</p>
+          <div
+            className={`panel automa-panel-accent border-2 border-zinc-800 rounded-2xl p-5 sm:p-8 shadow-2xl relative setup-wizard__panel ${
+              isMobile ? "setup-wizard__panel--mobile" : ""
+            } ${step === 3 && !isMobile ? "overflow-visible" : "overflow-hidden"}`}
+          >
+            <div className="setup-wizard__head">
+              <div className="text-center mb-6">
+                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display uppercase">
+                  Preparación del Automa V1.4
+                </h2>
+                <p className="text-sm text-zinc-400 mt-2">Paso {step + 1} de {STEPS.length}: {STEPS[step]}</p>
+              </div>
+
+              <div className="setup-stepper flex gap-1 mb-6 overflow-x-auto">
+                {STEPS.map((label, i) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setStep(i)}
+                    className={`setup-stepper__step shrink-0 ${i === step ? "setup-stepper__step--active" : i < step ? "setup-stepper__step--done" : ""}`}
+                  >
+                    <span className="setup-stepper__num">{i + 1}</span>
+                    <span className="setup-stepper__label">{label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="setup-stepper flex gap-1 mb-6 overflow-x-auto">
-              {STEPS.map((label, i) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => setStep(i)}
-                  className={`setup-stepper__step shrink-0 ${i === step ? "setup-stepper__step--active" : i < step ? "setup-stepper__step--done" : ""}`}
-                >
-                  <span className="setup-stepper__num">{i + 1}</span>
-                  <span className="setup-stepper__label">{label}</span>
-                </button>
-              ))}
-            </div>
-
+            <div className="setup-wizard__body">
             {step === 0 && (
               <div className="space-y-5">
                 <div>
@@ -360,6 +367,7 @@ export default function SetupWizard(props: SetupWizardProps) {
                 </button>
               </div>
             )}
+            </div>
 
             <div className="setup-wizard__nav flex gap-3 mt-6 pt-4 border-t border-zinc-850">
               <button type="button" onClick={() => setStep((s) => s - 1)} disabled={step === 0} className="flex-1 py-3 btn btn--secondary flex items-center justify-center gap-1 min-h-[var(--touch-min)] disabled:opacity-40">

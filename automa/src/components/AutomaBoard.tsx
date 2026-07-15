@@ -202,26 +202,33 @@ export default function AutomaBoard({
             </button>
           </div>
         </div>
-        <div className={`grid gap-3 ${useBombs ? "grid-cols-2" : "grid-cols-1"}`}>
+        <div className="grid grid-cols-2 gap-3">
           {[
             { key: "potions" as const, label: "Pociones", icon: "potion" as const, color: "text-emerald-500" },
-            ...(useBombs
-              ? [{ key: "bombs" as const, label: "Bombas", icon: "bomb" as const, color: "text-purple-500" }]
-              : []),
+            { key: "bombs" as const, label: "Bombas", icon: "bomb" as const, color: "text-purple-500" },
           ].map((item) => {
-            const count = automa[item.key];
+            const count = automa[item.key] ?? 0;
+            const isBomb = item.key === "bombs";
             return (
-              <div key={item.key} className="bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 text-center space-y-2">
+              <div
+                key={item.key}
+                className={`bg-zinc-950 p-3 rounded-xl border border-zinc-850/60 text-center space-y-2 ${
+                  isBomb && !useBombs ? "opacity-75" : ""
+                }`}
+              >
                 <WitcherIcon name={item.icon} size={18} className={`mx-auto ${item.color}`} />
                 <span className="text-[10px] text-zinc-500 font-display font-bold uppercase block">{item.label}</span>
                 <span className="text-base font-black font-mono text-zinc-200 block">{count}</span>
+                {isBomb && !useBombs && (
+                  <span className="text-[9px] text-zinc-600 block leading-tight">Módulo desactivado</span>
+                )}
                 <CounterControl
                   label={item.label}
                   value={count}
                   min={0}
                   max={4}
-                  onDecrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.max(0, p[item.key] - 1) }))}
-                  onIncrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.min(4, p[item.key] + 1) }))}
+                  onDecrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.max(0, (p[item.key] ?? 0) - 1) }))}
+                  onIncrement={() => onAutomaChange((p) => ({ ...p, [item.key]: Math.min(4, (p[item.key] ?? 0) + 1) }))}
                 />
               </div>
             );

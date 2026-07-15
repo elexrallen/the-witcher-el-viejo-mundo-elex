@@ -1184,8 +1184,18 @@ export default function App() {
         ) : combat.isActive ? (
           <CombatView
             combat={combat}
+            automa={automa}
             activeSchool={activeSchoolObj}
             legendaryMonsterId={automa.legendaryMonsterId}
+            lockedAttributes={lockedAttributes}
+            useBombs={useBombs}
+            onUpdateAttribute={handleUpdateAttribute}
+            onAutoImprove={handleAutoImproveAttribute}
+            onAddTrophy={handleAddTrophy}
+            onAutomaChange={setAutoma}
+            onTrophyDecrease={() => {
+              if (automa.trophies > 0) setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
+            }}
             onAttack={handleAutomaAttackTurn}
             onReceiveDamage={handleReceiveDamage}
             onEndCombat={handleEndCombat}

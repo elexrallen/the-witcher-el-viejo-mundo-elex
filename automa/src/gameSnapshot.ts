@@ -66,6 +66,25 @@ function createDefaultPlayers(): AutomaPlayerState[] {
   return [createAutomaPlayerState(0, "wolf", "intermediate", false)];
 }
 
+function resolveUseBombs(parsed: Partial<AutomaSnapshot>, defaults: AutomaSnapshot): boolean {
+  if (typeof parsed.useBombs === "boolean") {
+    return parsed.useBombs;
+  }
+
+  const playersHaveBombs = (parsed.automaPlayers ?? []).some(
+    (player) => (player.automa?.bombs ?? 0) > 0
+  );
+  if (playersHaveBombs) {
+    return true;
+  }
+
+  if ((parsed.automa?.bombs ?? 0) > 0) {
+    return true;
+  }
+
+  return defaults.useBombs;
+}
+
 export function createDefaultAutomaSnapshot(): AutomaSnapshot {
   return {
     setupMode: true,
@@ -89,11 +108,12 @@ export function createDefaultAutomaSnapshot(): AutomaSnapshot {
 function migrateLegacySnapshot(parsed: Partial<AutomaSnapshot>): AutomaSnapshot {
   const defaults = createDefaultAutomaSnapshot();
   const schoolId = parsed.selectedSchoolId ?? parsed.automa?.schoolId ?? "wolf";
+  const useBombs = resolveUseBombs(parsed, defaults);
   const defaultPlayer = createAutomaPlayerState(
     0,
     schoolId,
     parsed.difficulty ?? defaults.difficulty,
-    parsed.useBombs ?? defaults.useBombs
+    useBombs
   );
 
   const legacyPlayer = mergeAutomaPlayerState(defaultPlayer, {
@@ -115,6 +135,7 @@ function migrateLegacySnapshot(parsed: Partial<AutomaSnapshot>): AutomaSnapshot 
     ...parsed,
     playerCount: 1,
     setupSchoolIds: [schoolId],
+    useBombs,
     automaPlayers: [legacyPlayer],
     activeAutomaIndex: 0,
     actionDeck: parsed.actionDeck ?? defaults.actionDeck,
@@ -139,6 +160,7 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
     }
 
     const defaults = createDefaultAutomaSnapshot();
+    const useBombs = resolveUseBombs(parsed, defaults);
     const setupSchoolIds =
       parsed.setupSchoolIds && parsed.setupSchoolIds.length > 0
         ? parsed.setupSchoolIds
@@ -150,7 +172,7 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
         index,
         schoolId,
         parsed.difficulty ?? defaults.difficulty,
-        parsed.useBombs ?? defaults.useBombs
+        useBombs
       );
       return mergeAutomaPlayerState(base, player);
     });
@@ -165,7 +187,7 @@ export function loadAutomaSnapshot(): AutomaSnapshot {
       ...parsed,
       playerCount: parsed.playerCount ?? automaPlayers.length,
       setupSchoolIds,
-      useBombs: parsed.useBombs ?? defaults.useBombs,
+      useBombs,
       automaPlayers,
       activeAutomaIndex,
       actionDeck: parsed.actionDeck ?? defaults.actionDeck,

@@ -402,6 +402,47 @@ body.has-bottom-nav .automa-content {
   z-index: 5;
 }
 
+@media (max-width: 640px) {
+  .setup-wizard__panel--mobile {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(
+      100dvh - var(--automa-header-h, 3.75rem) - var(--bottom-nav-h, 3.85rem) - 1.25rem
+    );
+    padding-bottom: 0.75rem;
+  }
+
+  .setup-wizard__head {
+    flex-shrink: 0;
+  }
+
+  .setup-wizard__head .text-center {
+    margin-bottom: 1rem;
+  }
+
+  .setup-wizard__head .setup-stepper {
+    margin-bottom: 1rem;
+  }
+
+  .setup-wizard__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .setup-wizard__nav {
+    position: static;
+    flex-shrink: 0;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 12, 16, 0.98);
+    z-index: auto;
+  }
+}
+
 /* Phase stepper */
 .phase-stepper {
   display: flex;
@@ -593,27 +634,7 @@ body.has-bottom-nav .automa-content {
   display: none;
 }
 
-/* Combat bottom sheet (mobile) */
-.combat-card-sheet {
-  border: 1px solid var(--border);
-  border-radius: 16px 16px 0 0;
-  background: rgba(20, 24, 32, 0.98);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.combat-card-sheet--open {
-  max-height: 70dvh;
-  overflow-y: auto;
-}
-
-.combat-card-sheet__toggle {
-  border: 1px solid rgba(201, 162, 39, 0.25);
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.35);
-}
-
+/* Combat reaction banner */
 .combat-reaction-banner {
   margin: 0.75rem 0;
   padding: 0.75rem;
@@ -626,6 +647,95 @@ body.has-bottom-nav .automa-content {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+}
+
+.combat-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.combat-stats-bar__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.68rem;
+  font-family: Cinzel, serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.combat-stats-bar__chip strong {
+  color: var(--text);
+  font-family: ui-monospace, monospace;
+  font-weight: 800;
+}
+
+.combat-stats-bar__chip--shield strong {
+  color: #38bdf8;
+}
+
+.combat-stats-bar__chip--damage strong {
+  color: #f87171;
+}
+
+.combat-stats-bar__chip--potion strong {
+  color: #34d399;
+}
+
+.combat-stats-bar__chip--bomb strong {
+  color: #c084fc;
+}
+
+.combat-revealed-card {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: rgba(10, 12, 16, 0.65);
+  padding: 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.combat-revealed-card__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-family: Cinzel, serif;
+  font-weight: 700;
+}
+
+.combat-revealed-card__placeholder {
+  min-height: 10rem;
+  border: 2px dashed var(--border);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.combat-view__layout--with-board {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .combat-view__layout--with-board {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    align-items: start;
+  }
 }
 
 .combat-reaction-banner__summary {
@@ -679,6 +789,23 @@ body.has-bottom-nav .automa-content {
 .combat-view {
   background: linear-gradient(to bottom, #0c0c0c, rgba(127, 29, 29, 0.08), #0c0c0c);
   padding-bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Tab nav — sticky en escritorio; fija vía portal en layout compacto */
+.automa-tab-nav {
+  position: sticky;
+  top: var(--automa-header-h, 4rem);
+  z-index: 25;
+  width: 100%;
+  align-self: flex-start;
+  margin-bottom: 0.25rem;
+  background: rgba(10, 12, 16, 0.97);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.automa-tab-nav-placeholder {
+  display: none;
 }
 
 /* Tab nav scroll */
@@ -984,15 +1111,67 @@ body.has-bottom-nav .automa-content {
   color: #e9d5ff;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1023px) {
   .app--automa {
-    padding: 0.65rem 0.65rem 0;
+    padding: 0;
+    margin: 0;
+    height: 0;
+    overflow: visible;
+    z-index: auto;
+  }
+
+  .automa-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    margin: 0;
+    max-width: none;
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+    padding-bottom: 0.5rem;
+    background: rgba(10, 12, 16, 0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .automa-content {
+    padding-top: calc(var(--automa-header-h, 3.75rem) + 0.25rem);
   }
 
   .automa-tab-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
     top: var(--automa-header-h, 3.75rem);
+    z-index: 35;
+    width: auto;
+    margin: 0;
+    padding: 0.35rem 0.65rem 0;
+    background: rgba(10, 12, 16, 0.97);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(45, 53, 68, 0.85);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
   }
 
+  .automa-tab-nav-placeholder {
+    display: block;
+    flex-shrink: 0;
+    height: var(--automa-tab-nav-h, 3.25rem);
+    margin-bottom: 0.25rem;
+  }
+
+  .game-board__tab-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
   .automa-counter-btn {
     width: var(--touch-min, 2.75rem);
     height: var(--touch-min, 2.75rem);
@@ -1003,33 +1182,10 @@ body.has-bottom-nav .automa-content {
     height: var(--touch-min, 2.75rem);
   }
 
-  .combat-card-sheet {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px));
-    z-index: 35;
-    margin: 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
-  }
-
-  .combat-card-sheet--open {
-    max-height: min(70dvh, calc(100dvh - var(--automa-header-h, 3.75rem) - 8rem));
-  }
-
-  .combat-card-sheet__toggle {
-    position: fixed;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px) + 0.35rem);
-    z-index: 36;
-  }
-
-  .combat-view:has(.combat-card-sheet--open) .combat-card-sheet__toggle {
-    bottom: calc(var(--bottom-nav-h, 0px) + env(safe-area-inset-bottom, 0px) + min(70dvh, calc(100dvh - var(--automa-header-h, 3.75rem) - 8rem)) + 0.35rem);
+  .combat-view__revealed-card {
+    position: sticky;
+    top: calc(var(--automa-header-h, 3.75rem) + 0.35rem);
+    z-index: 15;
   }
 
   .game-board {
