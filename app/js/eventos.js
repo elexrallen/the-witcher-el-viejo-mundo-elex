@@ -14,8 +14,10 @@ import {
   getCardsForPlayer,
   getStashCount,
   hasCard,
+  loadStash,
   makeCardId,
   removeCard,
+  replaceStash,
 } from "./event-stash.js";
 import {
   getActivePlayerLabel,
@@ -29,6 +31,8 @@ import {
   showToast,
 } from "./ui.js";
 import { initPlayerSetup } from "./player-setup.js";
+import { createUndoStack } from "./undo-stack.js";
+import { initUndoButton } from "./undo-ui.js";
 
 const DATA_URL = "data/eventos.json";
 const STORAGE_KEY = "witcher-eventos-v1";
@@ -112,6 +116,53 @@ const els = {
 };
 
 let cardReveal = null;
+const undoStack = createUndoStack();
+
+function captureEventosSnapshot() {
+  return {
+    decks: structuredClone(state.decks),
+    currentDeck: state.currentDeck,
+    pendingNumber: state.pendingNumber,
+    currentCard: state.currentCard,
+    cardRevealed: state.cardRevealed,
+    stash: loadStash(),
+  };
+}
+
+function pushUndo(label) {
+  const snapshot = captureEventosSnapshot();
+  undoStack.push(label, () => restoreEventosSnapshot(snapshot));
+}
+
+function restoreEventosSnapshot(snapshot) {
+  state.decks = structuredClone(snapshot.decks);
+  state.currentDeck = snapshot.currentDeck;
+  state.pendingNumber = snapshot.pendingNumber;
+  state.currentCard = snapshot.currentCard;
+  state.cardRevealed = snapshot.cardRevealed;
+  replaceStash(snapshot.stash);
+  persistState();
+
+  if (!state.currentDeck) {
+    return;
+  }
+
+  if (snapshot.cardRevealed && snapshot.currentCard) {
+    renderDeckUI(state.currentDeck, snapshot.pendingNumber);
+    renderRevealedCard(state.currentDeck, snapshot.currentCard);
+  } else {
+    setPendingNumber(state.currentDeck, snapshot.pendingNumber, { skipUndo: true });
+  }
+
+  updateDeckStatus();
+  updateRoleBanner();
+  updateInstruction();
+  updateStashIndicators();
+  if (els.stashDialog?.open) {
+    renderStashPanel();
+  }
+  refreshMobileChrome();
+}
 
 async function init() {
   const response = await fetch(DATA_URL);
@@ -180,6 +231,10 @@ async function init() {
   bindEvents();
   initMobileUX();
   initAppChrome({ page: "eventos" });
+  initUndoButton({
+    undoStack,
+    onUndo: () => undoStack.undo(),
+  });
   enhanceIconElements();
   setPlayMode(true);
   els.playBar.classList.add("play-bar--visible");
@@ -198,11 +253,11 @@ async function init() {
   }
 }
 
-function setupDeck(deck, number) {
+function setupDeck(deck, number, { skipUndo = true } = {}) {
   state.currentDeck = deck;
   state.currentCard = null;
   state.cardRevealed = false;
-  setPendingNumber(deck, number);
+  setPendingNumber(deck, number, { skipUndo });
   updateDeckStatus();
 }
 
@@ -275,20 +330,14 @@ function bindEvents() {
     if (!state.currentDeck) {
       return;
     }
+    pushUndo(`Reiniciar mazo (${state.currentDeck.name})`);
     resetDeck(state.currentDeck);
     setupDeck(state.currentDeck, 1);
     showToast("Mazo reiniciado");
   });
 
   els.btnResetAll.addEventListener("click", () => {
-    state.decks = {};
-    state.currentDeck = getMainDeck();
-    persistState();
-    setupDeck(state.currentDeck, 1);
-    showToast("Todos los mazos reiniciados");
-  });
-
-  els.btnResetAll.addEventListener("click", () => {
+    pushUndo("Reiniciar todos los mazos");
     state.decks = {};
     state.currentDeck = getMainDeck();
     persistState();
@@ -301,6 +350,7 @@ function bindEvents() {
     if (!window.confirm(`¿Vaciar las cartas en mesa de ${active}?`)) {
       return;
     }
+    pushUndo(`Vaciar cartas en mesa (${active})`);
     if (clearStashForPlayer(state.session.activePlayer)) {
       showToast("Cartas en mesa vaciadas");
       renderStashActions();
@@ -317,6 +367,7 @@ function bindEvents() {
     if (!window.confirm("¿Vaciar las cartas en mesa de todos los jugadores?")) {
       return;
     }
+    pushUndo("Vaciar cartas en mesa (todos)");
     if (clearAllStash()) {
       showToast("Cartas en mesa vaciadas");
       renderStashActions();
@@ -588,7 +639,7 @@ function hidePersistentActions() {
   }
 }
 
-function setPendingNumber(deck, number) {
+function setPendingNumber(deck, number, { skipUndo = false } = {}) {
   const cards = getDeckCards(deck);
   if (cards.length === 0) {
     showToast("Este mazo no tiene cartas");
@@ -596,6 +647,10 @@ function setPendingNumber(deck, number) {
   }
 
   const targetNumber = clampNumber(number, cards.length);
+  if (!skipUndo && (targetNumber !== state.pendingNumber || deck.id !== state.currentDeck?.id)) {
+    pushUndo(`Evento #${targetNumber}`);
+  }
+
   state.pendingNumber = targetNumber;
   state.currentDeck = deck;
 
@@ -624,6 +679,8 @@ function revealEvent(deck, number) {
     showToast(`No existe el evento #${targetNumber}`);
     return;
   }
+
+  pushUndo(`Revelar evento #${targetNumber}`);
 
   state.pendingNumber = targetNumber;
   state.currentDeck = deck;
@@ -696,6 +753,7 @@ function renderCampaignDecks() {
     button.className = "btn btn--secondary campaign-deck-btn";
     button.textContent = `${deck.name} (${cards.length})`;
     button.addEventListener("click", () => {
+      pushUndo(`Mazo ${deck.name}`);
       setupDeck(deck, deckState.lastNumber || 1);
       els.panelSettings.setAttribute("hidden", "");
     });
@@ -830,10 +888,13 @@ function renderStashActions() {
       showToast("Revela la carta por completo antes de añadirla");
       return;
     }
+    pushUndo(`Añadir evento #${state.currentCard.number} a mesa`);
     if (addCard(activePlayer, stashMeta)) {
       showToast(`Añadido a cartas en mesa (${activeLabel})`);
       renderStashActions();
       updateStashIndicators();
+    } else {
+      undoStack.undo();
     }
   });
 

@@ -11,6 +11,8 @@ type AppHeaderProps = {
   trophies?: number;
   automaCount?: number;
   activeAutomaLabel?: string;
+  canUndo?: boolean;
+  onUndo?: () => void;
   onReconfig?: () => void;
 };
 
@@ -22,6 +24,8 @@ export default function AppHeader({
   trophies = 0,
   automaCount = 1,
   activeAutomaLabel,
+  canUndo = false,
+  onUndo,
   onReconfig,
 }: AppHeaderProps) {
   const isMobile = useIsMobile();
@@ -96,6 +100,14 @@ export default function AppHeader({
                   {menuOpen && (
                     <div className="automa-header-menu__dropdown">
                       <p className="text-[10px] text-zinc-500 uppercase mb-1">Dificultad: {difficulty}</p>
+                      <button
+                        type="button"
+                        onClick={() => { onUndo?.(); setMenuOpen(false); }}
+                        disabled={!canUndo}
+                        className="w-full text-left text-xs py-2 disabled:opacity-40"
+                      >
+                        Deshacer
+                      </button>
                       <button type="button" onClick={() => { onReconfig?.(); setMenuOpen(false); }} className="w-full text-left text-xs text-orange-400 py-2">
                         Reconfigurar partida
                       </button>
@@ -132,6 +144,19 @@ export default function AppHeader({
           </div>
         )}
         {!isMobile && <AppNav />}
+        {!setupMode && onUndo && (
+          <button
+            type="button"
+            onClick={onUndo}
+            disabled={!canUndo}
+            className="btn btn--ghost btn--icon-label undo-btn"
+            aria-label="Deshacer"
+            title={canUndo ? "Deshacer última acción" : "Nada que deshacer"}
+          >
+            <WitcherIcon name="undo" size={22} />
+            <span className="hide-on-mobile-tip">Deshacer</span>
+          </button>
+        )}
       </div>
     </header>
   );

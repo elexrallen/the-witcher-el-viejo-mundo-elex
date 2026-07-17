@@ -110,7 +110,7 @@
           <button
             type="button"
             class="help-btn"
-            data-tip="Desliza la barra lateral hacia abajo para revelar la carta. En móvil: toca A o B para elegir."
+            data-tip="Desliza la barra lateral para revelar la carta a tu ritmo."
             aria-label="Ayuda de lectura"
           ></button>
         </div>
@@ -118,8 +118,6 @@
         <div class="phase-steps" id="phase-steps" hidden>
           <span class="phase-step" id="phase-draw"><span class="phase-step__icon" data-icon="layers" data-icon-size="16"></span><span class="phase-step__label">Robar</span></span>
           <span class="phase-step" id="phase-read"><span class="phase-step__icon" data-icon="eye" data-icon-size="16"></span><span class="phase-step__label">Leer</span></span>
-          <span class="phase-step" id="phase-choose"><span class="phase-step__icon" data-icon="hand" data-icon-size="16"></span><span class="phase-step__label">Elegir</span></span>
-          <span class="phase-step" id="phase-result"><span class="phase-step__icon" data-icon="check" data-icon-size="16"></span><span class="phase-step__label">Resultado</span></span>
         </div>
 
         <article class="explore-card">
@@ -186,14 +184,10 @@
           </figure>
           </div>
 
-          <div class="choices choices--simple explore-card__choices" id="choices" hidden>
-            <button type="button" class="choice-pill choice-pill--a" data-choice="A" id="choice-a">Opción A</button>
-            <button type="button" class="choice-pill choice-pill--b" data-choice="B" id="choice-b">Opción B</button>
-          </div>
         </article>
 
         <p class="rule-reminder rule-reminder--desktop muted" id="rule-reminder">
-          Atajos: <kbd>A</kbd> / <kbd>B</kbd> elegir · <kbd>↑</kbd> <kbd>↓</kbd> revelar · <kbd>Enter</kbd> continuar · <kbd>Esc</kbd> volver
+          Atajos: <kbd>↑</kbd> <kbd>↓</kbd> revelar · <kbd>Enter</kbd> siguiente · <kbd>Ctrl</kbd>+<kbd>Z</kbd> deshacer · <kbd>Esc</kbd> volver
         </p>
       </section>
     </main>

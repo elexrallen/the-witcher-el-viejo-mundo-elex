@@ -50,6 +50,7 @@ import {
   saveAutomaSnapshot,
   type AutomaSnapshot,
 } from "./gameSnapshot";
+import { createUndoStack } from "./utils/undoStack";
 
 const initialSnapshot = loadAutomaSnapshot();
 
@@ -78,6 +79,10 @@ export default function App() {
   const [turnCount, setTurnCount] = useState(initialSnapshot.turnCount);
   const [currentTab, setCurrentTab] = useState<GameTab>(initialSnapshot.currentTab);
   const [startError, setStartError] = useState<string | null>(null);
+  const undoStackRef = useRef(createUndoStack());
+  const isRestoringRef = useRef(false);
+  const skipUndoRef = useRef(false);
+  const [canUndo, setCanUndo] = useState(false);
 
   const activePlayer = automaPlayers[activeAutomaIndex] ?? automaPlayers[0];
   const automa = activePlayer.automa;
@@ -152,6 +157,84 @@ export default function App() {
     activeAutomaIndex,
   ]);
 
+  const buildCurrentSnapshot = (): AutomaSnapshot =>
+    buildAutomaSnapshot({
+      setupMode,
+      playerCount,
+      setupSchoolIds,
+      difficulty,
+      useDicePoker,
+      useBombs,
+      useMutagens,
+      useSkellige,
+      useLegendaryHunt,
+      turnCount,
+      currentTab,
+      automaPlayers,
+      activeAutomaIndex,
+    });
+
+  const captureUndo = () => {
+    if (isRestoringRef.current || setupMode || skipUndoRef.current) return;
+    undoStackRef.current.push(buildCurrentSnapshot());
+    setCanUndo(undoStackRef.current.canUndo());
+  };
+
+  const withUndoCapture = (action: () => void) => {
+    captureUndo();
+    skipUndoRef.current = true;
+    try {
+      action();
+    } finally {
+      skipUndoRef.current = false;
+    }
+  };
+
+  const restoreSnapshot = (snapshot: AutomaSnapshot) => {
+    isRestoringRef.current = true;
+    setSetupMode(snapshot.setupMode);
+    setPlayerCount(snapshot.playerCount);
+    setSetupSchoolIds([...snapshot.setupSchoolIds]);
+    setDifficulty(snapshot.difficulty);
+    setUseDicePoker(snapshot.useDicePoker);
+    setUseBombs(snapshot.useBombs);
+    setUseMutagens(snapshot.useMutagens);
+    setUseSkellige(snapshot.useSkellige);
+    setUseLegendaryHunt(snapshot.useLegendaryHunt);
+    setAutomaPlayers(structuredClone(snapshot.automaPlayers));
+    setActiveAutomaIndex(snapshot.activeAutomaIndex);
+    setTurnCount(snapshot.turnCount);
+    setCurrentTab(snapshot.currentTab);
+    isRestoringRef.current = false;
+    setCanUndo(undoStackRef.current.canUndo());
+  };
+
+  const handleUndo = () => {
+    const snapshot = undoStackRef.current.pop();
+    if (!snapshot) {
+      setCanUndo(false);
+      return;
+    }
+    restoreSnapshot(snapshot);
+  };
+
+  useEffect(() => {
+    if (setupMode) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      const key = event.key.toLowerCase();
+      if ((event.ctrlKey || event.metaKey) && key === "z" && !event.shiftKey) {
+        if (!undoStackRef.current.canUndo()) return;
+        event.preventDefault();
+        handleUndo();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [setupMode]);
+
   const activeSchoolObj = WITCHER_SCHOOLS.find((s) => s.id === automa.schoolId) || WITCHER_SCHOOLS[0];
 
   const addLog = (msg: string) => setLogs((prev) => [msg, ...prev.slice(0, 49)]);
@@ -191,10 +274,12 @@ export default function App() {
       addLog("Termina el combate del Automa activo antes de cambiar.");
       return;
     }
+    captureUndo();
     setActiveAutomaIndex(index);
   };
 
   const handleUpdateAttribute = (attr: "attack" | "defense" | "alchemy" | "special", delta: number) => {
+    captureUndo();
     setAutoma((prev) => {
       const current = prev.attributes[attr];
       let updated = current + delta;
@@ -312,6 +397,8 @@ export default function App() {
     setTurnCount(1);
     setSetupMode(false);
     setCurrentTab("turn");
+    undoStackRef.current.clear();
+    setCanUndo(false);
   };
 
   const drawActionCard = () => {
@@ -341,6 +428,7 @@ export default function App() {
       );
     }
 
+    captureUndo();
     const nextCard = deck[0];
     setActionDeck(deck.slice(1));
     setActiveActionCard(nextCard);
@@ -350,6 +438,7 @@ export default function App() {
 
   const applyActionCardBonuses = () => {
     if (!activeActionCard || bonusApplied) return;
+    withUndoCapture(() => {
     const bonus = activeActionCard.attributeBonus;
     if (bonus === "attack") handleUpdateAttribute("attack", 1);
     else if (bonus === "defense") handleUpdateAttribute("defense", 1);
@@ -444,6 +533,7 @@ export default function App() {
     }
     setBonusApplied(true);
     addLog("Acciones de Fase I aplicadas.");
+    });
   };
 
   const addLevel3CardToChallengeDeck = () => {
@@ -456,6 +546,7 @@ export default function App() {
 
   const handleAddTrophy = () => {
     if (automa.trophies >= 4) return;
+    captureUndo();
     setAutoma((p) => ({ ...p, trophies: p.trophies + 1 }));
     addLevel3CardToChallengeDeck();
     addLog("¡Automa gana un trofeo!");
@@ -468,6 +559,7 @@ export default function App() {
       return;
     }
     if (automa.trophies >= 4) return;
+    captureUndo();
 
     setAutoma((p) => ({
       ...p,
@@ -488,14 +580,19 @@ export default function App() {
   };
 
   const handleExplore = () => {
+    captureUndo();
     addLog("Fase II: Explorar — sin robar eventos.");
     setTurnPhase(3);
   };
 
-  const handleAdvanceToPhase2 = () => setTurnPhase(2);
+  const handleAdvanceToPhase2 = () => {
+    captureUndo();
+    setTurnPhase(2);
+  };
 
   const handleCollectDestructionToken = () => {
     if (!useLegendaryHunt) return;
+    captureUndo();
     setAutoma((p) => ({ ...p, destructionTokens: p.destructionTokens + 1 }));
     addLog(
       `Cacería Legendaria: +1 ficha de Destrucción (total ${automa.destructionTokens + 1}). Al combatir el jefe: ${formatLegendaryLifeSummary({ ...automa, destructionTokens: automa.destructionTokens + 1 })}.`
@@ -504,6 +601,7 @@ export default function App() {
 
   const handleEndTurn = () => {
     if (!activeActionCard) return;
+    captureUndo();
     const card = activeActionCard;
 
     if (
@@ -574,6 +672,7 @@ export default function App() {
     name: string,
     options?: { opponentAutomaIndex?: number | null }
   ) => {
+    captureUndo();
     closeAllOpenDialogs();
     const combinedCombatDeck = shuffleArray([...challengeDeck, ...challengeDiscard]);
     const openingShield = capShieldLevel(
@@ -660,6 +759,7 @@ export default function App() {
   };
 
   const handleDiscardTopCombatCard = () => {
+    captureUndo();
     setCombat((prev) => {
       if (prev.combatDeck.length === 0) {
         return prev;
@@ -679,6 +779,7 @@ export default function App() {
   };
 
   const handleAcknowledgeBeforeCombat = () => {
+    captureUndo();
     setCombat((prev) => ({
       ...prev,
       beforeCombatSpecialAcknowledged: true,
@@ -953,6 +1054,7 @@ export default function App() {
       addLog("Automa derrotado — sin cartas.");
       return;
     }
+    captureUndo();
 
     let deck = [...combat.combatDeck];
     let discard = [...combat.combatDiscard];
@@ -1086,6 +1188,7 @@ export default function App() {
       addLog("Rival Automa derrotado — sin cartas.");
       return;
     }
+    captureUndo();
 
     const card = rivalDeck[0];
     const restDeck = rivalDeck.slice(1);
@@ -1163,6 +1266,7 @@ export default function App() {
   const handleReceiveDamage = (damageInput: number) => {
     const rawDamage = Math.max(0, damageInput);
     if (rawDamage === 0) return;
+    captureUndo();
 
     if (combat.ignoreNextOpponentDamage) {
       setCombat((prev) => ({
@@ -1251,6 +1355,7 @@ export default function App() {
   };
 
   const handleAcknowledgeCounterattack = () => {
+    captureUndo();
     setCombat((prev) => {
       const amount = prev.pendingCounterattack ?? 0;
       if (amount <= 0) return prev;
@@ -1300,6 +1405,7 @@ export default function App() {
   };
 
   const handleEndCombat = (automaWon: boolean) => {
+    captureUndo();
     const combined = [...combat.combatDeck, ...combat.combatDiscard];
     const restoredDeck = combined.length > 0 ? shuffleArray(combined) : [];
     const rivalIndex = combat.opponentAutomaIndex;
@@ -1391,9 +1497,15 @@ export default function App() {
 
   const handleDrawPokerCard = (): ChallengeCard | null => {
     if (challengeDeck.length === 0) return null;
+    captureUndo();
     const card = challengeDeck[0];
     setChallengeDeck((prev) => [...prev.slice(1), card]);
     return card;
+  };
+
+  const handleAutomaChange: typeof setAutoma = (updater) => {
+    captureUndo();
+    setAutoma(updater);
   };
 
   return (
@@ -1407,6 +1519,8 @@ export default function App() {
           trophies={automa.trophies}
           automaCount={automaPlayers.length}
           activeAutomaLabel={activePlayer.label}
+          canUndo={canUndo}
+          onUndo={handleUndo}
           onReconfig={() => setSetupMode(true)}
         />
       </div>
@@ -1454,9 +1568,12 @@ export default function App() {
             onUpdateAttribute={handleUpdateAttribute}
             onAutoImprove={handleAutoImproveAttribute}
             onAddTrophy={handleAddTrophy}
-            onAutomaChange={setAutoma}
+            onAutomaChange={handleAutomaChange}
             onTrophyDecrease={() => {
-              if (automa.trophies > 0) setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
+              if (automa.trophies > 0) {
+                captureUndo();
+                setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
+              }
             }}
             onAttack={handleAutomaAttackTurn}
             onRivalAttack={handleRivalAutomaAttack}
@@ -1492,9 +1609,12 @@ export default function App() {
             onUpdateAttribute={handleUpdateAttribute}
             onAutoImprove={handleAutoImproveAttribute}
             onAddTrophy={handleAddTrophy}
-            onAutomaChange={setAutoma}
+            onAutomaChange={handleAutomaChange}
             onTrophyDecrease={() => {
-              if (automa.trophies > 0) setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
+              if (automa.trophies > 0) {
+                captureUndo();
+                setAutoma((p) => ({ ...p, trophies: p.trophies - 1 }));
+              }
             }}
             onDrawCard={drawActionCard}
             onApplyBonuses={applyActionCardBonuses}

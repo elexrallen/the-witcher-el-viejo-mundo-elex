@@ -137,6 +137,7 @@ const ICONS: Record<WitcherIconName, IconType> = {
   help: GiInfo,
   info: GiInfo,
   refresh: GiReturnArrow,
+  undo: GiReturnArrow,
   combat: GiSwordBrandish,
   cards: GiStack,
   discard: GiCardDiscard,

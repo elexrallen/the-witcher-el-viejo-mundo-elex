@@ -24,6 +24,8 @@ import { initMobileUX, refreshMobileChrome } from "./mobile.js";
 import { initAppChrome } from "./chrome.js";
 import { enhanceIconElements, locationIconId } from "./icons.js";
 import { initPlayerSetup } from "./player-setup.js";
+import { createUndoStack } from "./undo-stack.js";
+import { initUndoButton } from "./undo-ui.js";
 
 const DATA_URL = "data/exploracion.json";
 const STORAGE_KEY = "witcher-exploracion-v1";
@@ -38,19 +40,7 @@ const INSTRUCTIONS = {
   },
   read: {
     title: "Paso 2 — Leer",
-    body: "Usa la barra para revelar de arriba a abajo. Para antes de los resultados de las opciones.",
-  },
-  choose: {
-    title: "Paso 3 — Elegir",
-    body: "El jugador activo elige A o B. Pulsa ↑ en la barra lateral para revelar desde abajo (opción B).",
-  },
-  outcomeA: {
-    title: "Paso 4 — Resultado A",
-    body: "Sigue revelando de arriba a abajo hasta leer la opción A. La opción B puede quedar oculta.",
-  },
-  outcomeB: {
-    title: "Paso 4 — Resultado B",
-    body: "Revela de abajo arriba (botón ↑ activo) para leer la opción B sin desvelar la A.",
+    body: "Usa la barra para revelar la carta a tu ritmo. Aplica los efectos en mesa según lo que leáis.",
   },
   narrative: {
     title: "Carta de exploración",
@@ -93,8 +83,6 @@ const els = {
   phaseSteps: document.getElementById("phase-steps"),
   phaseDraw: document.getElementById("phase-draw"),
   phaseRead: document.getElementById("phase-read"),
-  phaseChoose: document.getElementById("phase-choose"),
-  phaseResult: document.getElementById("phase-result"),
   cardLocation: document.getElementById("card-location"),
   cardExpansion: document.getElementById("card-expansion"),
   cardRemaining: document.getElementById("card-remaining"),
@@ -113,9 +101,6 @@ const els = {
   btnRevealReset: document.getElementById("btn-reveal-reset"),
   btnRevealDirection: document.getElementById("btn-reveal-direction"),
   cardCaption: document.getElementById("card-caption"),
-  choices: document.getElementById("choices"),
-  choiceA: document.getElementById("choice-a"),
-  choiceB: document.getElementById("choice-b"),
   playBar: document.getElementById("play-bar"),
   btnBack: document.getElementById("btn-back"),
   btnZoom: document.getElementById("btn-zoom"),
@@ -134,6 +119,112 @@ const els = {
 };
 
 let cardReveal = null;
+const undoStack = createUndoStack();
+
+function cloneDecks() {
+  return structuredClone(state.decks);
+}
+
+function captureExploracionSnapshot() {
+  return {
+    decks: cloneDecks(),
+    lastLocationId: state.lastLocationId,
+    currentLocation: state.currentLocation,
+    currentCard: state.currentCard,
+    cardPhase: state.cardPhase,
+    screen: els.screenCard.hidden ? "locations" : "card",
+  };
+}
+
+function pushUndo(label) {
+  const snapshot = captureExploracionSnapshot();
+  undoStack.push(label, () => restoreExploracionSnapshot(snapshot));
+}
+
+function restoreExploracionSnapshot(snapshot) {
+  state.decks = structuredClone(snapshot.decks);
+  state.lastLocationId = snapshot.lastLocationId;
+  state.currentLocation = snapshot.currentLocation;
+  state.currentCard = snapshot.currentCard;
+  state.cardPhase = snapshot.cardPhase;
+  persistState();
+
+  if (snapshot.screen === "locations" || !snapshot.currentLocation) {
+    showLocations();
+    return;
+  }
+
+  els.screenLocations.hidden = true;
+  els.screenCard.hidden = false;
+  els.playBar.classList.add("play-bar--visible");
+  setPlayMode(true);
+  refreshMobileChrome();
+
+  if (!snapshot.currentCard) {
+    if (snapshot.currentLocation) {
+      els.cardLocation.textContent = snapshot.currentLocation.name;
+      const cards = getLocationCards(snapshot.currentLocation);
+      const deckKey = getDeckKey(snapshot.currentLocation);
+      const deck = getDeckState(deckKey, cards);
+      els.cardRemaining.textContent = `${deck.draw.length} restantes`;
+      updateProgress(els.deckProgress, deck.draw.length, cards.length);
+    }
+    hideCardImage();
+    els.btnNext.hidden = true;
+    showPlaceholder(
+      "Carta bocabajo",
+      "Pulsa <strong>Robar carta</strong> para revelar la imagen.",
+    );
+    state.cardPhase = "draw";
+    updatePhaseSteps();
+    updateRoleBanner("draw");
+    setInstruction("draw");
+    updateDeckStatus();
+    renderResumeBanner();
+    refreshMobileChrome();
+    return;
+  }
+
+  restoreCardView(snapshot.currentLocation, snapshot.currentCard, snapshot.cardPhase);
+  updateDeckStatus();
+  renderResumeBanner();
+}
+
+function restoreCardView(location, card, phase) {
+  els.cardLocation.textContent = location.name;
+  els.cardExpansion.textContent = card.expansion.name;
+
+  const cards = getLocationCards(location);
+  const deckKey = getDeckKey(location);
+  const deck = getDeckState(deckKey, cards);
+  els.cardRemaining.textContent = `${deck.draw.length} restantes`;
+  updateProgress(els.deckProgress, deck.draw.length, cards.length);
+
+  setCardImage(card);
+  cardReveal?.setDirection("down");
+  cardReveal?.setReveal(0);
+
+  if (phase === "read") {
+    hidePlaceholder();
+    showCardImage();
+    els.btnNext.hidden = false;
+    els.btnNext.textContent = "Siguiente carta";
+    setInstruction("read");
+    updateRoleBanner("read");
+  } else {
+    hideCardImage();
+    els.btnNext.hidden = true;
+    showPlaceholder(
+      "Carta bocabajo",
+      "Pulsa <strong>Robar carta</strong> para revelar la imagen.",
+    );
+    setInstruction("draw");
+    updateRoleBanner("draw");
+  }
+
+  updatePhaseSteps();
+  refreshMobileChrome();
+}
 
 async function init() {
   const response = await fetch(DATA_URL);
@@ -183,6 +274,10 @@ async function init() {
   bindEvents();
   initMobileUX();
   initAppChrome({ page: "exploracion" });
+  initUndoButton({
+    undoStack,
+    onUndo: () => undoStack.undo(),
+  });
   updateDeckStatus();
 }
 
@@ -242,6 +337,7 @@ function bindEvents() {
     if (!state.currentLocation) {
       return;
     }
+    pushUndo(`Reiniciar mazo (${state.currentLocation.name})`);
     resetDeck(state.currentLocation);
     updateDeckStatus();
     renderLocations();
@@ -252,6 +348,7 @@ function bindEvents() {
   });
 
   els.btnResetAll.addEventListener("click", () => {
+    pushUndo("Reiniciar todos los mazos");
     state.decks = {};
     state.lastLocationId = null;
     persistState();
@@ -269,15 +366,9 @@ function bindEvents() {
   });
 
   els.btnDraw.addEventListener("click", revealDrawnCard);
-  els.choiceA.addEventListener("click", () => revealOutcome("A"));
-  els.choiceB.addEventListener("click", () => revealOutcome("B"));
   els.btnBack.addEventListener("click", showLocations);
   els.btnNext.addEventListener("click", () => {
     if (!state.currentLocation) {
-      return;
-    }
-    if (state.cardPhase === "read" && cardHasChoices(state.currentCard)) {
-      showChoosePhase();
       return;
     }
     drawAndPrepare(state.currentLocation);
@@ -316,25 +407,10 @@ function bindEvents() {
         revealDrawnCard();
         return;
       }
-      if (state.cardPhase === "read" && cardHasChoices(state.currentCard)) {
-        showChoosePhase();
-        return;
-      }
-      if (!els.btnNext.hidden && state.cardPhase === "outcome") {
+      if (!els.btnNext.hidden && state.cardPhase === "read") {
         drawAndPrepare(state.currentLocation);
       }
       return;
-    }
-
-    if (state.cardPhase === "choose" && !els.choices.hidden) {
-      if (key === "a") {
-        event.preventDefault();
-        revealOutcome("A");
-      }
-      if (key === "b") {
-        event.preventDefault();
-        revealOutcome("B");
-      }
     }
 
     if (cardReveal?.isVisible() && (key === "arrowdown" || key === "arrowup")) {
@@ -343,43 +419,6 @@ function bindEvents() {
       cardReveal.setReveal(cardReveal.getReveal() + step);
     }
   });
-}
-
-function cardHasChoices(card) {
-  const structured = card?.structured || {};
-  return structured.format === "choices" || Boolean(structured.choice_a && structured.choice_b);
-}
-
-function truncateChoiceText(text, maxLength = 72) {
-  if (!text) {
-    return "";
-  }
-  const normalized = String(text).replace(/\s+/g, " ").trim();
-  if (normalized.length <= maxLength) {
-    return normalized;
-  }
-  return `${normalized.slice(0, maxLength - 1).trim()}…`;
-}
-
-function updateChoiceLabels(card) {
-  const structured = card?.structured || {};
-  const labelA = truncateChoiceText(structured.choice_a) || "Opción A";
-  const labelB = truncateChoiceText(structured.choice_b) || "Opción B";
-  els.choiceA.textContent = labelA;
-  els.choiceB.textContent = labelB;
-  els.choiceA.title = structured.choice_a || "Opción A";
-  els.choiceB.title = structured.choice_b || "Opción B";
-}
-
-function setInstruction(key) {
-  const copy = INSTRUCTIONS[key];
-  els.instruction.innerHTML = `
-    <h3 class="instruction__title">${copy.title}</h3>
-    <p class="instruction__body">${copy.body}</p>
-  `;
-  if (isMobileViewport() && shouldAutoExpandInstruction()) {
-    expandInstruction(els.instruction, els.btnToggleInstruction);
-  }
 }
 
 function updateRoleBanner(phase) {
@@ -395,22 +434,11 @@ function updateRoleBanner(phase) {
     return;
   }
 
-  if (phase === "read" || phase === "choose") {
+  if (phase === "read") {
     renderRoleBanner(els.roleBanner, {
-      role: phase === "read" ? "Lee" : "Elige",
-      player: phase === "read" ? drawer : active,
-      detail: phase === "read"
-        ? "Lee la carta al jugador activo."
-        : "El jugador activo decide A o B.",
-    });
-    return;
-  }
-
-  if (phase === "outcome") {
-    renderRoleBanner(els.roleBanner, {
-      role: "Lee resultado",
+      role: "Lee",
       player: drawer,
-      detail: "Solo el resultado de la opción elegida.",
+      detail: "Lee la carta y aplica los efectos en mesa.",
     });
     return;
   }
@@ -422,32 +450,12 @@ function updateRoleBanner(phase) {
   });
 }
 
-function renderLocationsRoleBanner() {
-  const drawer = getDrawerLabel(state.session.activePlayer, state.session.playerCount);
-  renderRoleBanner(els.roleBannerLocations, {
-    role: "Explorar",
-    player: drawer,
-    detail: "Tras elegir ubicación, este jugador robará la carta.",
-  });
-  els.roleBannerLocations.hidden = false;
-}
-
-function updatePhaseSteps(hasChoices) {
-  if (!hasChoices) {
-    els.phaseSteps.hidden = true;
-    return;
-  }
-
+function updatePhaseSteps() {
   els.phaseSteps.hidden = false;
-  const steps = [els.phaseDraw, els.phaseRead, els.phaseChoose, els.phaseResult];
+  const steps = [els.phaseDraw, els.phaseRead];
   steps.forEach((step) => step.classList.remove("phase-step--active", "phase-step--done"));
 
-  const phaseIndex = {
-    draw: 0,
-    read: 1,
-    choose: 2,
-    outcome: 3,
-  }[state.cardPhase] ?? 0;
+  const phaseIndex = state.cardPhase === "draw" ? 0 : 1;
 
   steps.forEach((step, index) => {
     if (index < phaseIndex) {
@@ -457,6 +465,27 @@ function updatePhaseSteps(hasChoices) {
       step.classList.add("phase-step--active");
     }
   });
+}
+
+function setInstruction(key) {
+  const copy = INSTRUCTIONS[key];
+  els.instruction.innerHTML = `
+    <h3 class="instruction__title">${copy.title}</h3>
+    <p class="instruction__body">${copy.body}</p>
+  `;
+  if (isMobileViewport() && shouldAutoExpandInstruction()) {
+    expandInstruction(els.instruction, els.btnToggleInstruction);
+  }
+}
+
+function renderLocationsRoleBanner() {
+  const drawer = getDrawerLabel(state.session.activePlayer, state.session.playerCount);
+  renderRoleBanner(els.roleBannerLocations, {
+    role: "Explorar",
+    player: drawer,
+    detail: "Tras elegir ubicación, este jugador robará la carta.",
+  });
+  els.roleBannerLocations.hidden = false;
 }
 
 function setCardImage(card) {
@@ -659,6 +688,7 @@ function renderLocations() {
 function showLocations() {
   state.currentCard = null;
   state.cardPhase = "draw";
+  state.currentLocation = null;
   els.screenCard.hidden = true;
   els.screenLocations.hidden = false;
   els.playBar.classList.remove("play-bar--visible");
@@ -694,8 +724,23 @@ function openCardScreen(location) {
 }
 
 function drawAndPrepare(location) {
+  const cards = getLocationCards(location);
+  const deckKey = getDeckKey(location);
+  const deck = getDeckState(deckKey, cards);
+  if (deck.draw.length === 0 && deck.discard.length === 0) {
+    showToast("Mazo agotado — reinicia en configuración");
+    return;
+  }
+
+  pushUndo(
+    state.currentCard
+      ? `Robar carta en ${location.name}`
+      : `Preparar carta en ${location.name}`,
+  );
+
   const card = drawCard(location);
   if (!card) {
+    undoStack.undo();
     showToast("Mazo agotado — reinicia en configuración");
     return;
   }
@@ -705,15 +750,7 @@ function drawAndPrepare(location) {
   prepareCard(location, card);
 }
 
-function setRuleRemindersVisible(visible) {
-  document.querySelectorAll(".rule-reminder").forEach((element) => {
-    element.hidden = !visible;
-  });
-}
-
 function prepareCard(location, card) {
-  const hasChoices = cardHasChoices(card);
-
   els.cardLocation.textContent = location.name;
   els.cardExpansion.textContent = card.expansion.name;
 
@@ -726,11 +763,9 @@ function prepareCard(location, card) {
   setCardImage(card);
   cardReveal?.setDirection("down");
   hideCardImage();
-  els.choices.hidden = true;
-  updateChoiceLabels(card);
   els.btnNext.hidden = true;
 
-  updatePhaseSteps(hasChoices);
+  updatePhaseSteps();
   updateRoleBanner("draw");
   setInstruction("draw");
 
@@ -738,7 +773,6 @@ function prepareCard(location, card) {
     "Carta bocabajo",
     "Pulsa <strong>Robar carta</strong> para revelar la imagen.",
   );
-  setRuleRemindersVisible(!hasChoices);
   refreshMobileChrome();
 }
 
@@ -747,61 +781,12 @@ function revealDrawnCard() {
     return;
   }
 
-  const card = state.currentCard;
-  const hasChoices = cardHasChoices(card);
-
   hidePlaceholder();
   showCardImage();
-  refreshMobileChrome();
-
-  if (hasChoices) {
-    state.cardPhase = "read";
-    setInstruction("read");
-    updateRoleBanner("read");
-    updatePhaseSteps(true);
-    els.choices.hidden = true;
-    els.btnNext.hidden = false;
-    els.btnNext.textContent = "Elegir opción";
-    setRuleRemindersVisible(true);
-    refreshMobileChrome();
-    return;
-  }
-
-  state.cardPhase = "outcome";
-  setInstruction("narrative");
-  updateRoleBanner("narrative");
-  updatePhaseSteps(false);
-  els.btnNext.hidden = false;
-  els.btnNext.textContent = "Siguiente carta";
-  setRuleRemindersVisible(false);
-  refreshMobileChrome();
-}
-
-function showChoosePhase() {
-  state.cardPhase = "choose";
-  setInstruction("choose");
-  updateRoleBanner("choose");
-  updatePhaseSteps(true);
-  updateChoiceLabels(state.currentCard);
-  els.choices.hidden = false;
-  els.btnNext.hidden = true;
-  refreshMobileChrome();
-}
-
-function revealOutcome(choice) {
-  state.cardPhase = "outcome";
-  setInstruction(choice === "A" ? "outcomeA" : "outcomeB");
-  updateRoleBanner("outcome");
-  updatePhaseSteps(true);
-  els.choices.hidden = true;
-  showCardImage();
-  if (choice === "B") {
-    cardReveal?.setDirection("up");
-  } else {
-    cardReveal?.setDirection("down");
-    cardReveal?.revealAll();
-  }
-  refreshMobileChrome();
+  state.cardPhase = "read";
+  setInstruction("read");
+  updateRoleBanner("read");
+  updatePhaseSteps();
   els.btnNext.hidden = false;
   els.btnNext.textContent = "Siguiente carta";
   refreshMobileChrome();

@@ -40,6 +40,10 @@ export function loadStash() {
   return readStash();
 }
 
+export function replaceStash(stash) {
+  writeStash(stash);
+}
+
 export function getCardsForPlayer(player) {
   const stash = readStash();
   const key = String(normalizePlayer(player));
